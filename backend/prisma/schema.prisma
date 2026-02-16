@@ -1,0 +1,232 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+  ON_HOLD
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  firstName     String?
+  lastName      String?
+  role          UserRole @default(EDITOR)
+  isActive      Boolean  @default(true)
+  refreshToken  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  createdProjects Project[] @relation("ProjectCreator")
+  createdBlogs    Blog[]    @relation("BlogCreator")
+  updatedProjects Project[] @relation("ProjectUpdater")
+  updatedBlogs    Blog[]    @relation("BlogUpdater")
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  permissions Json?    // Store permissions as JSON
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model Project {
+  id               String        @id @default(uuid())
+  title            String
+  titleEn          String?       @db.Text
+  slug             String        @unique
+  description      String        @db.Text
+  descriptionEn    String?       @db.Text
+  shortDescription String?       @db.Text
+  shortDescriptionEn String?     @db.Text
+  status           ProjectStatus @default(PLANNING)
+  area            Float?        // Metrekare
+  location        String?
+  latitude        Float?
+  longitude       Float?
+  deliveryDate    DateTime?
+  startDate       DateTime?
+  featured        Boolean       @default(false)
+  featuredImage   String?
+  metaTitle       String?
+  metaDescription String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  createdById     String?
+  updatedById     String?
+
+  createdBy       User?         @relation("ProjectCreator", fields: [createdById], references: [id])
+  updatedBy       User?         @relation("ProjectUpdater", fields: [updatedById], references: [id])
+
+  images          ProjectImage[]
+  serviceId       String?
+  service         Service?      @relation(fields: [serviceId], references: [id])
+
+  @@index([status])
+  @@index([slug])
+  @@index([featured])
+  @@map("projects")
+}
+
+model ProjectImage {
+  id        String   @id @default(uuid())
+  url       String
+  alt       String?
+  order     Int      @default(0)
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@map("project_images")
+}
+
+model Service {
+  id               String   @id @default(uuid())
+  title            String
+  titleEn          String?  @db.Text
+  slug             String   @unique
+  description      String   @db.Text
+  descriptionEn    String?  @db.Text
+  shortDescription String?  @db.Text
+  shortDescriptionEn String? @db.Text
+  icon             String?
+  image            String?
+  featured         Boolean  @default(false)
+  order            Int      @default(0)
+  metaTitle        String?
+  metaDescription  String?  @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  projects         Project[]
+
+  @@index([slug])
+  @@index([featured])
+  @@map("services")
+}
+
+model Blog {
+  id              String      @id @default(uuid())
+  title           String
+  slug            String      @unique
+  content         String      @db.Text
+  excerpt         String?     @db.Text
+  featuredImage   String?
+  status          BlogStatus  @default(DRAFT)
+  featured        Boolean     @default(false)
+  views           Int         @default(0)
+  metaTitle       String?
+  metaDescription String?     @db.Text
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  publishedAt     DateTime?
+
+  createdById     String?
+  updatedById     String?
+  categoryId      String?
+
+  createdBy       User?       @relation("BlogCreator", fields: [createdById], references: [id])
+  updatedBy       User?       @relation("BlogUpdater", fields: [updatedById], references: [id])
+  category        BlogCategory? @relation(fields: [categoryId], references: [id])
+
+  @@index([slug])
+  @@index([status])
+  @@index([featured])
+  @@index([categoryId])
+  @@map("blogs")
+}
+
+model BlogCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  blogs       Blog[]
+
+  @@index([slug])
+  @@map("blog_categories")
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  replied   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([read])
+  @@index([createdAt])
+  @@map("contact_messages")
+}
+
+model SiteSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String   @db.Text
+  type      String   @default("string") // string, number, boolean, json
+  group     String?  // e.g., "general", "social", "seo"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+  @@index([group])
+  @@map("site_settings")
+}
+
+model MediaFile {
+  id          String   @id @default(uuid())
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int      // bytes
+  path        String
+  url         String
+  alt         String?
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([mimeType])
+  @@map("media_files")
+}

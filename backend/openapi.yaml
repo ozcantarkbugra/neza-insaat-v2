@@ -1,0 +1,1432 @@
+openapi: 3.0.3
+info:
+  title: NEZA İnşaat API
+  description: |
+    İnşaat firması web sitesi ve admin paneli için REST API.
+    Kimlik doğrulama: `Authorization: Bearer <accessToken>` (login/register sonrası).
+  version: 1.0.0
+  contact:
+    name: NEZA İnşaat
+
+servers:
+  - url: http://localhost:5002
+    description: Yerel geliştirme (health: /health, API: /api/...)
+  - url: https://your-domain.com
+    description: Canlı sunucu (örnek)
+
+tags:
+  - name: Health
+    description: Sağlık kontrolü
+  - name: Auth
+    description: Kayıt, giriş, token yenileme
+  - name: Projects
+    description: Projeler (CRUD)
+  - name: Services
+    description: Hizmetler (CRUD)
+  - name: Blogs
+    description: Blog yazıları (CRUD)
+  - name: Contact
+    description: İletişim formu ve mesajlar
+  - name: Settings
+    description: Site ayarları (public)
+  - name: Admin
+    description: Admin paneli (dashboard, kullanıcılar, kategoriler, medya)
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Sağlık kontrolü
+      responses:
+        '200':
+          description: Servis çalışıyor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  timestamp: { type: string, format: date-time }
+
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Yeni kullanıcı kaydı
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Kayıt başarılı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Geçersiz veri veya e-posta zaten kayıtlı
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Giriş
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Giriş başarılı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: E-posta veya şifre hatalı
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Access token yenile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken: { type: string }
+      responses:
+        '200':
+          description: Yeni tokenlar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Geçersiz refresh token
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Çıkış (refresh token geçersiz kılınır)
+      security: [{ BearerAuth: [] }]
+      responses:
+        '200':
+          description: Çıkış başarılı
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: Logged out successfully }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/auth/me:
+    get:
+      tags: [Auth]
+      summary: Giriş yapmış kullanıcı bilgisi
+      security: [{ BearerAuth: [] }]
+      responses:
+        '200':
+          description: Kullanıcı bilgisi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMe'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/projects:
+    get:
+      tags: [Projects]
+      summary: Proje listesi (public)
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD] }
+        - name: featured
+          in: query
+          schema: { type: boolean }
+        - name: serviceId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: Projeler (sayfalı veya dizi)
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      projects: { type: array, items: { $ref: '#/components/schemas/Project' } }
+                      total: { type: integer }
+                      page: { type: integer }
+                      limit: { type: integer }
+                  - type: array
+                    items: { $ref: '#/components/schemas/Project' }
+    post:
+      tags: [Projects]
+      summary: Yeni proje (Admin/SUPER_ADMIN)
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+      responses:
+        '201':
+          description: Oluşturulan proje
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          description: Validasyon hatası
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/projects/slug/{slug}:
+    get:
+      tags: [Projects]
+      summary: Slug ile proje getir (public)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Proje detayı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: Proje bulunamadı
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/projects/{id}:
+    get:
+      tags: [Projects]
+      summary: ID ile proje getir (public)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Proje detayı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: Proje bulunamadı
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    put:
+      tags: [Projects]
+      summary: Proje güncelle (Admin/SUPER_ADMIN)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+      responses:
+        '200':
+          description: Güncellenen proje
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          description: Validasyon hatası
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Projects]
+      summary: Proje sil (Admin/SUPER_ADMIN)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Silme başarılı
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/services:
+    get:
+      tags: [Services]
+      summary: Hizmet listesi (public)
+      parameters:
+        - name: featured
+          in: query
+          schema: { type: boolean }
+      responses:
+        '200':
+          description: Hizmet listesi
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Service' }
+    post:
+      tags: [Services]
+      summary: Yeni hizmet (Admin/SUPER_ADMIN)
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreate'
+      responses:
+        '201':
+          description: Oluşturulan hizmet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '400':
+          description: Validasyon hatası
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/services/slug/{slug}:
+    get:
+      tags: [Services]
+      summary: Slug ile hizmet getir (public)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Hizmet detayı (projeler dahil)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceWithProjects'
+        '404':
+          description: Hizmet bulunamadı
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/services/{id}:
+    get:
+      tags: [Services]
+      summary: ID ile hizmet getir (public)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Hizmet detayı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '404':
+          description: Hizmet bulunamadı
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    put:
+      tags: [Services]
+      summary: Hizmet güncelle (Admin/SUPER_ADMIN)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdate'
+      responses:
+        '200':
+          description: Güncellenen hizmet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Services]
+      summary: Hizmet sil (Admin/SUPER_ADMIN)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Silme başarılı
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/blogs:
+    get:
+      tags: [Blogs]
+      summary: Blog listesi (public)
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [DRAFT, PUBLISHED, ARCHIVED] }
+        - name: featured
+          in: query
+          schema: { type: boolean }
+        - name: categoryId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: Blog listesi (sayfalı veya dizi)
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      blogs: { type: array, items: { $ref: '#/components/schemas/Blog' } }
+                      total: { type: integer }
+                      page: { type: integer }
+                      limit: { type: integer }
+                  - type: array
+                    items: { $ref: '#/components/schemas/Blog' }
+    post:
+      tags: [Blogs]
+      summary: Yeni blog (Admin/EDITOR)
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogCreate'
+      responses:
+        '201':
+          description: Oluşturulan blog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blog'
+        '400':
+          description: Validasyon hatası
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/blogs/slug/{slug}:
+    get:
+      tags: [Blogs]
+      summary: Slug ile blog getir (public)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Blog detayı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blog'
+        '404':
+          description: Blog bulunamadı
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/blogs/{id}:
+    get:
+      tags: [Blogs]
+      summary: ID ile blog getir (public)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Blog detayı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blog'
+        '404':
+          description: Blog bulunamadı
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    put:
+      tags: [Blogs]
+      summary: Blog güncelle (Admin/EDITOR)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogUpdate'
+      responses:
+        '200':
+          description: Güncellenen blog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blog'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Blogs]
+      summary: Blog sil (Admin/SUPER_ADMIN)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Silme başarılı
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/contact:
+    post:
+      tags: [Contact]
+      summary: İletişim formu gönder (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactCreate'
+      responses:
+        '201':
+          description: Mesaj kaydedildi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactMessage'
+        '400':
+          description: Validasyon hatası
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    get:
+      tags: [Contact]
+      summary: İletişim mesajları listesi (Admin)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: read
+          in: query
+          schema: { type: boolean }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Mesaj listesi (sayfalı)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages: { type: array, items: { $ref: '#/components/schemas/ContactMessage' } }
+                  total: { type: integer }
+                  page: { type: integer }
+                  limit: { type: integer }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/contact/{id}:
+    get:
+      tags: [Contact]
+      summary: Mesaj detayı (Admin)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Mesaj
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactMessage'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Contact]
+      summary: Mesaj sil (Admin)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Silme başarılı
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/contact/{id}/read:
+    patch:
+      tags: [Contact]
+      summary: Mesajı okundu işaretle (Admin)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Güncellenen mesaj
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactMessage'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/contact/{id}/replied:
+    patch:
+      tags: [Contact]
+      summary: Mesajı yanıtlandı işaretle (Admin)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Güncellenen mesaj
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactMessage'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/settings:
+    get:
+      tags: [Settings]
+      summary: Site ayarları (public, key-value map)
+      responses:
+        '200':
+          description: Tüm ayarlar (contact_phone, contact_email, sosyal linkler vb.)
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: { type: string }
+                example:
+                  contact_phone: "+90 501 234 56 78"
+                  contact_email: "info@example.com"
+                  facebook_url: "https://facebook.com/..."
+
+  /api/admin/dashboard:
+    get:
+      tags: [Admin]
+      summary: Dashboard istatistikleri
+      security: [{ BearerAuth: [] }]
+      responses:
+        '200':
+          description: İstatistikler (proje, blog, mesaj sayıları vb.)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projectsCount: { type: integer }
+                  blogsCount: { type: integer }
+                  messagesCount: { type: integer }
+                  unreadMessagesCount: { type: integer }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/users:
+    get:
+      tags: [Admin]
+      summary: Kullanıcı listesi
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Sayfalı kullanıcı listesi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users: { type: array, items: { $ref: '#/components/schemas/UserAdmin' } }
+                  total: { type: integer }
+                  page: { type: integer }
+                  limit: { type: integer }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/users/{id}/role:
+    patch:
+      tags: [Admin]
+      summary: Kullanıcı rolü güncelle
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role: { type: string, enum: [SUPER_ADMIN, ADMIN, EDITOR] }
+      responses:
+        '200':
+          description: Güncellenen kullanıcı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdmin'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/users/{id}/toggle-active:
+    patch:
+      tags: [Admin]
+      summary: Kullanıcı aktif/pasif toggle
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Güncellenen kullanıcı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdmin'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/blog-categories:
+    get:
+      tags: [Admin]
+      summary: Blog kategorileri listesi
+      security: [{ BearerAuth: [] }]
+      responses:
+        '200':
+          description: Kategori listesi
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/BlogCategory' }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    post:
+      tags: [Admin]
+      summary: Yeni blog kategorisi
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, slug]
+              properties:
+                name: { type: string }
+                slug: { type: string }
+                description: { type: string }
+      responses:
+        '201':
+          description: Oluşturulan kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCategory'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/blog-categories/{id}:
+    put:
+      tags: [Admin]
+      summary: Blog kategorisi güncelle
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                slug: { type: string }
+                description: { type: string }
+      responses:
+        '200':
+          description: Güncellenen kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCategory'
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Admin]
+      summary: Blog kategorisi sil
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Silme başarılı
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/settings:
+    get:
+      tags: [Admin]
+      summary: Site ayarları (ham liste, admin)
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: group
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Ayarlar listesi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: string, format: uuid }
+                    key: { type: string }
+                    value: { type: string }
+                    type: { type: string }
+                    group: { type: string }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/settings/{key}:
+    put:
+      tags: [Admin]
+      summary: Tek ayar güncelle
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [value]
+              properties:
+                value: { type: string }
+      responses:
+        '200':
+          description: Güncellenen ayar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+                  key: { type: string }
+                  value: { type: string }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/media/upload:
+    post:
+      tags: [Admin]
+      summary: Dosya yükle
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: { type: string, format: binary }
+      responses:
+        '201':
+          description: Yüklenen medya bilgisi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaFile'
+        '400':
+          description: Dosya yok veya geçersiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/media:
+    get:
+      tags: [Admin]
+      summary: Medya listesi
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+        - name: mimeType
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Sayfalı medya listesi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files: { type: array, items: { $ref: '#/components/schemas/MediaFile' } }
+                  total: { type: integer }
+                  page: { type: integer }
+                  limit: { type: integer }
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/admin/media/{id}:
+    delete:
+      tags: [Admin]
+      summary: Medya sil
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Silme başarılı
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Yetkisiz
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Login veya register sonrası dönen accessToken"
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: string, description: "Hata mesajı" }
+
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+        firstName: { type: string }
+        lastName: { type: string }
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            id: { type: string, format: uuid }
+            email: { type: string }
+            firstName: { type: string, nullable: true }
+            lastName: { type: string, nullable: true }
+            role: { type: string, enum: [SUPER_ADMIN, ADMIN, EDITOR] }
+        accessToken: { type: string }
+        refreshToken: { type: string }
+
+    UserMe:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string }
+        firstName: { type: string, nullable: true }
+        lastName: { type: string, nullable: true }
+        role: { type: string, enum: [SUPER_ADMIN, ADMIN, EDITOR] }
+
+    UserAdmin:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string }
+        firstName: { type: string, nullable: true }
+        lastName: { type: string, nullable: true }
+        role: { type: string, enum: [SUPER_ADMIN, ADMIN, EDITOR] }
+        isActive: { type: boolean }
+        createdAt: { type: string, format: date-time }
+
+    Project:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        titleEn: { type: string, nullable: true }
+        slug: { type: string }
+        description: { type: string }
+        descriptionEn: { type: string, nullable: true }
+        shortDescription: { type: string, nullable: true }
+        shortDescriptionEn: { type: string, nullable: true }
+        status: { type: string, enum: [PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD] }
+        area: { type: number, nullable: true }
+        location: { type: string, nullable: true }
+        featured: { type: boolean }
+        featuredImage: { type: string, nullable: true }
+        metaTitle: { type: string, nullable: true }
+        metaDescription: { type: string, nullable: true }
+        deliveryDate: { type: string, format: date-time, nullable: true }
+        startDate: { type: string, format: date-time, nullable: true }
+        serviceId: { type: string, format: uuid, nullable: true }
+        images: { type: array, items: { $ref: '#/components/schemas/ProjectImage' } }
+        service: { $ref: '#/components/schemas/Service' }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    ProjectImage:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        url: { type: string }
+        alt: { type: string, nullable: true }
+        order: { type: integer }
+
+    ProjectCreate:
+      type: object
+      required: [title, slug, description, status]
+      properties:
+        title: { type: string }
+        titleEn: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        descriptionEn: { type: string }
+        shortDescription: { type: string }
+        shortDescriptionEn: { type: string }
+        status: { type: string, enum: [PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD] }
+        area: { type: number }
+        location: { type: string }
+        latitude: { type: number }
+        longitude: { type: number }
+        deliveryDate: { type: string, format: date-time }
+        startDate: { type: string, format: date-time }
+        featured: { type: boolean }
+        featuredImage: { type: string, format: uri }
+        metaTitle: { type: string }
+        metaDescription: { type: string }
+        serviceId: { type: string, format: uuid }
+        imageUrls: { type: array, items: { type: string, format: uri } }
+
+    ProjectUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        titleEn: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        descriptionEn: { type: string }
+        shortDescription: { type: string }
+        shortDescriptionEn: { type: string }
+        status: { type: string, enum: [PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD] }
+        area: { type: number }
+        location: { type: string }
+        featured: { type: boolean }
+        featuredImage: { type: string, format: uri }
+        metaTitle: { type: string }
+        metaDescription: { type: string }
+        serviceId: { type: string, format: uuid }
+        imageUrls: { type: array, items: { type: string, format: uri } }
+
+    Service:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        titleEn: { type: string, nullable: true }
+        slug: { type: string }
+        description: { type: string }
+        descriptionEn: { type: string, nullable: true }
+        shortDescription: { type: string, nullable: true }
+        shortDescriptionEn: { type: string, nullable: true }
+        icon: { type: string, nullable: true }
+        image: { type: string, nullable: true }
+        featured: { type: boolean }
+        order: { type: integer }
+        metaTitle: { type: string, nullable: true }
+        metaDescription: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    ServiceWithProjects:
+      allOf:
+        - { $ref: '#/components/schemas/Service' }
+        - type: object
+          properties:
+            projects: { type: array, items: { $ref: '#/components/schemas/Project' } }
+
+    ServiceCreate:
+      type: object
+      required: [title, slug, description]
+      properties:
+        title: { type: string }
+        titleEn: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        descriptionEn: { type: string }
+        shortDescription: { type: string }
+        shortDescriptionEn: { type: string }
+        icon: { type: string }
+        image: { type: string, format: uri }
+        featured: { type: boolean }
+        order: { type: integer }
+        metaTitle: { type: string }
+        metaDescription: { type: string }
+
+    ServiceUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        titleEn: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        descriptionEn: { type: string }
+        shortDescription: { type: string }
+        shortDescriptionEn: { type: string }
+        icon: { type: string }
+        image: { type: string, format: uri }
+        featured: { type: boolean }
+        order: { type: integer }
+        metaTitle: { type: string }
+        metaDescription: { type: string }
+
+    Blog:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        slug: { type: string }
+        content: { type: string }
+        excerpt: { type: string, nullable: true }
+        featuredImage: { type: string, nullable: true }
+        status: { type: string, enum: [DRAFT, PUBLISHED, ARCHIVED] }
+        featured: { type: boolean }
+        views: { type: integer }
+        metaTitle: { type: string, nullable: true }
+        metaDescription: { type: string, nullable: true }
+        categoryId: { type: string, format: uuid, nullable: true }
+        category: { $ref: '#/components/schemas/BlogCategory' }
+        createdBy: { type: object, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        publishedAt: { type: string, format: date-time, nullable: true }
+
+    BlogCategory:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string, nullable: true }
+
+    BlogCreate:
+      type: object
+      required: [title, slug, content, status]
+      properties:
+        title: { type: string }
+        slug: { type: string }
+        content: { type: string }
+        excerpt: { type: string }
+        featuredImage: { type: string, format: uri }
+        status: { type: string, enum: [DRAFT, PUBLISHED, ARCHIVED] }
+        featured: { type: boolean }
+        metaTitle: { type: string }
+        metaDescription: { type: string }
+        categoryId: { type: string, format: uuid }
+
+    BlogUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        slug: { type: string }
+        content: { type: string }
+        excerpt: { type: string }
+        featuredImage: { type: string, format: uri }
+        status: { type: string, enum: [DRAFT, PUBLISHED, ARCHIVED] }
+        featured: { type: boolean }
+        metaTitle: { type: string }
+        metaDescription: { type: string }
+        categoryId: { type: string, format: uuid }
+
+    ContactCreate:
+      type: object
+      required: [name, email, message]
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        subject: { type: string }
+        message: { type: string }
+
+    ContactMessage:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        email: { type: string }
+        phone: { type: string, nullable: true }
+        subject: { type: string, nullable: true }
+        message: { type: string }
+        read: { type: boolean }
+        replied: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    MediaFile:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        filename: { type: string }
+        originalName: { type: string }
+        mimeType: { type: string }
+        size: { type: integer }
+        path: { type: string }
+        url: { type: string }
+        alt: { type: string, nullable: true }
+        description: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }

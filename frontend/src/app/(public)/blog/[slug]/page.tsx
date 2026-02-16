@@ -1,5 +1,6 @@
 'use client'
 
+import { use } from 'react'
 import { notFound } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
@@ -19,11 +20,10 @@ import { Blog } from '@/types'
 import { normalizeImageUrl } from '@/utils/imageUtils'
 import { useTranslation } from '@/lib/i18n'
 
-export default function BlogDetailPage({
-  params,
-}: {
-  params: { slug: string }
+export default function BlogDetailPage(props: {
+  params: Promise<{ slug: string }>
 }) {
+  const params = use(props.params)
   const { t, locale } = useTranslation()
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()

@@ -1,5 +1,6 @@
 'use client'
 
+import { use } from 'react'
 import { notFound } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Container, Title, Text, SimpleGrid, Card, Stack, Badge, Group } from '@mantine/core'
@@ -17,11 +18,10 @@ const STATUS_KEYS: Record<string, string> = {
   ON_HOLD: 'projects.onHold',
 }
 
-export default function ProjectDetailPage({
-  params,
-}: {
-  params: { slug: string }
+export default function ProjectDetailPage(props: {
+  params: Promise<{ slug: string }>
 }) {
+  const params = use(props.params)
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
   const { t, locale } = useTranslation()

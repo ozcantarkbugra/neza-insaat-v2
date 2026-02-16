@@ -4,7 +4,6 @@ const nextConfig = {
   // Production: daha küçük output
   ...(process.env.NODE_ENV === 'production' && { output: 'standalone' }),
   images: {
-    domains: ['localhost'],
     remotePatterns: [
       {
         protocol: 'http',

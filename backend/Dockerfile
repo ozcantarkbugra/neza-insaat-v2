@@ -1,5 +1,8 @@
 FROM node:18-alpine
 
+# Prisma için libssl.so.1.1 gerekli (Alpine 3.17+ OpenSSL 3 kullanıyor)
+RUN apk add --no-cache openssl1.1-compat
+
 WORKDIR /app
 
 # Copy package files

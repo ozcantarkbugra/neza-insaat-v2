@@ -4,7 +4,7 @@ Bu doküman, projeyi **nezainsaat.com** domain'inde **194.146.36.65** sunucusund
 
 ## Ön Koşullar
 
-1. **DNS**: Hostinger panelinden `nezainsaat.com` ve `www.nezainsaat.com` A kayıtlarını `194.146.36.65` IP adresine yönlendirin.
+1. **DNS (KRİTİK)**: Hostinger panelinden `nezainsaat.com` ve `www.nezainsaat.com` A kayıtlarını `194.146.36.65` IP adresine yönlendirin. **Domain "Parked" görünüyorsa DNS henüz yapılandırılmamış demektir.**
 2. **Sunucu**: root erişimi ile SSH bağlantısı.
 
 ---
@@ -134,6 +134,15 @@ docker compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
 ---
 
 ## Sorun Giderme
+
+### "nezainsaat.com Parked Domain görünüyor"
+- **DNS yapılandırılmamış.** Hostinger DNS panelinde: `nezainsaat.com` ve `www.nezainsaat.com` için **A kaydı** ekleyin, değer: `194.146.36.65`
+- DNS propagasyonu 24 saat sürebilir; genelde 1–2 saat içinde güncellenir.
+
+### "Site açılmıyor" (DNS doğruysa)
+- Nginx kurulu ve config aktif mi? `nginx -t && systemctl status nginx`
+- SSL sertifikası alındı mı? `certbot certificates`
+- Frontend/backend çalışıyor mu? `docker ps` ile kontrol edin
 
 ### Container logları
 ```bash

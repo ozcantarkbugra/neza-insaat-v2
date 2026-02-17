@@ -49,9 +49,10 @@ nano .env   # veya vim
 ```
 
 **Mutlaka değiştirin:**
-- `POSTGRES_PASSWORD`: Güçlü veritabanı şifresi
 - `JWT_SECRET`: Min 32 karakter, rastgele string
 - `JWT_REFRESH_SECRET`: Min 32 karakter, rastgele string
+
+**Veritabanı:** `POSTGRES_PASSWORD=postgres` (dev ile aynı) – isterseniz güçlü bir şifreyle değiştirebilirsiniz.
 
 ---
 

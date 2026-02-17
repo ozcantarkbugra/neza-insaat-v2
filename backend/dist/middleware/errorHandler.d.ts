@@ -1,0 +1,9 @@
+import { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
+export declare class AppError extends Error {
+    statusCode: number;
+    isOperational: boolean;
+    constructor(message: string, statusCode?: number);
+}
+export declare function errorHandler(err: Error | AppError | ZodError, _req: Request, res: Response, _next: NextFunction): void;
+//# sourceMappingURL=errorHandler.d.ts.map

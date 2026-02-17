@@ -1,0 +1,19 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validate = validate;
+function validate(schema) {
+    return (req, _res, next) => {
+        try {
+            schema.parse({
+                body: req.body,
+                query: req.query,
+                params: req.params,
+            });
+            next();
+        }
+        catch (error) {
+            next(error);
+        }
+    };
+}
+//# sourceMappingURL=validator.js.map

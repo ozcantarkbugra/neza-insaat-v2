@@ -5,7 +5,7 @@ import { cacheControl } from '../middleware/cacheControl'
 const router = Router()
 
 // Public: site ayarlarını döner (footer, iletişim vb. için) - 5 dk cache
-router.get('/', cacheControl(300), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', cacheControl(300), async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const settings = await adminService.getSiteSettings()
     const map = (settings as { key: string; value: string }[]).reduce(

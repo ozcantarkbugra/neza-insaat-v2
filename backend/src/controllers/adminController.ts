@@ -3,7 +3,6 @@ import adminService from '../services/adminService'
 import { z } from 'zod'
 import { validate } from '../middleware/validator'
 import { upload } from '../middleware/upload'
-import { env } from '../config/env'
 
 const updateUserRoleSchema = z.object({
   params: z.object({
@@ -66,7 +65,7 @@ const updateSettingSchema = z.object({
 })
 
 export class AdminController {
-  getDashboard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getDashboard = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const stats = await adminService.getDashboardStats()
       res.json(stats)
@@ -133,7 +132,7 @@ export class AdminController {
     },
   ]
 
-  getBlogCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getBlogCategories = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const categories = await adminService.getBlogCategories()
       res.json(categories)

@@ -54,7 +54,7 @@ const limiter = rateLimit({
 app.use('/api/', limiter)
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
@@ -71,7 +71,7 @@ app.use('/api/settings', settingsRoutes)
 app.use(errorHandler)
 
 // 404 handler
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).json({ error: 'Route not found' })
 })
 

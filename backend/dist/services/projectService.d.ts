@@ -1,0 +1,324 @@
+import { ProjectStatus } from '@prisma/client';
+export interface CreateProjectData {
+    title: string;
+    titleEn?: string;
+    slug: string;
+    description: string;
+    descriptionEn?: string;
+    shortDescription?: string;
+    shortDescriptionEn?: string;
+    status: ProjectStatus;
+    area?: number;
+    location?: string;
+    latitude?: number;
+    longitude?: number;
+    deliveryDate?: Date;
+    startDate?: Date;
+    featured?: boolean;
+    featuredImage?: string;
+    metaTitle?: string;
+    metaDescription?: string;
+    serviceId?: string;
+    imageUrls?: string[];
+}
+export interface UpdateProjectData extends Partial<CreateProjectData> {
+    id: string;
+}
+export declare class ProjectService {
+    getAll(filters: {
+        status?: ProjectStatus;
+        featured?: boolean;
+        serviceId?: string;
+        page?: number;
+        limit?: number;
+    }): Promise<{
+        projects: ({
+            images: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                order: number;
+                url: string;
+                alt: string | null;
+                projectId: string;
+            }[];
+            service: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                title: string;
+                titleEn: string | null;
+                slug: string;
+                description: string;
+                descriptionEn: string | null;
+                shortDescription: string | null;
+                shortDescriptionEn: string | null;
+                featured: boolean;
+                metaTitle: string | null;
+                metaDescription: string | null;
+                order: number;
+                icon: string | null;
+                image: string | null;
+            } | null;
+        } & {
+            status: import(".prisma/client").$Enums.ProjectStatus;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            title: string;
+            titleEn: string | null;
+            slug: string;
+            description: string;
+            descriptionEn: string | null;
+            shortDescription: string | null;
+            shortDescriptionEn: string | null;
+            area: number | null;
+            location: string | null;
+            latitude: number | null;
+            longitude: number | null;
+            deliveryDate: Date | null;
+            startDate: Date | null;
+            featured: boolean;
+            featuredImage: string | null;
+            metaTitle: string | null;
+            metaDescription: string | null;
+            serviceId: string | null;
+            createdById: string | null;
+            updatedById: string | null;
+        })[];
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            pages: number;
+        };
+    }>;
+    getBySlug(slug: string): Promise<{
+        createdBy: {
+            id: string;
+            email: string;
+            firstName: string | null;
+            lastName: string | null;
+        } | null;
+        images: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            order: number;
+            url: string;
+            alt: string | null;
+            projectId: string;
+        }[];
+        service: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            title: string;
+            titleEn: string | null;
+            slug: string;
+            description: string;
+            descriptionEn: string | null;
+            shortDescription: string | null;
+            shortDescriptionEn: string | null;
+            featured: boolean;
+            metaTitle: string | null;
+            metaDescription: string | null;
+            order: number;
+            icon: string | null;
+            image: string | null;
+        } | null;
+    } & {
+        status: import(".prisma/client").$Enums.ProjectStatus;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        titleEn: string | null;
+        slug: string;
+        description: string;
+        descriptionEn: string | null;
+        shortDescription: string | null;
+        shortDescriptionEn: string | null;
+        area: number | null;
+        location: string | null;
+        latitude: number | null;
+        longitude: number | null;
+        deliveryDate: Date | null;
+        startDate: Date | null;
+        featured: boolean;
+        featuredImage: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        serviceId: string | null;
+        createdById: string | null;
+        updatedById: string | null;
+    }>;
+    getById(id: string): Promise<{
+        images: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            order: number;
+            url: string;
+            alt: string | null;
+            projectId: string;
+        }[];
+        service: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            title: string;
+            titleEn: string | null;
+            slug: string;
+            description: string;
+            descriptionEn: string | null;
+            shortDescription: string | null;
+            shortDescriptionEn: string | null;
+            featured: boolean;
+            metaTitle: string | null;
+            metaDescription: string | null;
+            order: number;
+            icon: string | null;
+            image: string | null;
+        } | null;
+    } & {
+        status: import(".prisma/client").$Enums.ProjectStatus;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        titleEn: string | null;
+        slug: string;
+        description: string;
+        descriptionEn: string | null;
+        shortDescription: string | null;
+        shortDescriptionEn: string | null;
+        area: number | null;
+        location: string | null;
+        latitude: number | null;
+        longitude: number | null;
+        deliveryDate: Date | null;
+        startDate: Date | null;
+        featured: boolean;
+        featuredImage: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        serviceId: string | null;
+        createdById: string | null;
+        updatedById: string | null;
+    }>;
+    create(data: CreateProjectData, userId: string): Promise<{
+        images: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            order: number;
+            url: string;
+            alt: string | null;
+            projectId: string;
+        }[];
+        service: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            title: string;
+            titleEn: string | null;
+            slug: string;
+            description: string;
+            descriptionEn: string | null;
+            shortDescription: string | null;
+            shortDescriptionEn: string | null;
+            featured: boolean;
+            metaTitle: string | null;
+            metaDescription: string | null;
+            order: number;
+            icon: string | null;
+            image: string | null;
+        } | null;
+    } & {
+        status: import(".prisma/client").$Enums.ProjectStatus;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        titleEn: string | null;
+        slug: string;
+        description: string;
+        descriptionEn: string | null;
+        shortDescription: string | null;
+        shortDescriptionEn: string | null;
+        area: number | null;
+        location: string | null;
+        latitude: number | null;
+        longitude: number | null;
+        deliveryDate: Date | null;
+        startDate: Date | null;
+        featured: boolean;
+        featuredImage: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        serviceId: string | null;
+        createdById: string | null;
+        updatedById: string | null;
+    }>;
+    update(data: UpdateProjectData, userId: string): Promise<{
+        images: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            order: number;
+            url: string;
+            alt: string | null;
+            projectId: string;
+        }[];
+        service: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            title: string;
+            titleEn: string | null;
+            slug: string;
+            description: string;
+            descriptionEn: string | null;
+            shortDescription: string | null;
+            shortDescriptionEn: string | null;
+            featured: boolean;
+            metaTitle: string | null;
+            metaDescription: string | null;
+            order: number;
+            icon: string | null;
+            image: string | null;
+        } | null;
+    } & {
+        status: import(".prisma/client").$Enums.ProjectStatus;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        titleEn: string | null;
+        slug: string;
+        description: string;
+        descriptionEn: string | null;
+        shortDescription: string | null;
+        shortDescriptionEn: string | null;
+        area: number | null;
+        location: string | null;
+        latitude: number | null;
+        longitude: number | null;
+        deliveryDate: Date | null;
+        startDate: Date | null;
+        featured: boolean;
+        featuredImage: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        serviceId: string | null;
+        createdById: string | null;
+        updatedById: string | null;
+    }>;
+    delete(id: string): Promise<{
+        message: string;
+    }>;
+}
+declare const _default: ProjectService;
+export default _default;
+//# sourceMappingURL=projectService.d.ts.map

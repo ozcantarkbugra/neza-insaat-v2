@@ -11,6 +11,16 @@ const nextConfig = {
         port: '5002',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'nezainsaat.com',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.nezainsaat.com',
+        pathname: '/uploads/**',
+      },
     ],
   },
 }

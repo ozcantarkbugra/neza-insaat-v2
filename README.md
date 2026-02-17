@@ -132,7 +132,10 @@ insaat/
 │   │   └── images/
 │   └── package.json
 │
-├── docker-compose.dev.yml   # PostgreSQL container
+├── docker-compose.dev.yml   # PostgreSQL (development)
+├── docker-compose.prod.yml  # Tam stack (production)
+├── deploy/                  # Nginx config, .env örneği
+├── docs/DEPLOYMENT.md       # Deployment rehberi
 ├── .gitignore
 └── README.md
 ```
@@ -354,6 +357,10 @@ Password: postgres
 ---
 
 ## 🚢 Dağıtım
+
+### VPS / nezainsaat.com (Önerilen)
+Sunucuya Docker Compose ile tam stack deployment için detaylı rehber:
+- **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** – Adım adım deployment (Nginx, SSL, Docker)
 
 ### Vercel (Frontend)
 1. GitHub repo'yu Vercel'e bağlayın

@@ -3,8 +3,9 @@ import * as bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient()
 
-const BASE_URL = process.env.BASE_URL || process.env.API_BASE_URL || 'http://localhost:5002'
-const uploads = (path: string) => `${BASE_URL}/uploads/${path}`
+// Production: FRONTEND_URL (https://nezainsaat.com) - uploads aynı domain'de
+const BASE_URL = process.env.BASE_URL || process.env.API_BASE_URL || process.env.FRONTEND_URL || 'http://localhost:5002'
+const uploads = (path: string) => `${BASE_URL.replace(/\/$/, '')}/uploads/${path}`
 
 async function main() {
   console.log('🌱 Seeding database...')

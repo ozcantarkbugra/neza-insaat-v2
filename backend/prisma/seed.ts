@@ -7,6 +7,10 @@ const BASE_URL = process.env.BASE_URL || process.env.API_BASE_URL || process.env
 const uploads = (path: string) => `${BASE_URL.replace(/\/$/, '')}/uploads/${path}`
 
 async function main() {
+  console.log('🌱 Seeding database...')
+  console.log('BASE_URL:', BASE_URL)
+  console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✓ set' : '✗ missing')
+
   const hashedPassword = await bcrypt.hash('Admin123!', 10)
   
   const adminUser = await prisma.user.upsert({
@@ -21,6 +25,7 @@ async function main() {
       isActive: true,
     },
   })
+  console.log('✅ Admin user:', adminUser.email)
 
   const services = [
     {
@@ -104,6 +109,7 @@ async function main() {
     })
     createdServices.push(created)
   }
+  console.log('✅ Services:', createdServices.length)
 
   const categories = [
     { name: 'Haberler', slug: 'haberler' },
@@ -121,6 +127,7 @@ async function main() {
     })
     createdCategories.push(created)
   }
+  console.log('✅ Blog categories:', createdCategories.length)
 
   const projects = [
     {
@@ -313,6 +320,7 @@ async function main() {
     })
     createdProjects.push(created)
   }
+  console.log('✅ Projects:', createdProjects.length)
 
   const blogs = [
     {
@@ -374,6 +382,7 @@ async function main() {
     })
     createdBlogs.push(created)
   }
+  console.log('✅ Blogs:', createdBlogs.length)
 
   const settings = [
     { key: 'site_name', value: 'Neza', group: 'general' },
@@ -395,6 +404,8 @@ async function main() {
       create: setting,
     })
   }
+  console.log('✅ Site settings:', settings.length)
+  console.log('🎉 Seeding completed!')
 }
 
 main()

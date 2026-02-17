@@ -34,7 +34,6 @@ export default function HeroSection({ projects = [] }: HeroSectionProps) {
     [projects]
   )
 
-  // Otomatik geçiş için useEffect
   useEffect(() => {
     if (heroImages.length === 0) return
 

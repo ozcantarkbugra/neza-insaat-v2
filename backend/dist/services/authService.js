@@ -11,23 +11,20 @@ const errorHandler_1 = require("../middleware/errorHandler");
 const client_1 = require("@prisma/client");
 class AuthService {
     async register(data) {
-        // Check if user exists
         const existingUser = await database_1.default.user.findUnique({
             where: { email: data.email },
         });
         if (existingUser) {
             throw new errorHandler_1.AppError('User with this email already exists', 400);
         }
-        // Hash password
         const hashedPassword = await (0, bcrypt_1.hashPassword)(data.password);
-        // Create user
         const user = await database_1.default.user.create({
             data: {
                 email: data.email,
                 password: hashedPassword,
                 firstName: data.firstName,
                 lastName: data.lastName,
-                role: client_1.UserRole.EDITOR, // Default role
+                role: client_1.UserRole.EDITOR,
             },
             select: {
                 id: true,
@@ -37,7 +34,6 @@ class AuthService {
                 role: true,
             },
         });
-        // Generate tokens
         const tokenPayload = {
             userId: user.id,
             email: user.email,
@@ -45,7 +41,6 @@ class AuthService {
         };
         const accessToken = (0, jwt_1.generateAccessToken)(tokenPayload);
         const refreshToken = (0, jwt_1.generateRefreshToken)(tokenPayload);
-        // Save refresh token
         await database_1.default.user.update({
             where: { id: user.id },
             data: { refreshToken },
@@ -57,7 +52,6 @@ class AuthService {
         };
     }
     async login(data) {
-        // Find user
         const user = await database_1.default.user.findUnique({
             where: { email: data.email },
         });
@@ -67,12 +61,10 @@ class AuthService {
         if (!user.isActive) {
             throw new errorHandler_1.AppError('Account is inactive', 403);
         }
-        // Verify password
         const isValidPassword = await (0, bcrypt_1.comparePassword)(data.password, user.password);
         if (!isValidPassword) {
             throw new errorHandler_1.AppError('Invalid email or password', 401);
         }
-        // Generate tokens
         const tokenPayload = {
             userId: user.id,
             email: user.email,
@@ -80,7 +72,6 @@ class AuthService {
         };
         const accessToken = (0, jwt_1.generateAccessToken)(tokenPayload);
         const refreshToken = (0, jwt_1.generateRefreshToken)(tokenPayload);
-        // Save refresh token
         await database_1.default.user.update({
             where: { id: user.id },
             data: { refreshToken },
@@ -98,9 +89,7 @@ class AuthService {
         };
     }
     async refreshToken(refreshToken) {
-        // Verify refresh token
         const payload = (0, jwt_1.verifyRefreshToken)(refreshToken);
-        // Find user
         const user = await database_1.default.user.findUnique({
             where: { id: payload.userId },
         });
@@ -110,7 +99,6 @@ class AuthService {
         if (user.refreshToken !== refreshToken) {
             throw new errorHandler_1.AppError('Invalid refresh token', 401);
         }
-        // Generate new access token
         const tokenPayload = {
             userId: user.id,
             email: user.email,

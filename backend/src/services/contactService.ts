@@ -15,8 +15,6 @@ export class ContactService {
       data,
     })
 
-    // TODO: Send email notification here if SMTP is configured
-
     return message
   }
 

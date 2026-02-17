@@ -13,7 +13,6 @@ class AppError extends Error {
 }
 exports.AppError = AppError;
 function errorHandler(err, _req, res, _next) {
-    // Zod validation errors
     if (err instanceof zod_1.ZodError) {
         res.status(400).json({
             error: 'Validation error',
@@ -24,14 +23,12 @@ function errorHandler(err, _req, res, _next) {
         });
         return;
     }
-    // App errors
     if (err instanceof AppError) {
         res.status(err.statusCode).json({
             error: err.message,
         });
         return;
     }
-    // Unknown errors
     console.error('Unexpected error:', err);
     res.status(500).json({
         error: process.env.NODE_ENV === 'production'

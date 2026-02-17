@@ -82,7 +82,6 @@ class ProjectService {
         return project;
     }
     async create(data, userId) {
-        // Check if slug exists
         const existing = await database_1.default.project.findUnique({
             where: { slug: data.slug },
         });
@@ -119,7 +118,6 @@ class ProjectService {
         if (!existing) {
             throw new errorHandler_1.AppError('Project not found', 404);
         }
-        // Check slug uniqueness if changing
         if (updateData.slug && updateData.slug !== existing.slug) {
             const slugExists = await database_1.default.project.findUnique({
                 where: { slug: updateData.slug },
@@ -128,13 +126,10 @@ class ProjectService {
                 throw new errorHandler_1.AppError('Project with this slug already exists', 400);
             }
         }
-        // Handle images update
         if (imageUrls !== undefined) {
-            // Delete existing images
             await database_1.default.projectImage.deleteMany({
                 where: { projectId: id },
             });
-            // Create new images
             if (imageUrls.length > 0) {
                 await database_1.default.projectImage.createMany({
                     data: imageUrls.map((url, index) => ({

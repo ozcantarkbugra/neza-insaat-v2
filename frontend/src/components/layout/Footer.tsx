@@ -45,7 +45,6 @@ export default function Footer() {
       }}
     >
       <Container size="xl">
-        {/* Üst bant: Değerler */}
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl" mb="xl">
           {VALUE_KEYS.map((item) => (
             <Stack key={item.titleKey} gap="xs" align="center">
@@ -59,9 +58,7 @@ export default function Footer() {
           ))}
         </SimpleGrid>
 
-        {/* Ana footer: 4 kolon */}
         <SimpleGrid cols={{ base: 1, md: 2, lg: 4 }} spacing={{ base: 'xl', md: 'xl' }} mb="xl">
-          {/* Marka + açıklama */}
           <Stack gap="md">
             <Text
               component={Link}
@@ -129,7 +126,6 @@ export default function Footer() {
             </Group>
           </Stack>
 
-          {/* Kurumsal */}
           <Stack gap="md">
             <Text size="xs" fw={600} c="white" tt="uppercase" style={{ letterSpacing: '0.05em' }}>
               {t('footer.corporate')}
@@ -153,7 +149,6 @@ export default function Footer() {
             </Stack>
           </Stack>
 
-          {/* Gizlilik ve Politikalar */}
           <Stack gap="md">
             <Text size="xs" fw={600} c="white" tt="uppercase" style={{ letterSpacing: '0.05em' }}>
               {t('footer.privacyPolicies')}
@@ -171,7 +166,6 @@ export default function Footer() {
             </Stack>
           </Stack>
 
-          {/* İletişim */}
           <Stack gap="md">
             <Text size="xs" fw={600} c="white" tt="uppercase" style={{ letterSpacing: '0.05em' }}>
               {t('footer.contactHeading')}

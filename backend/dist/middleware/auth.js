@@ -17,7 +17,6 @@ async function authenticate(req, res, next) {
         const token = authHeader.substring(7);
         try {
             const payload = (0, jwt_1.verifyAccessToken)(token);
-            // Verify user still exists and is active
             const user = await database_1.default.user.findUnique({
                 where: { id: payload.userId },
                 select: { id: true, email: true, role: true, isActive: true },

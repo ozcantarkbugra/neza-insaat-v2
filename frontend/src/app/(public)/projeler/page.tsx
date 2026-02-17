@@ -17,7 +17,6 @@ export default function ProjectsPage() {
     ? 'Backend\'e bağlanılamadı. Backend\'in çalıştığından emin olun (örn. port 5002).'
     : null
 
-  // Projeleri duruma göre grupla
   const completedProjects = projects.filter(p => p.status === 'COMPLETED')
   const inProgressProjects = projects.filter(p => p.status === 'IN_PROGRESS')
   const otherProjects = projects.filter(p => p.status !== 'COMPLETED' && p.status !== 'IN_PROGRESS')
@@ -32,7 +31,6 @@ export default function ProjectsPage() {
 
   return (
     <Stack gap={0}>
-      {/* Hero Section */}
       <section
         style={{
           background: colorScheme === 'dark' 
@@ -69,7 +67,6 @@ export default function ProjectsPage() {
           </Stack>
         ) : (
           <Stack gap="xl">
-            {/* Devam Eden Projeler */}
             {inProgressProjects.length > 0 && (
               <Stack gap="lg">
                 <Title order={2} size="h2" c={colorScheme === 'dark' ? theme.white : theme.colors.blue[8]}>
@@ -85,7 +82,6 @@ export default function ProjectsPage() {
               </Stack>
             )}
 
-            {/* Tamamlanan Projeler */}
             {completedProjects.length > 0 && (
               <Stack gap="lg">
                 <Title order={2} size="h2" c={colorScheme === 'dark' ? theme.white : theme.colors.blue[8]}>
@@ -101,7 +97,6 @@ export default function ProjectsPage() {
               </Stack>
             )}
 
-            {/* Diğer Projeler */}
             {otherProjects.length > 0 && (
               <Stack gap="lg">
                 <Title order={2} size="h2" c={colorScheme === 'dark' ? theme.white : theme.colors.blue[8]}>

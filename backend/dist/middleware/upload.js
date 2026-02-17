@@ -8,7 +8,6 @@ const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const env_1 = require("../config/env");
-// Ensure upload directory exists
 const uploadDir = env_1.env.UPLOAD_DIR;
 if (!fs_1.default.existsSync(uploadDir)) {
     fs_1.default.mkdirSync(uploadDir, { recursive: true });

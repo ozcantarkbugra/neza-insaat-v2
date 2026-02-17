@@ -53,7 +53,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const logoUrl = LOGO_PATHS[logoIndex]
   const logoError = logoIndex >= LOGO_PATHS.length
 
-  // Hydration: tema/scroll sadece mount sonrası uygulansın (sunucu ile aynı ilk çıktı)
   const effectiveDark = mounted ? colorScheme === 'dark' : false
   const effectiveScrolled = mounted && scrolled
   const headerBg = effectiveDark ? theme.colors.dark[8] : theme.colors.blue[9]
@@ -92,10 +91,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (logoIndex + 1 < LOGO_PATHS.length) setLogoIndex((i) => i + 1)
   }
 
-  // Koyu arka planda beyaz logo (filter), şeffaf/açık arka planda normal logo
   const logoFilter = !effectiveScrolled || effectiveDark ? 'brightness(0) invert(1)' : undefined
 
-  // Login sayfası: navbar (logo + başlık + dil + tema) ile sadece giriş formu
   if (pathname === '/admin/login') {
     return (
       <Box style={{ minHeight: '100vh', backgroundColor: mainBg, display: 'flex', flexDirection: 'column' }}>

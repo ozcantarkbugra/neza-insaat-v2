@@ -22,7 +22,6 @@ import { useTranslation } from '@/lib/i18n'
 
 const SCROLL_THRESHOLD = 24
 
-// Önce SVG denenir (net görüntü), yoksa PNG kullanılır
 const LOGO_PATHS = ['/images/logo.svg', '/images/logo.png']
 
 export default function Header() {
@@ -53,7 +52,6 @@ export default function Header() {
 
   const handleColorSchemeToggle = () => {
     toggleColorScheme()
-    // Tailwind dark mode'u senkronize et
     const root = document.documentElement
     const newScheme = colorScheme === 'dark' ? 'light' : 'dark'
     if (newScheme === 'dark') {
@@ -63,7 +61,6 @@ export default function Header() {
     }
   }
 
-  // Hydration: sunucu ve ilk istemci aynı değerleri kullansın (tema/scroll mount sonrası)
   const effectiveDark = mounted ? colorScheme === 'dark' : false
   const effectiveScrolled = mounted && isScrolled
   const borderColor = effectiveDark ? theme.colors.blue[8] : theme.colors.gray[2]
@@ -82,7 +79,6 @@ export default function Header() {
     <header style={{ ...headerStyle, overflow: 'visible' }}>
       <Container size="xl" py="md" style={{ overflow: 'visible' }}>
         <Group justify="space-between" align="center">
-          {/* Logo: navbar – tema koyu ise beyaz (filter), açık tema ise normal */}
           <Box
             component={Link}
             href="/"
@@ -121,9 +117,7 @@ export default function Header() {
             )}
           </Box>
 
-          {/* Desktop Navigation */}
           <Group gap="lg" visibleFrom="lg" style={{ overflow: 'visible' }}>
-            {/* Hakkımızda Dropdown */}
             <Menu
               trigger="hover"
               openDelay={100}
@@ -178,7 +172,6 @@ export default function Header() {
               </Menu.Dropdown>
             </Menu>
 
-            {/* Faaliyet Alanları Dropdown */}
             <Menu
               trigger="hover"
               openDelay={100}
@@ -241,7 +234,6 @@ export default function Header() {
               </Menu.Dropdown>
             </Menu>
 
-            {/* Simple Links */}
             <Button
               component={Link}
               href="/projeler"
@@ -293,7 +285,6 @@ export default function Header() {
               {t('nav.contact')}
             </Button>
 
-            {/* Dil seçici */}
             <Group gap={4}>
               <Button
                 variant={locale === 'tr' ? 'filled' : 'default'}
@@ -311,7 +302,6 @@ export default function Header() {
               </Button>
             </Group>
 
-            {/* Theme Toggle */}
             <ActionIcon
               onClick={handleColorSchemeToggle}
               variant="default"
@@ -323,7 +313,6 @@ export default function Header() {
             </ActionIcon>
           </Group>
 
-          {/* Mobile Menu */}
           <Group gap="xs" hiddenFrom="lg">
             <Group gap={4}>
               <Button variant={locale === 'tr' ? 'filled' : 'default'} size="compact-xs" onClick={() => setLocale('tr')}>
@@ -345,7 +334,6 @@ export default function Header() {
           </Group>
         </Group>
 
-        {/* Mobile Menu Dropdown */}
         {opened && (
           <Stack gap="xs" mt="md" hiddenFrom="lg">
             <Button

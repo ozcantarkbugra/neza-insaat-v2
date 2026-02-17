@@ -10,34 +10,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Çelik İnşaat tarzı - Koyu Lacivert (Güven, Profesyonellik)
         primary: {
           50: '#e6f0f7',
           100: '#cce1ef',
           200: '#99c3df',
           300: '#66a5cf',
           400: '#3387bf',
-          500: '#0069af', // Ana renk
+          500: '#0069af',
           600: '#00548c',
           700: '#003f69',
-          800: '#002a46', // Çelik İnşaat koyu mavi
+          800: '#002a46',
           900: '#001523',
           950: '#000a11',
         },
-        // Turuncu Accent (Enerji, Dikkat Çekici)
         accent: {
           50: '#fff4e6',
           100: '#ffe9cc',
           200: '#ffd399',
           300: '#ffbd66',
           400: '#ffa733',
-          500: '#ff9100', // Ana accent
+          500: '#ff9100',
           600: '#cc7400',
           700: '#995700',
           800: '#663a00',
           900: '#331d00',
         },
-        // Nötr Gri Tonları
         neutral: {
           50: '#fafafa',
           100: '#f5f5f5',
@@ -50,7 +47,6 @@ const config: Config = {
           800: '#262626',
           900: '#171717',
         },
-        // Semantic Colors
         success: {
           50: '#f0fdf4',
           500: '#22c55e',

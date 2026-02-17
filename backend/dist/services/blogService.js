@@ -65,7 +65,6 @@ class BlogService {
         if (!blog) {
             throw new errorHandler_1.AppError('Blog not found', 404);
         }
-        // Increment views
         await database_1.default.blog.update({
             where: { id: blog.id },
             data: { views: { increment: 1 } },
@@ -127,7 +126,6 @@ class BlogService {
                 throw new errorHandler_1.AppError('Blog with this slug already exists', 400);
             }
         }
-        // Handle publishedAt
         const publishedAt = updateData.status === 'PUBLISHED' && existing.status !== 'PUBLISHED'
             ? new Date()
             : updateData.status === 'PUBLISHED' && existing.publishedAt

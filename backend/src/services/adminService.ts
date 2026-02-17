@@ -344,7 +344,6 @@ export class AdminService {
       throw new AppError('Media file not found', 404)
     }
 
-    // Delete physical file
     const fs = require('fs')
     try {
       if (fs.existsSync(file.path)) {

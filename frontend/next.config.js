@@ -1,7 +1,5 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Production: daha küçük output
   ...(process.env.NODE_ENV === 'production' && { output: 'standalone' }),
   images: {
     remotePatterns: [

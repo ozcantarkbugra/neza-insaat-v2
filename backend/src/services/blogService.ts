@@ -87,7 +87,6 @@ export class BlogService {
       throw new AppError('Blog not found', 404)
     }
 
-    // Increment views
     await prisma.blog.update({
       where: { id: blog.id },
       data: { views: { increment: 1 } },
@@ -162,7 +161,6 @@ export class BlogService {
       }
     }
 
-    // Handle publishedAt
     const publishedAt =
       updateData.status === 'PUBLISHED' && existing.status !== 'PUBLISHED'
         ? new Date()

@@ -285,7 +285,6 @@ class AdminService {
         if (!file) {
             throw new errorHandler_1.AppError('Media file not found', 404);
         }
-        // Delete physical file
         const fs = require('fs');
         try {
             if (fs.existsSync(file.path)) {

@@ -4,7 +4,6 @@ import fs from 'fs'
 import type { Request } from 'express'
 import { env } from '../config/env'
 
-// Ensure upload directory exists
 const uploadDir = env.UPLOAD_DIR
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })

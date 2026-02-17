@@ -38,7 +38,6 @@ export default function AdminLoginPage() {
         router.push('/admin/dashboard')
       }
     } catch (err) {
-      // Error handled by Redux
     }
   }
 

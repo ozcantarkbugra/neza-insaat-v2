@@ -11,7 +11,6 @@ class ContactService {
         const message = await database_1.default.contactMessage.create({
             data,
         });
-        // TODO: Send email notification here if SMTP is configured
         return message;
     }
     async getAll(filters) {

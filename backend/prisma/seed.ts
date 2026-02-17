@@ -3,14 +3,10 @@ import * as bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient()
 
-// Production: FRONTEND_URL (https://nezainsaat.com) - uploads aynı domain'de
 const BASE_URL = process.env.BASE_URL || process.env.API_BASE_URL || process.env.FRONTEND_URL || 'http://localhost:5002'
 const uploads = (path: string) => `${BASE_URL.replace(/\/$/, '')}/uploads/${path}`
 
 async function main() {
-  console.log('🌱 Seeding database...')
-
-  // Create default admin user
   const hashedPassword = await bcrypt.hash('Admin123!', 10)
   
   const adminUser = await prisma.user.upsert({
@@ -26,9 +22,6 @@ async function main() {
     },
   })
 
-  console.log('✅ Created admin user:', adminUser.email)
-
-  // Create services with images
   const services = [
     {
       title: 'Konut İnşaatı',
@@ -112,9 +105,6 @@ async function main() {
     createdServices.push(created)
   }
 
-  console.log('✅ Created services:', createdServices.length)
-
-  // Create blog categories
   const categories = [
     { name: 'Haberler', slug: 'haberler' },
     { name: 'Projeler', slug: 'projeler' },
@@ -132,9 +122,6 @@ async function main() {
     createdCategories.push(created)
   }
 
-  console.log('✅ Created blog categories:', createdCategories.length)
-
-  // Create sample projects with images
   const projects = [
     {
       title: 'Modern Konut Kompleksi',
@@ -327,9 +314,6 @@ async function main() {
     createdProjects.push(created)
   }
 
-  console.log('✅ Created projects:', createdProjects.length)
-
-  // Create sample blogs with images
   const blogs = [
     {
       title: 'Yeni Projemiz Başladı: Modern Konut Kompleksi',
@@ -391,9 +375,6 @@ async function main() {
     createdBlogs.push(created)
   }
 
-  console.log('✅ Created blogs:', createdBlogs.length)
-
-  // Create site settings
   const settings = [
     { key: 'site_name', value: 'Neza', group: 'general' },
     { key: 'site_description', value: 'Güvenilir inşaat çözümleri', group: 'general' },
@@ -414,10 +395,6 @@ async function main() {
       create: setting,
     })
   }
-
-  console.log('✅ Created site settings:', settings.length)
-
-  console.log('🎉 Seeding completed!')
 }
 
 main()

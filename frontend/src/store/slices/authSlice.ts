@@ -25,7 +25,6 @@ const initialState: AuthState = {
   error: null,
 }
 
-// Load auth state from localStorage
 if (typeof window !== 'undefined') {
   const storedToken = localStorage.getItem('accessToken')
   const storedRefreshToken = localStorage.getItem('refreshToken')
@@ -41,7 +40,6 @@ if (typeof window !== 'undefined') {
     try {
       initialState.user = JSON.parse(storedUser)
     } catch (e) {
-      // Invalid JSON
     }
   }
 }
@@ -92,7 +90,6 @@ export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValu
   try {
     await api.post('/auth/logout')
   } catch (error) {
-    // Continue with logout even if API call fails
   } finally {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('accessToken')
@@ -122,7 +119,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Login
       .addCase(login.pending, (state) => {
         state.loading = true
         state.error = null
@@ -138,7 +134,6 @@ const authSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-      // Logout: clear state on fulfilled or rejected so UI updates even when API fails
       .addCase(logout.fulfilled, (state) => {
         state.user = null
         state.accessToken = null
@@ -151,7 +146,6 @@ const authSlice = createSlice({
         state.refreshToken = null
         state.error = null
       })
-      // Register
       .addCase(register.pending, (state) => {
         state.loading = true
         state.error = null
@@ -167,7 +161,6 @@ const authSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-      // Get Me
       .addCase(getMe.fulfilled, (state, action) => {
         state.user = action.payload
         if (typeof window !== 'undefined') {

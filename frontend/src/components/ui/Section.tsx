@@ -19,7 +19,6 @@ export default function Section({ children, variant = 'default', py = 80 }: Sect
       if (variant === 'dark') return theme.colors.blue[9]
       return theme.white
     }
-    // Dark: yumuşak geçişler için gradient (hero/sayfa arka planından bölüme)
     const b8 = theme.colors.blue[8]
     const b9 = theme.colors.blue[9]
     const darkBg = theme.colors.dark[9] ?? '#0f1419'

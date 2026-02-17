@@ -26,7 +26,6 @@ export async function authenticate(
     try {
       const payload = verifyAccessToken(token)
 
-      // Verify user still exists and is active
       const user = await prisma.user.findUnique({
         where: { id: payload.userId },
         select: { id: true, email: true, role: true, isActive: true },

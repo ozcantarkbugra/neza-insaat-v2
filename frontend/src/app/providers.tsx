@@ -25,9 +25,8 @@ const theme = createTheme({
       '#002a46',
       '#001523',
     ],
-    // Koyu tema: profesyonel mavi-gri palet (okunaklı metin)
     dark: [
-      '#e6edf3', // 0 - en açık metin
+      '#e6edf3',
       '#c9d1d9',
       '#8b9cb3',
       '#6e7d8f',
@@ -36,7 +35,7 @@ const theme = createTheme({
       '#1e2936',
       '#151b23',
       '#0f1419',
-      '#0a0e12', // 9 - arka plan
+      '#0a0e12',
     ],
     orange: [
       '#fff4e6',

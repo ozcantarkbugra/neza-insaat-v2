@@ -10,7 +10,6 @@ const api = axios.create({
   withCredentials: false,
 })
 
-// Request interceptor: add auth token; do not set Content-Type for FormData (multipart)
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
@@ -29,7 +28,6 @@ api.interceptors.request.use(
   }
 )
 
-// Response interceptor to handle token refresh
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -50,7 +48,6 @@ api.interceptors.response.use(
           return api(originalRequest)
         }
       } catch (refreshError) {
-        // Offline token: if we're offline and had a recent login, keep user in app
         const offlineAuthAt = typeof window !== 'undefined' ? localStorage.getItem('offlineAuthAt') : null
         const offlineValid = offlineAuthAt && (Date.now() - Number(offlineAuthAt) < 24 * 60 * 60 * 1000)
         if (typeof window !== 'undefined' && !navigator.onLine && offlineValid) {

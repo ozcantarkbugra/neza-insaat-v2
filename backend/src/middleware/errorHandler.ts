@@ -19,7 +19,6 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ): void {
-  // Zod validation errors
   if (err instanceof ZodError) {
     res.status(400).json({
       error: 'Validation error',
@@ -31,7 +30,6 @@ export function errorHandler(
     return
   }
 
-  // App errors
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       error: err.message,
@@ -39,7 +37,6 @@ export function errorHandler(
     return
   }
 
-  // Unknown errors
   console.error('Unexpected error:', err)
   res.status(500).json({
     error: process.env.NODE_ENV === 'production' 

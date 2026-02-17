@@ -118,7 +118,6 @@ export class ProjectService {
   }
 
   async create(data: CreateProjectData, userId: string) {
-    // Check if slug exists
     const existing = await prisma.project.findUnique({
       where: { slug: data.slug },
     })
@@ -163,7 +162,6 @@ export class ProjectService {
       throw new AppError('Project not found', 404)
     }
 
-    // Check slug uniqueness if changing
     if (updateData.slug && updateData.slug !== existing.slug) {
       const slugExists = await prisma.project.findUnique({
         where: { slug: updateData.slug },
@@ -173,14 +171,11 @@ export class ProjectService {
       }
     }
 
-    // Handle images update
     if (imageUrls !== undefined) {
-      // Delete existing images
       await prisma.projectImage.deleteMany({
         where: { projectId: id },
       })
 
-      // Create new images
       if (imageUrls.length > 0) {
         await prisma.projectImage.createMany({
           data: imageUrls.map((url, index) => ({

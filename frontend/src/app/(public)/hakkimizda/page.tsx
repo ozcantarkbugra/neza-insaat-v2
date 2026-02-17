@@ -42,7 +42,6 @@ export default function AboutPage() {
 
   return (
     <Stack gap={0}>
-      {/* Üst bant */}
       <Box
         py="xl"
         style={{
@@ -63,7 +62,6 @@ export default function AboutPage() {
 
       <Container size="md" py="xl">
         <Stack gap="xl">
-          {/* Şirket profili */}
           <Box id="sirket-profili">
             <Title order={2} mb="md" c={textPrimary}>
               {t('about.profileTitle')}
@@ -78,7 +76,6 @@ export default function AboutPage() {
             </Stack>
           </Box>
 
-          {/* Misyon / Vizyon */}
           <Paper
             id="misyon-vizyon"
             p="xl"
@@ -147,7 +144,6 @@ export default function AboutPage() {
             </Stack>
           </Paper>
 
-          {/* Tarihçe */}
           <Box id="tarihce">
             <Title order={2} mb="lg" c={textPrimary}>
               {t('about.historyTitle')}
@@ -172,7 +168,6 @@ export default function AboutPage() {
             </Stack>
           </Box>
 
-          {/* Yönetim */}
           <Paper
             id="yonetim"
             p="xl"

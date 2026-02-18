@@ -375,6 +375,22 @@
     "slugRequired": "Slug is required",
     "descriptionOptional": "Description (optional)",
     "saved": "Saved",
-    "categoryCreated": "Category created"
+    "categoryCreated": "Category created",
+    "settingsGroupGeneral": "General",
+    "settingsGroupContact": "Contact",
+    "settingsGroupSocial": "Social Media",
+    "settingsGroupMaps": "Maps",
+    "settingsGroupSeo": "SEO",
+    "settingsGroupOther": "Other",
+    "settingsKeyContactEmail": "Email Address",
+    "settingsKeyContactPhone": "Phone",
+    "settingsKeyContactAddress": "Address",
+    "settingsKeyFacebookUrl": "Facebook",
+    "settingsKeyInstagramUrl": "Instagram",
+    "settingsKeyLinkedinUrl": "LinkedIn",
+    "settingsKeyTwitterUrl": "Twitter",
+    "settingsKeyGoogleMapsApiKey": "Google Maps API Key",
+    "settingsKeySiteName": "Site Name",
+    "settingsKeySiteDescription": "Site Description"
   }
 }

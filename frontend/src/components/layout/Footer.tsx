@@ -13,10 +13,10 @@ const DEFAULT_CONTACT = {
   contact_email: 'info@neza.com',
   contact_phone: '',
   contact_address: 'İstanbul, Türkiye',
-  facebook_url: 'https://facebook.com',
-  instagram_url: 'https://instagram.com',
-  linkedin_url: 'https://linkedin.com',
-  twitter_url: 'https://twitter.com',
+  facebook_url: '',
+  instagram_url: '',
+  linkedin_url: '',
+  twitter_url: '',
 }
 
 const VALUE_KEYS = [
@@ -75,54 +75,62 @@ export default function Footer() {
               {t('footer.tagline')}
             </Text>
             <Group gap="xs" mt="sm">
-              <ActionIcon
-                component="a"
-                href={s.facebook_url || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="subtle"
-                color="gray"
-                size="lg"
-                style={{ color: theme.colors.gray[4] }}
-              >
-                <IconBrandFacebook size={20} />
-              </ActionIcon>
-              <ActionIcon
-                component="a"
-                href={s.instagram_url || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="subtle"
-                color="gray"
-                size="lg"
-                style={{ color: theme.colors.gray[4] }}
-              >
-                <IconBrandInstagram size={20} />
-              </ActionIcon>
-              <ActionIcon
-                component="a"
-                href={s.linkedin_url || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="subtle"
-                color="gray"
-                size="lg"
-                style={{ color: theme.colors.gray[4] }}
-              >
-                <IconBrandLinkedin size={20} />
-              </ActionIcon>
-              <ActionIcon
-                component="a"
-                href={s.twitter_url || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="subtle"
-                color="gray"
-                size="lg"
-                style={{ color: theme.colors.gray[4] }}
-              >
-                <IconBrandTwitter size={20} />
-              </ActionIcon>
+              {s.facebook_url?.trim() && (
+                <ActionIcon
+                  component="a"
+                  href={s.facebook_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="subtle"
+                  color="gray"
+                  size="lg"
+                  style={{ color: theme.colors.gray[4] }}
+                >
+                  <IconBrandFacebook size={20} />
+                </ActionIcon>
+              )}
+              {s.instagram_url?.trim() && (
+                <ActionIcon
+                  component="a"
+                  href={s.instagram_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="subtle"
+                  color="gray"
+                  size="lg"
+                  style={{ color: theme.colors.gray[4] }}
+                >
+                  <IconBrandInstagram size={20} />
+                </ActionIcon>
+              )}
+              {s.linkedin_url?.trim() && (
+                <ActionIcon
+                  component="a"
+                  href={s.linkedin_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="subtle"
+                  color="gray"
+                  size="lg"
+                  style={{ color: theme.colors.gray[4] }}
+                >
+                  <IconBrandLinkedin size={20} />
+                </ActionIcon>
+              )}
+              {s.twitter_url?.trim() && (
+                <ActionIcon
+                  component="a"
+                  href={s.twitter_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="subtle"
+                  color="gray"
+                  size="lg"
+                  style={{ color: theme.colors.gray[4] }}
+                >
+                  <IconBrandTwitter size={20} />
+                </ActionIcon>
+              )}
             </Group>
           </Stack>
 

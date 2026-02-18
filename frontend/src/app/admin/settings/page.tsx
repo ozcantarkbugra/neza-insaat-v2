@@ -96,6 +96,30 @@ export default function SettingsPage() {
     {} as Record<string, Setting[]>
   )
 
+  const getGroupLabel = (group: string) => {
+    const key = `admin.settingsGroup${group.charAt(0).toUpperCase() + group.slice(1)}`
+    const translated = t(key)
+    return translated !== key ? translated : group
+  }
+
+  const getKeyLabel = (key: string) => {
+    const map: Record<string, string> = {
+      contact_email: 'admin.settingsKeyContactEmail',
+      contact_phone: 'admin.settingsKeyContactPhone',
+      contact_address: 'admin.settingsKeyContactAddress',
+      facebook_url: 'admin.settingsKeyFacebookUrl',
+      instagram_url: 'admin.settingsKeyInstagramUrl',
+      linkedin_url: 'admin.settingsKeyLinkedinUrl',
+      twitter_url: 'admin.settingsKeyTwitterUrl',
+      google_maps_api_key: 'admin.settingsKeyGoogleMapsApiKey',
+      site_name: 'admin.settingsKeySiteName',
+      site_description: 'admin.settingsKeySiteDescription',
+    }
+    const tKey = map[key] || key
+    const translated = t(tKey)
+    return translated !== tKey ? translated : key
+  }
+
   return (
     <>
       <Title order={2} mb="xl">
@@ -105,15 +129,15 @@ export default function SettingsPage() {
       <Stack gap="lg">
         {Object.entries(groupedSettings).map(([group, groupSettings]) => (
           <Paper key={group} shadow="sm" p="lg" radius="md" withBorder>
-            <Title order={4} mb="md" style={{ textTransform: 'capitalize' }}>
-              {group}
+            <Title order={4} mb="md">
+              {getGroupLabel(group)}
             </Title>
             <Stack gap="md">
               {groupSettings.map((setting) => (
                 <Stack key={setting.id} gap={4}>
                   <Group align="flex-end" wrap="nowrap">
                     <TextInput
-                      label={setting.key}
+                      label={getKeyLabel(setting.key)}
                       style={{ flex: 1 }}
                       type={setting.key === 'contact_phone' ? 'tel' : setting.key === 'contact_email' ? 'email' : 'text'}
                       placeholder={setting.key === 'contact_phone' ? '+90 530 924 20 75' : undefined}

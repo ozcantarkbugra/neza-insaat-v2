@@ -375,6 +375,22 @@
     "slugRequired": "Slug zorunludur",
     "descriptionOptional": "Açıklama (opsiyonel)",
     "saved": "Kaydedildi",
-    "categoryCreated": "Kategori oluşturuldu"
+    "categoryCreated": "Kategori oluşturuldu",
+    "settingsGroupGeneral": "Genel",
+    "settingsGroupContact": "İletişim",
+    "settingsGroupSocial": "Sosyal Medya",
+    "settingsGroupMaps": "Haritalar",
+    "settingsGroupSeo": "SEO",
+    "settingsGroupOther": "Diğer",
+    "settingsKeyContactEmail": "E-posta Adresi",
+    "settingsKeyContactPhone": "Telefon",
+    "settingsKeyContactAddress": "Adres",
+    "settingsKeyFacebookUrl": "Facebook",
+    "settingsKeyInstagramUrl": "Instagram",
+    "settingsKeyLinkedinUrl": "LinkedIn",
+    "settingsKeyTwitterUrl": "Twitter",
+    "settingsKeyGoogleMapsApiKey": "Google Maps API Anahtarı",
+    "settingsKeySiteName": "Site Adı",
+    "settingsKeySiteDescription": "Site Açıklaması"
   }
 }

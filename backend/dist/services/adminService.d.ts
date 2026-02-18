@@ -23,8 +23,8 @@ export declare class AdminService {
         limit?: number;
     }): Promise<{
         users: {
-            id: string;
             email: string;
+            id: string;
             firstName: string | null;
             lastName: string | null;
             role: import(".prisma/client").$Enums.UserRole;
@@ -39,16 +39,16 @@ export declare class AdminService {
         };
     }>;
     updateUserRole(userId: string, role: UserRole): Promise<{
-        id: string;
         email: string;
+        id: string;
         firstName: string | null;
         lastName: string | null;
         role: import(".prisma/client").$Enums.UserRole;
         isActive: boolean;
     }>;
     toggleUserActive(userId: string): Promise<{
-        id: string;
         email: string;
+        id: string;
         firstName: string | null;
         lastName: string | null;
         role: import(".prisma/client").$Enums.UserRole;
@@ -61,8 +61,8 @@ export declare class AdminService {
         lastName?: string;
         role: UserRole;
     }): Promise<{
-        id: string;
         email: string;
+        id: string;
         firstName: string | null;
         lastName: string | null;
         role: import(".prisma/client").$Enums.UserRole;
@@ -76,79 +76,82 @@ export declare class AdminService {
         lastName?: string;
         role?: UserRole;
     }): Promise<{
-        id: string;
         email: string;
+        id: string;
         firstName: string | null;
         lastName: string | null;
         role: import(".prisma/client").$Enums.UserRole;
         isActive: boolean;
     }>;
-    getBlogCategories(): Promise<{
+    getBlogCategories(includeInactive?: boolean): Promise<{
+        name: string;
+        slug: string;
+        description: string | null;
         id: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        slug: string;
-        description: string | null;
-        isDeleted: boolean;
     }[]>;
     createBlogCategory(data: {
         name: string;
         slug: string;
         description?: string;
     }): Promise<{
+        name: string;
+        slug: string;
+        description: string | null;
         id: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        slug: string;
-        description: string | null;
-        isDeleted: boolean;
     }>;
     updateBlogCategory(id: string, data: {
         name?: string;
         slug?: string;
         description?: string;
     }): Promise<{
+        name: string;
+        slug: string;
+        description: string | null;
         id: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
+    }>;
+    toggleBlogCategoryActive(id: string): Promise<{
         name: string;
         slug: string;
         description: string | null;
-        isDeleted: boolean;
-    }>;
-    deleteBlogCategory(id: string): Promise<{
-        message: string;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getSiteSettings(group?: string): Promise<{
         value: string;
         type: string;
         id: string;
+        key: string;
         createdAt: Date;
         updatedAt: Date;
-        key: string;
         group: string | null;
     }[]>;
     updateSiteSetting(key: string, value: string): Promise<{
         value: string;
         type: string;
         id: string;
+        key: string;
         createdAt: Date;
         updatedAt: Date;
-        key: string;
         group: string | null;
     }>;
     uploadMedia(file: Express.Multer.File, baseUrl: string): Promise<{
         path: string;
+        description: string | null;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
-        isDeleted: boolean;
         url: string;
         alt: string | null;
         filename: string;
@@ -160,14 +163,15 @@ export declare class AdminService {
         page?: number;
         limit?: number;
         mimeType?: string;
+        includeInactive?: boolean;
     }): Promise<{
         files: {
             path: string;
+            description: string | null;
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            description: string | null;
-            isDeleted: boolean;
             url: string;
             alt: string | null;
             filename: string;
@@ -182,8 +186,19 @@ export declare class AdminService {
             pages: number;
         };
     }>;
-    deleteMedia(id: string): Promise<{
-        message: string;
+    toggleMediaActive(id: string): Promise<{
+        path: string;
+        description: string | null;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        url: string;
+        alt: string | null;
+        filename: string;
+        originalName: string;
+        mimeType: string;
+        size: number;
     }>;
 }
 declare const _default: AdminService;

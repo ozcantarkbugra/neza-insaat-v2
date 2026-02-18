@@ -18,11 +18,11 @@ router.patch('/users/:id/toggle-active', adminController_1.default.toggleUserAct
 router.get('/blog-categories', adminController_1.default.getBlogCategories);
 router.post('/blog-categories', ...adminController_1.default.createBlogCategory);
 router.put('/blog-categories/:id', ...adminController_1.default.updateBlogCategory);
-router.delete('/blog-categories/:id', adminController_1.default.deleteBlogCategory);
+router.patch('/blog-categories/:id/toggle-active', adminController_1.default.toggleBlogCategoryActive);
 router.get('/settings', adminController_1.default.getSiteSettings);
 router.put('/settings/:key', ...adminController_1.default.updateSiteSetting);
 router.post('/media/upload', adminController_1.default.uploadMedia);
 router.get('/media', adminController_1.default.getMedia);
-router.delete('/media/:id', adminController_1.default.deleteMedia);
+router.patch('/media/:id/toggle-active', adminController_1.default.toggleMediaActive);
 exports.default = router;
 //# sourceMappingURL=admin.js.map

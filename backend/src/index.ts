@@ -7,6 +7,8 @@ import rateLimit from 'express-rate-limit'
 import { env } from './config/env'
 import prisma from './config/database'
 import { errorHandler } from './middleware/errorHandler'
+import swaggerUi from 'swagger-ui-express'
+import swaggerDefinition from './config/swagger'
 import authRoutes from './routes/auth'
 import projectRoutes from './routes/projects'
 import serviceRoutes from './routes/services'
@@ -47,6 +49,9 @@ const limiter = rateLimit({
   max: 100,
 })
 app.use('/api/', limiter)
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDefinition))
+app.get('/api-docs.json', (_req, res) => res.json(swaggerDefinition))
 
 app.get('/health', async (_req, res) => {
   const timestamp = new Date().toISOString()

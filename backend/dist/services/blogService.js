@@ -11,7 +11,7 @@ class BlogService {
         const page = filters.page || 1;
         const limit = filters.limit || 10;
         const skip = (page - 1) * limit;
-        const where = { isDeleted: false };
+        const where = {};
         if (filters.status)
             where.status = filters.status;
         if (filters.featured !== undefined)
@@ -51,7 +51,7 @@ class BlogService {
     }
     async getBySlug(slug) {
         const blog = await database_1.default.blog.findFirst({
-            where: { slug, isDeleted: false, isActive: true },
+            where: { slug, isActive: true },
             include: {
                 category: true,
                 createdBy: {
@@ -75,7 +75,7 @@ class BlogService {
     }
     async getById(id) {
         const blog = await database_1.default.blog.findFirst({
-            where: { id, isDeleted: false },
+            where: { id, isActive: true },
             include: {
                 category: true,
                 createdBy: {
@@ -148,22 +148,9 @@ class BlogService {
         });
         return blog;
     }
-    async delete(id) {
-        const blog = await database_1.default.blog.findFirst({
-            where: { id, isDeleted: false },
-        });
-        if (!blog) {
-            throw new errorHandler_1.AppError('Blog not found', 404);
-        }
-        await database_1.default.blog.update({
-            where: { id },
-            data: { isDeleted: true },
-        });
-        return { message: 'Blog deleted successfully' };
-    }
     async toggleActive(id) {
-        const blog = await database_1.default.blog.findFirst({
-            where: { id, isDeleted: false },
+        const blog = await database_1.default.blog.findUnique({
+            where: { id },
         });
         if (!blog) {
             throw new errorHandler_1.AppError('Blog not found', 404);

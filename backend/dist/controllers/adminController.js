@@ -132,9 +132,10 @@ class AdminController {
                 }
             },
         ];
-        this.getBlogCategories = async (_req, res, next) => {
+        this.getBlogCategories = async (req, res, next) => {
             try {
-                const categories = await adminService_1.default.getBlogCategories();
+                const includeInactive = req.query.includeInactive === '1' || req.query.includeInactive === 'true';
+                const categories = await adminService_1.default.getBlogCategories(includeInactive);
                 res.json(categories);
             }
             catch (error) {
@@ -165,9 +166,9 @@ class AdminController {
                 }
             },
         ];
-        this.deleteBlogCategory = async (req, res, next) => {
+        this.toggleBlogCategoryActive = async (req, res, next) => {
             try {
-                const result = await adminService_1.default.deleteBlogCategory(req.params.id);
+                const result = await adminService_1.default.toggleBlogCategoryActive(req.params.id);
                 res.json(result);
             }
             catch (error) {
@@ -218,16 +219,17 @@ class AdminController {
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 20;
                 const mimeType = req.query.mimeType;
-                const result = await adminService_1.default.getMedia({ page, limit, mimeType });
+                const includeInactive = req.query.includeInactive === '1' || req.query.includeInactive === 'true';
+                const result = await adminService_1.default.getMedia({ page, limit, mimeType, includeInactive });
                 res.json(result);
             }
             catch (error) {
                 next(error);
             }
         };
-        this.deleteMedia = async (req, res, next) => {
+        this.toggleMediaActive = async (req, res, next) => {
             try {
-                const result = await adminService_1.default.deleteMedia(req.params.id);
+                const result = await adminService_1.default.toggleMediaActive(req.params.id);
                 res.json(result);
             }
             catch (error) {

@@ -10,9 +10,12 @@ const validator_1 = require("../middleware/validator");
 const createBlogSchema = zod_1.z.object({
     body: zod_1.z.object({
         title: zod_1.z.string().min(1),
+        titleEn: zod_1.z.string().optional(),
         slug: zod_1.z.string().min(1),
         content: zod_1.z.string().min(1),
+        contentEn: zod_1.z.string().optional(),
         excerpt: zod_1.z.string().optional(),
+        excerptEn: zod_1.z.string().optional(),
         featuredImage: zod_1.z.string().url().optional(),
         status: zod_1.z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
         featured: zod_1.z.boolean().optional(),
@@ -27,9 +30,12 @@ const updateBlogSchema = zod_1.z.object({
     }),
     body: zod_1.z.object({
         title: zod_1.z.string().min(1).optional(),
+        titleEn: zod_1.z.string().optional(),
         slug: zod_1.z.string().min(1).optional(),
         content: zod_1.z.string().min(1).optional(),
+        contentEn: zod_1.z.string().optional(),
         excerpt: zod_1.z.string().optional(),
+        excerptEn: zod_1.z.string().optional(),
         featuredImage: zod_1.z.string().url().optional(),
         status: zod_1.z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).optional(),
         featured: zod_1.z.boolean().optional(),
@@ -117,16 +123,6 @@ class BlogController {
                 }
             },
         ];
-        this.delete = async (req, res, next) => {
-            try {
-                const { id } = req.params;
-                const result = await blogService_1.default.delete(id);
-                res.json(result);
-            }
-            catch (error) {
-                next(error);
-            }
-        };
         this.toggleActive = async (req, res, next) => {
             try {
                 const { id } = req.params;

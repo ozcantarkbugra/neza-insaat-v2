@@ -104,16 +104,6 @@ class ServiceController {
                 }
             },
         ];
-        this.delete = async (req, res, next) => {
-            try {
-                const { id } = req.params;
-                const result = await serviceService_1.default.delete(id);
-                res.json(result);
-            }
-            catch (error) {
-                next(error);
-            }
-        };
         this.toggleActive = async (req, res, next) => {
             try {
                 const { id } = req.params;

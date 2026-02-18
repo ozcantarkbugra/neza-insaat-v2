@@ -8,14 +8,14 @@ export interface CreateContactMessageData {
 export declare class ContactService {
     create(data: CreateContactMessageData): Promise<{
         message: string;
-        id: string;
         email: string;
+        name: string;
+        id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        isDeleted: boolean;
-        phone: string | null;
         subject: string | null;
+        phone: string | null;
         read: boolean;
         replied: boolean;
     }>;
@@ -23,17 +23,18 @@ export declare class ContactService {
         read?: boolean;
         page?: number;
         limit?: number;
+        includeInactive?: boolean;
     }): Promise<{
         messages: {
             message: string;
-            id: string;
             email: string;
+            name: string;
+            id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
-            isDeleted: boolean;
-            phone: string | null;
             subject: string | null;
+            phone: string | null;
             read: boolean;
             replied: boolean;
         }[];
@@ -46,45 +47,55 @@ export declare class ContactService {
     }>;
     getById(id: string): Promise<{
         message: string;
-        id: string;
         email: string;
+        name: string;
+        id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        isDeleted: boolean;
-        phone: string | null;
         subject: string | null;
+        phone: string | null;
         read: boolean;
         replied: boolean;
     }>;
     markAsRead(id: string): Promise<{
         message: string;
-        id: string;
         email: string;
+        name: string;
+        id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        isDeleted: boolean;
-        phone: string | null;
         subject: string | null;
+        phone: string | null;
         read: boolean;
         replied: boolean;
     }>;
     markAsReplied(id: string): Promise<{
         message: string;
-        id: string;
         email: string;
+        name: string;
+        id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        isDeleted: boolean;
-        phone: string | null;
         subject: string | null;
+        phone: string | null;
         read: boolean;
         replied: boolean;
     }>;
-    delete(id: string): Promise<{
+    toggleActive(id: string): Promise<{
         message: string;
+        email: string;
+        name: string;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        subject: string | null;
+        phone: string | null;
+        read: boolean;
+        replied: boolean;
     }>;
 }
 declare const _default: ContactService;

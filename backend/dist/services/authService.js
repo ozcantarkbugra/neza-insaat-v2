@@ -11,8 +11,8 @@ const errorHandler_1 = require("../middleware/errorHandler");
 const client_1 = require("@prisma/client");
 class AuthService {
     async register(data) {
-        const existingUser = await database_1.default.user.findUnique({
-            where: { email: data.email },
+        const existingUser = await database_1.default.user.findFirst({
+            where: { email: data.email, isActive: true },
         });
         if (existingUser) {
             throw new errorHandler_1.AppError('User with this email already exists', 400);
@@ -52,8 +52,8 @@ class AuthService {
         };
     }
     async login(data) {
-        const user = await database_1.default.user.findUnique({
-            where: { email: data.email },
+        const user = await database_1.default.user.findFirst({
+            where: { email: data.email, isActive: true },
         });
         if (!user) {
             throw new errorHandler_1.AppError('Invalid email or password', 401);
@@ -90,8 +90,8 @@ class AuthService {
     }
     async refreshToken(refreshToken) {
         const payload = (0, jwt_1.verifyRefreshToken)(refreshToken);
-        const user = await database_1.default.user.findUnique({
-            where: { id: payload.userId },
+        const user = await database_1.default.user.findFirst({
+            where: { id: payload.userId, isActive: true },
         });
         if (!user || !user.isActive) {
             throw new errorHandler_1.AppError('Invalid refresh token', 401);
@@ -114,8 +114,8 @@ class AuthService {
         });
     }
     async getMe(userId) {
-        const user = await database_1.default.user.findUnique({
-            where: { id: userId },
+        const user = await database_1.default.user.findFirst({
+            where: { id: userId, isDeleted: false },
             select: {
                 id: true,
                 email: true,

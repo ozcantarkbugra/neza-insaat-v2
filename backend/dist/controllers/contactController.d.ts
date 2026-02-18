@@ -5,7 +5,7 @@ export declare class ContactController {
     getById: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     markAsRead: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     markAsReplied: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-    delete: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    toggleActive: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 }
 declare const _default: ContactController;
 export default _default;

@@ -35,7 +35,8 @@ class ContactController {
                 const read = req.query.read === 'true' ? true : req.query.read === 'false' ? false : undefined;
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 20;
-                const result = await contactService_1.default.getAll({ read, page, limit });
+                const includeInactive = req.query.includeInactive === '1' || req.query.includeInactive === 'true';
+                const result = await contactService_1.default.getAll({ read, page, limit, includeInactive });
                 res.json(result);
             }
             catch (error) {
@@ -72,10 +73,10 @@ class ContactController {
                 next(error);
             }
         };
-        this.delete = async (req, res, next) => {
+        this.toggleActive = async (req, res, next) => {
             try {
                 const { id } = req.params;
-                const result = await contactService_1.default.delete(id);
+                const result = await contactService_1.default.toggleActive(id);
                 res.json(result);
             }
             catch (error) {

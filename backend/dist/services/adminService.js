@@ -110,8 +110,8 @@ class AdminService {
         });
     }
     async createUser(data) {
-        const existing = await database_1.default.user.findUnique({
-            where: { email: data.email },
+        const existing = await database_1.default.user.findFirst({
+            where: { email: data.email, isActive: true },
         });
         if (existing) {
             throw new errorHandler_1.AppError('Bu e-posta adresi zaten kayıtlı', 400);
@@ -169,8 +169,10 @@ class AdminService {
             },
         });
     }
-    async getBlogCategories() {
+    async getBlogCategories(includeInactive) {
+        const where = includeInactive ? {} : { isActive: true };
         return database_1.default.blogCategory.findMany({
+            where,
             orderBy: { name: 'asc' },
         });
     }
@@ -205,18 +207,18 @@ class AdminService {
             data,
         });
     }
-    async deleteBlogCategory(id) {
-        const category = await database_1.default.blogCategory.findFirst({
-            where: { id, isDeleted: false },
+    async toggleBlogCategoryActive(id) {
+        const category = await database_1.default.blogCategory.findUnique({
+            where: { id },
         });
         if (!category) {
             throw new errorHandler_1.AppError('Category not found', 404);
         }
-        await database_1.default.blogCategory.update({
+        const updated = await database_1.default.blogCategory.update({
             where: { id },
-            data: { isDeleted: true },
+            data: { isActive: !category.isActive },
         });
-        return { message: 'Category deleted successfully' };
+        return updated;
     }
     async getSiteSettings(group) {
         const where = {};
@@ -257,7 +259,9 @@ class AdminService {
         const page = filters.page || 1;
         const limit = filters.limit || 20;
         const skip = (page - 1) * limit;
-        const where = { isDeleted: false };
+        const where = {};
+        if (!filters.includeInactive)
+            where.isActive = true;
         if (filters.mimeType)
             where.mimeType = { startsWith: filters.mimeType };
         const [files, total] = await Promise.all([
@@ -279,18 +283,18 @@ class AdminService {
             },
         };
     }
-    async deleteMedia(id) {
-        const file = await database_1.default.mediaFile.findFirst({
-            where: { id, isDeleted: false },
+    async toggleMediaActive(id) {
+        const file = await database_1.default.mediaFile.findUnique({
+            where: { id },
         });
         if (!file) {
             throw new errorHandler_1.AppError('Media file not found', 404);
         }
-        await database_1.default.mediaFile.update({
+        const updated = await database_1.default.mediaFile.update({
             where: { id },
-            data: { isDeleted: true },
+            data: { isActive: !file.isActive },
         });
-        return { message: 'Media file deleted successfully' };
+        return updated;
     }
 }
 exports.AdminService = AdminService;

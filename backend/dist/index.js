@@ -10,7 +10,10 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const env_1 = require("./config/env");
+const database_1 = __importDefault(require("./config/database"));
 const errorHandler_1 = require("./middleware/errorHandler");
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const swagger_1 = __importDefault(require("./config/swagger"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const projects_1 = __importDefault(require("./routes/projects"));
 const services_1 = __importDefault(require("./routes/services"));
@@ -42,8 +45,17 @@ const limiter = (0, express_rate_limit_1.default)({
     max: 100,
 });
 app.use('/api/', limiter);
-app.get('/health', (_req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.default));
+app.get('/api-docs.json', (_req, res) => res.json(swagger_1.default));
+app.get('/health', async (_req, res) => {
+    const timestamp = new Date().toISOString();
+    try {
+        await database_1.default.$queryRaw `SELECT 1`;
+        res.json({ status: 'ok', db: 'connected', timestamp });
+    }
+    catch (err) {
+        res.status(503).json({ status: 'degraded', db: 'disconnected', timestamp });
+    }
 });
 app.use('/api/auth', auth_1.default);
 app.use('/api/projects', projects_1.default);

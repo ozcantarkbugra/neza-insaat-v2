@@ -66,7 +66,7 @@ class ProjectController {
                 const featured = req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined;
                 const serviceId = req.query.serviceId;
                 const page = parseInt(req.query.page) || 1;
-                const limit = parseInt(req.query.limit) || 10;
+                const limit = parseInt(req.query.limit) || 100;
                 const includeInactive = req.query.includeInactive === 'true' || req.query.includeInactive === '1';
                 const result = await projectService_1.default.getAll({
                     status,
@@ -145,16 +145,6 @@ class ProjectController {
                 }
             },
         ];
-        this.delete = async (req, res, next) => {
-            try {
-                const { id } = req.params;
-                const result = await projectService_1.default.delete(id);
-                res.json(result);
-            }
-            catch (error) {
-                next(error);
-            }
-        };
         this.toggleActive = async (req, res, next) => {
             try {
                 const { id } = req.params;

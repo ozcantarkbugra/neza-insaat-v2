@@ -6,15 +6,15 @@ export declare class AdminController {
     toggleUserActive: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     createUser: ((req: Request, _res: Response, next: NextFunction) => void)[];
     updateUser: ((req: Request, _res: Response, next: NextFunction) => void)[];
-    getBlogCategories: (_req: Request, res: Response, next: NextFunction) => Promise<void>;
+    getBlogCategories: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     createBlogCategory: ((req: Request, _res: Response, next: NextFunction) => void)[];
     updateBlogCategory: ((req: Request, _res: Response, next: NextFunction) => void)[];
-    deleteBlogCategory: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    toggleBlogCategoryActive: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     getSiteSettings: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     updateSiteSetting: ((req: Request, _res: Response, next: NextFunction) => void)[];
     uploadMedia: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>[];
     getMedia: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-    deleteMedia: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    toggleMediaActive: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 }
 declare const _default: AdminController;
 export default _default;

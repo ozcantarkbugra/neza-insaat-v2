@@ -6,18 +6,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContactService = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const errorHandler_1 = require("../middleware/errorHandler");
+const emailService_1 = require("./emailService");
 class ContactService {
     async create(data) {
         const message = await database_1.default.contactMessage.create({
             data,
         });
+        if ((0, emailService_1.isEmailConfigured)()) {
+            Promise.all([
+                (0, emailService_1.sendContactNotification)(data).catch((err) => console.error('Admin notification email failed:', err)),
+                (0, emailService_1.sendContactAutoReply)(data).catch((err) => console.error('Auto-reply email failed:', err)),
+            ]);
+        }
         return message;
     }
     async getAll(filters) {
         const page = filters.page || 1;
         const limit = filters.limit || 20;
         const skip = (page - 1) * limit;
-        const where = { isDeleted: false };
+        const where = {};
+        if (!filters.includeInactive)
+            where.isActive = true;
         if (filters.read !== undefined)
             where.read = filters.read;
         const [messages, total] = await Promise.all([
@@ -72,18 +81,18 @@ class ContactService {
             data: { replied: true },
         });
     }
-    async delete(id) {
-        const message = await database_1.default.contactMessage.findFirst({
-            where: { id, isDeleted: false },
+    async toggleActive(id) {
+        const message = await database_1.default.contactMessage.findUnique({
+            where: { id },
         });
         if (!message) {
             throw new errorHandler_1.AppError('Message not found', 404);
         }
-        await database_1.default.contactMessage.update({
+        const updated = await database_1.default.contactMessage.update({
             where: { id },
-            data: { isDeleted: true },
+            data: { isActive: !message.isActive },
         });
-        return { message: 'Contact message deleted successfully' };
+        return updated;
     }
 }
 exports.ContactService = ContactService;

@@ -5,7 +5,7 @@ import { ensurePlaceholderImages } from '../scripts/create-placeholders'
 
 const prisma = new PrismaClient()
 
-const BASE_URL = process.env['BASE_URL'] || process.env['API_BASE_URL'] || process.env['FRONTEND_URL'] || 'http://localhost:5002'
+const BASE_URL = process.env['BASE_URL'] || process.env['API_BASE_URL'] || 'http://localhost:5000'
 const uploads = (p: string) => `${BASE_URL.replace(/\/$/, '')}/uploads/${p}`
 
 async function main() {
@@ -100,17 +100,17 @@ async function main() {
       where: { slug: service.slug },
       update: {
         title: service.title,
-        titleEn: (service as any).titleEn ?? null,
+        titleEn: service.titleEn ?? null,
         description: service.description,
-        descriptionEn: (service as any).descriptionEn ?? null,
+        descriptionEn: service.descriptionEn ?? null,
         shortDescription: service.shortDescription,
-        shortDescriptionEn: (service as any).shortDescriptionEn ?? null,
+        shortDescriptionEn: service.shortDescriptionEn ?? null,
         image: service.image,
         featured: service.featured,
         order: service.order,
         isActive: true,
       },
-      create: { ...service, isActive: true } as any,
+      create: { ...service, isActive: true },
     })
     createdServices.push(created)
   }
@@ -285,8 +285,8 @@ async function main() {
 
   const createdProjects = []
   for (const project of projects) {
-    const { imageUrls, ...projectData } = project as any
-    const updateData: any = {
+    const { imageUrls, ...projectData } = project
+    const updateData = {
       title: projectData.title,
       titleEn: projectData.titleEn ?? null,
       description: projectData.description,
@@ -325,6 +325,18 @@ async function main() {
         images: true,
       },
     })
+    // Güncellemede görselleri senkronize et
+    if (imageUrls && imageUrls.length > 0) {
+      await prisma.projectImage.deleteMany({ where: { projectId: created.id } })
+      await prisma.projectImage.createMany({
+        data: imageUrls.map((url: string, index: number) => ({
+          projectId: created.id,
+          url,
+          alt: `${project.title} - Görsel ${index + 1}`,
+          order: index,
+        })),
+      })
+    }
     createdProjects.push(created)
   }
   console.log('✅ Projects:', createdProjects.length)
@@ -332,9 +344,12 @@ async function main() {
   const blogs = [
     {
       title: 'Yeni Projemiz Başladı: Modern Konut Kompleksi',
+      titleEn: 'Our New Project Started: Modern Residential Complex',
       slug: 'yeni-projemiz-basladi-modern-konut-kompleksi',
       content: 'Şehrimizin en prestijli konut projelerinden biri olan Modern Konut Kompleksi\'nin temel atma töreni gerçekleştirildi. Proje, modern mimari anlayışı ve sürdürülebilir yapı teknikleriyle dikkat çekiyor. Geniş yeşil alanlar, modern sosyal tesisler ve yüksek kalite standartlarıyla hayatınıza değer katacak bu proje, şehrimizin yeni simgesi olmaya aday.',
+      contentEn: 'The groundbreaking ceremony for the Modern Residential Complex, one of our city\'s most prestigious housing projects, was held. The project stands out with its modern architectural approach and sustainable construction techniques. This project will add value to your life with spacious green areas, modern social facilities and high quality standards, and is a candidate to become our city\'s new symbol.',
       excerpt: 'Modern Konut Kompleksi projesinin temel atma töreni gerçekleştirildi.',
+      excerptEn: 'The groundbreaking ceremony for the Modern Residential Complex project was held.',
       featuredImage: uploads('blog-konut-kompleksi.jpg'),
       status: BlogStatus.PUBLISHED,
       featured: true,
@@ -344,9 +359,12 @@ async function main() {
     },
     {
       title: 'Sürdürülebilir İnşaat Teknolojileri',
+      titleEn: 'Sustainable Construction Technologies',
       slug: 'surdurulebilir-insaat-teknolojileri',
       content: 'Sürdürülebilir inşaat teknolojileri, çevresel etkileri minimize ederken yapı kalitesini artırıyor. Yeşil bina sertifikaları ve enerji verimliliği standartlarına uygun projeler geliştiriyoruz. Modern yalıtım sistemleri, güneş enerjisi panelleri ve su geri dönüşüm sistemleri ile çevre dostu yapılar inşa ediyoruz.',
+      contentEn: 'Sustainable construction technologies increase building quality while minimizing environmental impact. We develop projects in compliance with green building certifications and energy efficiency standards. We build environmentally friendly structures with modern insulation systems, solar panels and water recycling systems.',
       excerpt: 'Sürdürülebilir inşaat teknolojileri hakkında bilgiler.',
+      excerptEn: 'Information about sustainable construction technologies.',
       featuredImage: uploads('blog-surdurulebilir.jpg'),
       status: BlogStatus.PUBLISHED,
       featured: false,
@@ -356,9 +374,12 @@ async function main() {
     },
     {
       title: 'Modern Mimari Trendleri 2024',
+      titleEn: 'Modern Architecture Trends 2024',
       slug: 'modern-mimari-trendleri-2024',
       content: '2024 yılında inşaat sektöründe öne çıkan modern mimari trendleri: Minimalist tasarımlar, doğal malzeme kullanımı, akıllı ev sistemleri ve yeşil mimari yaklaşımları. Bu trendler, hem estetik hem de fonksiyonel açıdan yeni nesil yapıların temelini oluşturuyor.',
+      contentEn: 'Modern architecture trends in the construction sector in 2024: Minimalist designs, natural material use, smart home systems and green architecture approaches. These trends form the basis of next-generation structures both aesthetically and functionally.',
       excerpt: '2024 yılında inşaat sektöründe öne çıkan modern mimari trendleri.',
+      excerptEn: 'Modern architecture trends in the construction sector in 2024.',
       featuredImage: uploads('blog-mimari-trendleri.jpg'),
       status: BlogStatus.PUBLISHED,
       featured: true,
@@ -368,9 +389,12 @@ async function main() {
     },
     {
       title: 'İş Merkezi Projesi Tamamlandı',
+      titleEn: 'Business Center Project Completed',
       slug: 'is-merkezi-projesi-tamamlandi',
       content: 'Ankara\'da inşa ettiğimiz modern iş merkezi projesi başarıyla tamamlandı. A+ sınıfı ofis alanları, modern teknoloji altyapısı ve sürdürülebilir mimari ile iş dünyasının yeni adresi oldu. Proje, LEED sertifikası alarak çevre dostu yapılar kategorisinde yerini aldı.',
+      contentEn: 'The modern business center project we built in Ankara has been successfully completed. It has become the new address for business with A+ class office spaces, modern technology infrastructure and sustainable architecture. The project received LEED certification and took its place in the environmentally friendly buildings category.',
       excerpt: 'Ankara\'daki modern iş merkezi projesi başarıyla tamamlandı.',
+      excerptEn: 'The modern business center project in Ankara has been successfully completed.',
       featuredImage: uploads('blog-is-merkezi.jpg'),
       status: BlogStatus.PUBLISHED,
       featured: false,
@@ -382,9 +406,18 @@ async function main() {
 
   const createdBlogs = []
   for (const blog of blogs) {
+    const { categoryId, createdById, ...blogData } = blog
     const created = await prisma.blog.upsert({
       where: { slug: blog.slug },
-      update: { isActive: true },
+      update: {
+        ...blogData,
+        titleEn: blogData.titleEn ?? null,
+        contentEn: blogData.contentEn ?? null,
+        excerptEn: blogData.excerptEn ?? null,
+        categoryId,
+        createdById,
+        isActive: true,
+      },
       create: { ...blog, isActive: true },
     })
     createdBlogs.push(created)

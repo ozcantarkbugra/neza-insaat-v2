@@ -30,7 +30,7 @@ export default function PublicLayoutClient({
         }}
       >
         <Header />
-        <Box component="main" style={{ flex: 1 }}>
+        <Box component="main" style={{ flex: 1, paddingTop: 24 }}>
           {children}
         </Box>
         <Footer />

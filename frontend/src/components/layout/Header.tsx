@@ -69,7 +69,7 @@ export default function Header() {
   const headerStyle = {
     position: 'sticky' as const,
     top: 0,
-    zIndex: 1000,
+    zIndex: 1100,
     backgroundColor: effectiveScrolled ? scrolledBg : solidBg,
     backdropFilter: effectiveScrolled ? 'saturate(180%) blur(12px)' : undefined,
     WebkitBackdropFilter: effectiveScrolled ? 'saturate(180%) blur(12px)' : undefined,
@@ -78,10 +78,12 @@ export default function Header() {
     transition: 'background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease',
   }
 
+  const NAVBAR_HEIGHT = 144
+
   return (
     <header style={{ ...headerStyle, overflow: 'visible' }}>
-      <Container size="xl" py="md" style={{ overflow: 'visible' }}>
-        <Group justify="space-between" align="center">
+      <Container size="lg" py="sm" px="xl" style={{ overflow: 'visible', maxWidth: '100%' }}>
+        <Group justify="space-between" align="center" style={{ minHeight: NAVBAR_HEIGHT }} wrap="nowrap" gap="xl">
           <Box
             component={Link}
             href="/"
@@ -90,7 +92,9 @@ export default function Header() {
               display: 'flex',
               alignItems: 'center',
               lineHeight: 1,
-              minHeight: 114,
+              height: NAVBAR_HEIGHT,
+              flexShrink: 0,
+              marginLeft: 80,
             }}
             className="hover:opacity-90"
           >
@@ -98,15 +102,15 @@ export default function Header() {
               <Image
                 src={logoUrl}
                 alt={t('common.companyName')}
-                width={510}
-                height={120}
+                width={640}
+                height={96}
                 priority
                 style={{
                   objectFit: 'contain',
                   height: 'auto',
-                  maxHeight: 114,
+                  maxHeight: NAVBAR_HEIGHT,
                   width: 'auto',
-                  maxWidth: 510,
+                  maxWidth: 640,
                   filter: isDark ? 'brightness(0) invert(1)' : undefined,
                   transition: 'filter 200ms ease',
                 }}
@@ -124,18 +128,19 @@ export default function Header() {
             <Menu
               trigger="hover"
               openDelay={100}
-              closeDelay={200}
+              closeDelay={150}
               position="bottom-start"
               withArrow
-              shadow="lg"
-              zIndex={1100}
+              offset={4}
+              shadow="xl"
+              zIndex={9999}
               styles={{
                 dropdown: {
                   backgroundColor: effectiveDark ? theme.colors.dark[7] : theme.white,
                   border: `1px solid ${effectiveDark ? theme.colors.dark[5] : theme.colors.gray[2]}`,
                   minWidth: 200,
-                  zIndex: 1100,
-                  boxShadow: theme.shadows.lg,
+                  zIndex: 9999,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
                 },
                 item: {
                   color: effectiveDark ? theme.colors.gray[2] : theme.colors.gray[8],
@@ -178,18 +183,19 @@ export default function Header() {
             <Menu
               trigger="hover"
               openDelay={100}
-              closeDelay={200}
+              closeDelay={150}
               position="bottom-start"
               withArrow
-              shadow="lg"
-              zIndex={1100}
+              offset={4}
+              shadow="xl"
+              zIndex={9999}
               styles={{
                 dropdown: {
                   backgroundColor: effectiveDark ? theme.colors.dark[7] : theme.white,
                   border: `1px solid ${effectiveDark ? theme.colors.dark[5] : theme.colors.gray[2]}`,
                   minWidth: 200,
-                  zIndex: 1100,
-                  boxShadow: theme.shadows.lg,
+                  zIndex: 9999,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
                 },
                 item: {
                   color: effectiveDark ? theme.colors.gray[2] : theme.colors.gray[8],
@@ -288,7 +294,7 @@ export default function Header() {
               {t('nav.contact')}
             </Button>
 
-            <Menu position="bottom-end" withArrow shadow="md">
+            <Menu position="bottom-end" withArrow shadow="md" zIndex={9999}>
               <Menu.Target>
                 <ActionIcon
                   variant="default"
@@ -301,10 +307,10 @@ export default function Header() {
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item onClick={() => setLocale('tr')} leftSection={locale === 'tr' ? '✓' : undefined}>
-                  TR – Türkçe
+                  TR
                 </Menu.Item>
                 <Menu.Item onClick={() => setLocale('en')} leftSection={locale === 'en' ? '✓' : undefined}>
-                  EN – English
+                  EN
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
@@ -320,8 +326,8 @@ export default function Header() {
             </ActionIcon>
           </Group>
 
-          <Group gap="xs" hiddenFrom="lg">
-            <Menu position="bottom-end" withArrow shadow="md">
+          <Group gap="xs" hiddenFrom="lg" wrap="nowrap">
+            <Menu position="bottom-end" withArrow shadow="md" zIndex={9999}>
               <Menu.Target>
                 <ActionIcon variant="default" size="lg" aria-label={t('nav.language')}>
                   <IconLanguage size={20} />
@@ -329,10 +335,10 @@ export default function Header() {
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item onClick={() => setLocale('tr')} leftSection={locale === 'tr' ? '✓' : undefined}>
-                  TR – Türkçe
+                  TR
                 </Menu.Item>
                 <Menu.Item onClick={() => setLocale('en')} leftSection={locale === 'en' ? '✓' : undefined}>
-                  EN – English
+                  EN
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>

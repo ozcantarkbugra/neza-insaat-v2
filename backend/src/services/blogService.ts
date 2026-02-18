@@ -35,7 +35,7 @@ export class BlogService {
     const limit = filters.limit || 10
     const skip = (page - 1) * limit
 
-    const where: any = { isDeleted: false }
+    const where: any = {}
     if (filters.status) where.status = filters.status
     if (filters.featured !== undefined) where.featured = filters.featured
     if (filters.categoryId) where.categoryId = filters.categoryId
@@ -74,7 +74,7 @@ export class BlogService {
 
   async getBySlug(slug: string) {
     const blog = await prisma.blog.findFirst({
-      where: { slug, isDeleted: false, isActive: true },
+      where: { slug, isActive: true },
       include: {
         category: true,
         createdBy: {
@@ -102,7 +102,7 @@ export class BlogService {
 
   async getById(id: string) {
     const blog = await prisma.blog.findFirst({
-      where: { id, isDeleted: false },
+      where: { id, isActive: true },
       include: {
         category: true,
         createdBy: {
@@ -190,26 +190,9 @@ export class BlogService {
     return blog
   }
 
-  async delete(id: string) {
-    const blog = await prisma.blog.findFirst({
-      where: { id, isDeleted: false },
-    })
-
-    if (!blog) {
-      throw new AppError('Blog not found', 404)
-    }
-
-    await prisma.blog.update({
-      where: { id },
-      data: { isDeleted: true },
-    })
-
-    return { message: 'Blog deleted successfully' }
-  }
-
   async toggleActive(id: string) {
-    const blog = await prisma.blog.findFirst({
-      where: { id, isDeleted: false },
+    const blog = await prisma.blog.findUnique({
+      where: { id },
     })
 
     if (!blog) {

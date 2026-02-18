@@ -8,26 +8,26 @@ Proje **Prisma ORM** kullanmaktadır. Prisma tüm sorgularda **parametreli sorgu
 - **Zod validasyonu**: API endpoint'lerinde gelen veriler Zod şemaları ile doğrulanmaktadır.
 - **UUID kullanımı**: ID alanları UUID formatında; string interpolasyon ile SQL oluşturulmamaktadır.
 
-## Soft Delete Politikası
+## Aktif/Pasif Politikası (Tek Alan: isActive)
 
-Aşağıdaki modeller **hard delete** yerine **soft delete** kullanmaktadır:
+Projede **isDeleted** kaldırılmıştır. Tüm modeller sadece **isActive** kullanır:
 
 | Model | Alan | Açıklama |
 |-------|------|----------|
-| User | `isDeleted` | Kullanıcılar silinmez; sadece `isActive` ile pasif yapılır |
-| Role | `isDeleted`, `isActive` | Roller silinmez; aktif/pasif toggle |
-| Project | `isDeleted` | Projeler soft delete |
-| Service | `isDeleted` | Hizmetler soft delete |
-| Blog | `isDeleted` | Blog yazıları soft delete |
-| BlogCategory | `isDeleted` | Blog kategorileri soft delete |
-| ContactMessage | `isDeleted` | İletişim mesajları soft delete |
-| MediaFile | `isDeleted` | Medya dosyaları soft delete |
+| User | `isActive` | Kullanıcılar silinmez; sadece aktif/pasif toggle |
+| Role | `isActive` | Roller silinmez; aktif/pasif toggle |
+| Project | `isActive` | Projeler silinmez; aktif/pasif toggle |
+| Service | `isActive` | Hizmetler silinmez; aktif/pasif toggle |
+| Blog | `isActive` | Blog yazıları silinmez; aktif/pasif toggle |
+| BlogCategory | `isActive` | Blog kategorileri silinmez; aktif/pasif toggle |
+| ContactMessage | `isActive` | İletişim mesajları silinmez; aktif/pasif toggle |
+| MediaFile | `isActive` | Medya dosyaları silinmez; aktif/pasif toggle |
 
-### User ve Role
+### Silme İşlemi Yok
 
-- **User**: Silme endpoint'i yok. Sadece `toggleUserActive` ile aktif/pasif yapılır.
-- **Role**: Silme endpoint'i yok. Sadece aktif/pasif toggle kullanılmalıdır.
-- Tüm User sorguları `isDeleted: false` filtresi ile yapılır (login, getMe, admin işlemleri).
+- **Silme ikonu/endpoint yok**: Tüm admin sayfalarında sadece aktif/pasif toggle bulunur.
+- **User, Role**: Silme endpoint'i yok. Sadece `toggleUserActive` ile aktif/pasif.
+- **Project, Service, Blog, ContactMessage**: Silme yerine `toggleActive` (PATCH) kullanılır.
 
 ## Sunucu Veritabanına Migration
 

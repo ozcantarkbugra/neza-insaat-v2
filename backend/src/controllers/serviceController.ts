@@ -101,16 +101,6 @@ export class ServiceController {
     },
   ]
 
-  delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const { id } = req.params
-      const result = await serviceService.delete(id)
-      res.json(result)
-    } catch (error) {
-      next(error)
-    }
-  }
-
   toggleActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params

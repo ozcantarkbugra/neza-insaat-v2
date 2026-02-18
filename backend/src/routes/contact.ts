@@ -10,6 +10,6 @@ router.get('/', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), contactControll
 router.get('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), contactController.getById)
 router.patch('/:id/read', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), contactController.markAsRead)
 router.patch('/:id/replied', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), contactController.markAsReplied)
-router.delete('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), contactController.delete)
+router.patch('/:id/toggle-active', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), contactController.toggleActive)
 
 export default router

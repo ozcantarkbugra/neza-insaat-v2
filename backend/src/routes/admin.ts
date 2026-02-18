@@ -18,13 +18,13 @@ router.patch('/users/:id/toggle-active', adminController.toggleUserActive)
 router.get('/blog-categories', adminController.getBlogCategories)
 router.post('/blog-categories', ...adminController.createBlogCategory)
 router.put('/blog-categories/:id', ...adminController.updateBlogCategory)
-router.delete('/blog-categories/:id', adminController.deleteBlogCategory)
+router.patch('/blog-categories/:id/toggle-active', adminController.toggleBlogCategoryActive)
 
 router.get('/settings', adminController.getSiteSettings)
 router.put('/settings/:key', ...adminController.updateSiteSetting)
 
 router.post('/media/upload', adminController.uploadMedia)
 router.get('/media', adminController.getMedia)
-router.delete('/media/:id', adminController.deleteMedia)
+router.patch('/media/:id/toggle-active', adminController.toggleMediaActive)
 
 export default router

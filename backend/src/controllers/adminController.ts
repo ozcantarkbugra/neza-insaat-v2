@@ -165,9 +165,9 @@ export class AdminController {
     },
   ]
 
-  deleteBlogCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  toggleBlogCategoryActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const result = await adminService.deleteBlogCategory(req.params.id)
+      const result = await adminService.toggleBlogCategoryActive(req.params.id)
       res.json(result)
     } catch (error) {
       next(error)
@@ -219,16 +219,17 @@ export class AdminController {
       const page = parseInt(req.query.page as string) || 1
       const limit = parseInt(req.query.limit as string) || 20
       const mimeType = req.query.mimeType as string
-      const result = await adminService.getMedia({ page, limit, mimeType })
+      const includeInactive = req.query.includeInactive === '1' || req.query.includeInactive === 'true'
+      const result = await adminService.getMedia({ page, limit, mimeType, includeInactive })
       res.json(result)
     } catch (error) {
       next(error)
     }
   }
 
-  deleteMedia = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  toggleMediaActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const result = await adminService.deleteMedia(req.params.id)
+      const result = await adminService.toggleMediaActive(req.params.id)
       res.json(result)
     } catch (error) {
       next(error)

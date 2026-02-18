@@ -37,7 +37,6 @@ model User {
   lastName      String?
   role          UserRole @default(EDITOR)
   isActive      Boolean  @default(true)
-  isDeleted     Boolean  @default(false)
   refreshToken  String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -55,7 +54,6 @@ model Role {
   name        String   @unique
   description String?
   permissions Json?    // Store permissions as JSON
-  isDeleted   Boolean  @default(false)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -83,7 +81,6 @@ model Project {
   featuredImage   String?
   metaTitle       String?
   metaDescription String?       @db.Text
-  isDeleted       Boolean       @default(false)
   isActive        Boolean       @default(true)
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -133,7 +130,6 @@ model Service {
   order            Int      @default(0)
   metaTitle        String?
   metaDescription  String?  @db.Text
-  isDeleted        Boolean  @default(false)
   isActive         Boolean  @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -160,7 +156,6 @@ model Blog {
   views           Int         @default(0)
   metaTitle       String?
   metaDescription String?     @db.Text
-  isDeleted       Boolean     @default(false)
   isActive        Boolean     @default(true)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -186,7 +181,6 @@ model BlogCategory {
   name        String   @unique
   slug        String   @unique
   description String?  @db.Text
-  isDeleted   Boolean  @default(false)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -206,7 +200,7 @@ model ContactMessage {
   message   String   @db.Text
   read      Boolean  @default(false)
   replied   Boolean  @default(false)
-  isDeleted Boolean  @default(false)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -239,7 +233,7 @@ model MediaFile {
   url         String
   alt         String?
   description String?  @db.Text
-  isDeleted   Boolean  @default(false)
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

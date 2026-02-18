@@ -52,7 +52,6 @@ export class AdminService {
 
     const [users, total] = await Promise.all([
       prisma.user.findMany({
-        where: { isDeleted: false },
         select: {
           id: true,
           email: true,
@@ -66,7 +65,7 @@ export class AdminService {
         skip,
         take: limit,
       }),
-      prisma.user.count({ where: { isDeleted: false } }),
+      prisma.user.count(),
     ])
 
     return {
@@ -81,8 +80,8 @@ export class AdminService {
   }
 
   async updateUserRole(userId: string, role: UserRole) {
-    const user = await prisma.user.findFirst({
-      where: { id: userId, isDeleted: false },
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
     })
 
     if (!user) {
@@ -104,8 +103,8 @@ export class AdminService {
   }
 
   async toggleUserActive(userId: string) {
-    const user = await prisma.user.findFirst({
-      where: { id: userId, isDeleted: false },
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
     })
 
     if (!user) {
@@ -134,7 +133,7 @@ export class AdminService {
     role: UserRole
   }) {
     const existing = await prisma.user.findFirst({
-      where: { email: data.email, isDeleted: false },
+      where: { email: data.email, isActive: true },
     })
     if (existing) {
       throw new AppError('Bu e-posta adresi zaten kayıtlı', 400)
@@ -171,8 +170,8 @@ export class AdminService {
       role?: UserRole
     }
   ) {
-    const user = await prisma.user.findFirst({
-      where: { id: userId, isDeleted: false },
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
     })
     if (!user) {
       throw new AppError('User not found', 404)
@@ -207,7 +206,7 @@ export class AdminService {
 
   async getBlogCategories() {
     return prisma.blogCategory.findMany({
-      where: { isDeleted: false },
+      where: { isActive: true },
       orderBy: { name: 'asc' },
     })
   }
@@ -250,21 +249,21 @@ export class AdminService {
     })
   }
 
-  async deleteBlogCategory(id: string) {
-    const category = await prisma.blogCategory.findFirst({
-      where: { id, isDeleted: false },
+  async toggleBlogCategoryActive(id: string) {
+    const category = await prisma.blogCategory.findUnique({
+      where: { id },
     })
 
     if (!category) {
       throw new AppError('Category not found', 404)
     }
 
-    await prisma.blogCategory.update({
+    const updated = await prisma.blogCategory.update({
       where: { id },
-      data: { isDeleted: true },
+      data: { isActive: !category.isActive },
     })
 
-    return { message: 'Category deleted successfully' }
+    return updated
   }
 
   async getSiteSettings(group?: string) {
@@ -309,12 +308,13 @@ export class AdminService {
     return mediaFile
   }
 
-  async getMedia(filters: { page?: number; limit?: number; mimeType?: string }) {
+  async getMedia(filters: { page?: number; limit?: number; mimeType?: string; includeInactive?: boolean }) {
     const page = filters.page || 1
     const limit = filters.limit || 20
     const skip = (page - 1) * limit
 
-    const where: any = { isDeleted: false }
+    const where: any = {}
+    if (!filters.includeInactive) where.isActive = true
     if (filters.mimeType) where.mimeType = { startsWith: filters.mimeType }
 
     const [files, total] = await Promise.all([
@@ -338,21 +338,21 @@ export class AdminService {
     }
   }
 
-  async deleteMedia(id: string) {
-    const file = await prisma.mediaFile.findFirst({
-      where: { id, isDeleted: false },
+  async toggleMediaActive(id: string) {
+    const file = await prisma.mediaFile.findUnique({
+      where: { id },
     })
 
     if (!file) {
       throw new AppError('Media file not found', 404)
     }
 
-    await prisma.mediaFile.update({
+    const updated = await prisma.mediaFile.update({
       where: { id },
-      data: { isDeleted: true },
+      data: { isActive: !file.isActive },
     })
 
-    return { message: 'Media file deleted successfully' }
+    return updated
   }
 }
 

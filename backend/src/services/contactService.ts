@@ -22,12 +22,14 @@ export class ContactService {
     read?: boolean
     page?: number
     limit?: number
+    includeInactive?: boolean
   }) {
     const page = filters.page || 1
     const limit = filters.limit || 20
     const skip = (page - 1) * limit
 
-    const where: any = { isDeleted: false }
+    const where: any = {}
+    if (!filters.includeInactive) where.isActive = true
     if (filters.read !== undefined) where.read = filters.read
 
     const [messages, total] = await Promise.all([
@@ -93,21 +95,21 @@ export class ContactService {
     })
   }
 
-  async delete(id: string) {
-    const message = await prisma.contactMessage.findFirst({
-      where: { id, isDeleted: false },
+  async toggleActive(id: string) {
+    const message = await prisma.contactMessage.findUnique({
+      where: { id },
     })
 
     if (!message) {
       throw new AppError('Message not found', 404)
     }
 
-    await prisma.contactMessage.update({
+    const updated = await prisma.contactMessage.update({
       where: { id },
-      data: { isDeleted: true },
+      data: { isActive: !message.isActive },
     })
 
-    return { message: 'Contact message deleted successfully' }
+    return updated
   }
 }
 

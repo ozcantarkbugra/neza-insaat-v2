@@ -42,7 +42,7 @@ export class ProjectService {
     const limit = filters.limit || 10
     const skip = (page - 1) * limit
 
-    const where: any = { isDeleted: false }
+    const where: any = {}
     if (filters.status) where.status = filters.status
     if (filters.featured !== undefined) where.featured = filters.featured
     if (filters.serviceId) where.serviceId = filters.serviceId
@@ -77,7 +77,7 @@ export class ProjectService {
 
   async getBySlug(slug: string) {
     const project = await prisma.project.findFirst({
-      where: { slug, isDeleted: false, isActive: true },
+      where: { slug, isActive: true },
       include: {
         images: {
           orderBy: { order: 'asc' },
@@ -103,7 +103,7 @@ export class ProjectService {
 
   async getById(id: string) {
     const project = await prisma.project.findFirst({
-      where: { id, isDeleted: false },
+      where: { id, isActive: true },
       include: {
         images: {
           orderBy: { order: 'asc' },
@@ -206,26 +206,9 @@ export class ProjectService {
     return project
   }
 
-  async delete(id: string) {
-    const project = await prisma.project.findFirst({
-      where: { id, isDeleted: false },
-    })
-
-    if (!project) {
-      throw new AppError('Project not found', 404)
-    }
-
-    await prisma.project.update({
-      where: { id },
-      data: { isDeleted: true },
-    })
-
-    return { message: 'Project deleted successfully' }
-  }
-
   async toggleActive(id: string) {
-    const project = await prisma.project.findFirst({
-      where: { id, isDeleted: false },
+    const project = await prisma.project.findUnique({
+      where: { id },
     })
 
     if (!project) {

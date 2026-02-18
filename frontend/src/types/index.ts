@@ -90,5 +90,6 @@ export interface ContactMessage {
   message: string
   read: boolean
   replied: boolean
+  isActive?: boolean
   createdAt: string
 }

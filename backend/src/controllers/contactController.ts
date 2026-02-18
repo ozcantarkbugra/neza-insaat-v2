@@ -31,8 +31,9 @@ export class ContactController {
       const read = req.query.read === 'true' ? true : req.query.read === 'false' ? false : undefined
       const page = parseInt(req.query.page as string) || 1
       const limit = parseInt(req.query.limit as string) || 20
+      const includeInactive = req.query.includeInactive === '1' || req.query.includeInactive === 'true'
 
-      const result = await contactService.getAll({ read, page, limit })
+      const result = await contactService.getAll({ read, page, limit, includeInactive })
       res.json(result)
     } catch (error) {
       next(error)
@@ -69,10 +70,10 @@ export class ContactController {
     }
   }
 
-  delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  toggleActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params
-      const result = await contactService.delete(id)
+      const result = await contactService.toggleActive(id)
       res.json(result)
     } catch (error) {
       next(error)

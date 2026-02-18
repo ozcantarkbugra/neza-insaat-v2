@@ -17,7 +17,7 @@ import {
   ActionIcon,
   Tooltip,
 } from '@mantine/core'
-import { IconPencil, IconTrash, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
+import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 
 const STATUS_COLORS: Record<string, string> = {
@@ -54,16 +54,6 @@ export default function ProjectsPage() {
     }
     fetchProjects()
   }, [])
-
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('admin.confirmDeleteProject'))) return
-    try {
-      await api.delete(`/projects/${id}`)
-      setProjects(projects.filter((p) => p.id !== id))
-    } catch (error) {
-      alert(t('admin.deleteFailed'))
-    }
-  }
 
   const handleToggleActive = async (id: string) => {
     try {
@@ -150,11 +140,6 @@ export default function ProjectsPage() {
                       <Tooltip label={t('admin.edit')}>
                         <ActionIcon component={Link} href={`/admin/projects/${project.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
                           <IconPencil size={18} />
-                        </ActionIcon>
-                      </Tooltip>
-                      <Tooltip label={t('admin.delete')}>
-                        <ActionIcon variant="subtle" color="red" size="sm" onClick={() => handleDelete(project.id)}>
-                          <IconTrash size={18} />
                         </ActionIcon>
                       </Tooltip>
                     </Group>

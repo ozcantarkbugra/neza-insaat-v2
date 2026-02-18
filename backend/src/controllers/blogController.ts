@@ -127,16 +127,6 @@ export class BlogController {
     },
   ]
 
-  delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const { id } = req.params
-      const result = await blogService.delete(id)
-      res.json(result)
-    } catch (error) {
-      next(error)
-    }
-  }
-
   toggleActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params

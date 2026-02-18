@@ -108,8 +108,9 @@ async function main() {
         image: service.image,
         featured: service.featured,
         order: service.order,
+        isActive: true,
       },
-      create: service as any,
+      create: { ...service, isActive: true } as any,
     })
     createdServices.push(created)
   }
@@ -126,8 +127,8 @@ async function main() {
   for (const cat of categories) {
     const created = await prisma.blogCategory.upsert({
       where: { slug: cat.slug },
-      update: {},
-      create: cat,
+      update: { isActive: true },
+      create: { ...cat, isActive: true },
     })
     createdCategories.push(created)
   }
@@ -302,12 +303,14 @@ async function main() {
       featured: projectData.featured,
       featuredImage: projectData.featuredImage,
       serviceId: projectData.serviceId,
+      isActive: true,
     }
     const created = await prisma.project.upsert({
       where: { slug: project.slug },
       update: updateData,
       create: {
         ...projectData,
+        isActive: true,
         images: imageUrls
           ? {
               create: imageUrls.map((url: string, index: number) => ({
@@ -381,8 +384,8 @@ async function main() {
   for (const blog of blogs) {
     const created = await prisma.blog.upsert({
       where: { slug: blog.slug },
-      update: {},
-      create: blog,
+      update: { isActive: true },
+      create: { ...blog, isActive: true },
     })
     createdBlogs.push(created)
   }

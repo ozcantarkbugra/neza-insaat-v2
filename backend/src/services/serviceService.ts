@@ -23,7 +23,7 @@ export interface UpdateServiceData extends Partial<CreateServiceData> {
 
 export class ServiceService {
   async getAll(filters: { featured?: boolean; includeInactive?: boolean }) {
-    const where: any = { isDeleted: false }
+    const where: any = {}
     if (filters.featured !== undefined) where.featured = filters.featured
     if (!filters.includeInactive) where.isActive = true
 
@@ -42,7 +42,7 @@ export class ServiceService {
 
   async getBySlug(slug: string) {
     const service = await prisma.service.findFirst({
-      where: { slug, isDeleted: false, isActive: true },
+      where: { slug, isActive: true },
       include: {
         projects: {
           take: 6,
@@ -66,7 +66,7 @@ export class ServiceService {
 
   async getById(id: string) {
     const service = await prisma.service.findFirst({
-      where: { id, isDeleted: false },
+      where: { id, isActive: true },
     })
 
     if (!service) {
@@ -120,26 +120,9 @@ export class ServiceService {
     return service
   }
 
-  async delete(id: string) {
-    const service = await prisma.service.findFirst({
-      where: { id, isDeleted: false },
-    })
-
-    if (!service) {
-      throw new AppError('Service not found', 404)
-    }
-
-    await prisma.service.update({
-      where: { id },
-      data: { isDeleted: true },
-    })
-
-    return { message: 'Service deleted successfully' }
-  }
-
   async toggleActive(id: string) {
-    const service = await prisma.service.findFirst({
-      where: { id, isDeleted: false },
+    const service = await prisma.service.findUnique({
+      where: { id },
     })
 
     if (!service) {

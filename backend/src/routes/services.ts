@@ -12,6 +12,4 @@ router.get('/:id', cacheControl(60), serviceController.getById)
 router.post('/', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), ...serviceController.create)
 router.put('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), ...serviceController.update)
 router.patch('/:id/toggle-active', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), serviceController.toggleActive)
-router.delete('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), serviceController.delete)
-
 export default router

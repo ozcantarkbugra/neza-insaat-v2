@@ -17,7 +17,7 @@ import {
   ActionIcon,
   Tooltip,
 } from '@mantine/core'
-import { IconPencil, IconTrash, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
+import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 
 export default function ServicesPage() {
@@ -38,16 +38,6 @@ export default function ServicesPage() {
     }
     fetchServices()
   }, [])
-
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('admin.confirmDeleteService'))) return
-    try {
-      await api.delete(`/services/${id}`)
-      setServices(services.filter((s) => s.id !== id))
-    } catch (error) {
-      alert(t('admin.deleteFailed'))
-    }
-  }
 
   const handleToggleActive = async (id: string) => {
     try {
@@ -124,11 +114,6 @@ export default function ServicesPage() {
                       <Tooltip label={t('admin.edit')}>
                         <ActionIcon component={Link} href={`/admin/services/${service.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
                           <IconPencil size={18} />
-                        </ActionIcon>
-                      </Tooltip>
-                      <Tooltip label={t('admin.delete')}>
-                        <ActionIcon variant="subtle" color="red" size="sm" onClick={() => handleDelete(service.id)}>
-                          <IconTrash size={18} />
                         </ActionIcon>
                       </Tooltip>
                     </Group>

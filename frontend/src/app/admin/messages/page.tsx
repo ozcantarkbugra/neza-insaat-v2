@@ -16,7 +16,7 @@ import {
   ActionIcon,
   Tooltip,
 } from '@mantine/core'
-import { IconTrash } from '@tabler/icons-react'
+import { IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 
 export default function MessagesPage() {
@@ -27,7 +27,7 @@ export default function MessagesPage() {
   useEffect(() => {
     async function fetchMessages() {
       try {
-        const res = await api.get('/contact')
+        const res = await api.get('/contact?includeInactive=1')
         setMessages(res.data.messages ?? res.data ?? [])
       } catch (error) {
         console.error('Failed to fetch messages:', error)
@@ -47,13 +47,12 @@ export default function MessagesPage() {
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('admin.confirmDeleteMessage'))) return
+  const handleToggleActive = async (id: string) => {
     try {
-      await api.delete(`/contact/${id}`)
-      setMessages(messages.filter((m) => m.id !== id))
+      const res = await api.patch(`/contact/${id}/toggle-active`)
+      setMessages(messages.map((m) => (m.id === id ? { ...m, isActive: res.data.isActive } : m)))
     } catch (error) {
-      alert(t('admin.deleteFailed'))
+      alert(t('admin.operationFailed'))
     }
   }
 
@@ -118,9 +117,14 @@ export default function MessagesPage() {
                     {t('admin.markAsRead')}
                   </Button>
                 )}
-                <Tooltip label={t('admin.delete')}>
-                  <ActionIcon color="red" variant="light" size="lg" onClick={() => handleDelete(message.id)}>
-                    <IconTrash size={18} />
+                <Tooltip label={message.isActive !== false ? t('admin.active') : t('admin.inactive')}>
+                  <ActionIcon
+                    color={message.isActive !== false ? 'green' : 'red'}
+                    variant="light"
+                    size="lg"
+                    onClick={() => handleToggleActive(message.id)}
+                  >
+                    {message.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
                   </ActionIcon>
                 </Tooltip>
               </Group>

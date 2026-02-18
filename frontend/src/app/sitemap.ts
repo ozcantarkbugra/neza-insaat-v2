@@ -1,8 +1,18 @@
 import { MetadataRoute } from 'next'
+import { headers } from 'next/headers'
 
-const getBaseUrl = () => {
+async function getBaseUrl(): Promise<string> {
+  try {
+    const headersList = await headers()
+    const host = headersList.get('host') || headersList.get('x-forwarded-host')
+    const proto = headersList.get('x-forwarded-proto') || headersList.get('x-forwarded-ssl')
+    if (host && !host.includes('localhost')) {
+      const protocol = proto === 'https' || proto === 'on' ? 'https' : 'https'
+      return `${protocol}://${host}`
+    }
+  } catch {}
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
-  if (apiUrl) {
+  if (apiUrl && !apiUrl.includes('localhost')) {
     return apiUrl.replace(/\/api\/?$/, '')
   }
   return process.env.NEXT_PUBLIC_SITE_URL || 'https://nezainsaat.com'
@@ -23,7 +33,7 @@ async function fetchSlugs(endpoint: string): Promise<{ slug: string; updatedAt?:
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = getBaseUrl()
+  const baseUrl = await getBaseUrl()
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },

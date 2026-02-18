@@ -6,9 +6,17 @@ import { ColorSchemeScript } from '@mantine/core'
 
 const inter = Inter({ subsets: ['latin'] })
 
+const SITE_NAME = 'Neza İnşaat'
+const DEFAULT_DESC = 'Güvenilir inşaat çözümleri. Konut, ticari ve endüstriyel projelerde kalite ve güven.'
+
 export const metadata: Metadata = {
-  title: 'Neza İnşaat',
-  description: 'Güvenilir inşaat çözümleri',
+  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
+  description: DEFAULT_DESC,
+  openGraph: {
+    title: SITE_NAME,
+    description: DEFAULT_DESC,
+    type: 'website',
+  },
   icons: {
     icon: [{ url: '/images/logo.svg', type: 'image/svg+xml' }, { url: '/images/logo.png', type: 'image/png' }],
     shortcut: '/images/logo.png',

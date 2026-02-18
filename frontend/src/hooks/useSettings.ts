@@ -3,7 +3,7 @@ import { swrFetcher } from '@/lib/swrFetcher'
 
 export type SiteSettings = Record<string, string>
 
-const SWR_CONFIG = { revalidateOnFocus: false, dedupingInterval: 5 * 60 * 1000 }
+const SWR_CONFIG = { revalidateOnFocus: true, dedupingInterval: 30 * 1000 }
 
 export function useSettings() {
   const { data, error, isLoading, mutate } = useSWR<SiteSettings>(

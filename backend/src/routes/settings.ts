@@ -4,7 +4,7 @@ import { cacheControl } from '../middleware/cacheControl'
 
 const router = Router()
 
-router.get('/', cacheControl(300), async (_req: Request, res: Response, next: NextFunction) => {
+router.get('/', cacheControl(30), async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const settings = await adminService.getSiteSettings()
     const map = (settings as { key: string; value: string }[]).reduce(

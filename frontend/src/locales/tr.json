@@ -31,7 +31,8 @@
     "contact": "İletişim",
     "lightMode": "Açık mod",
     "darkMode": "Koyu mod",
-    "toggleNav": "Menüyü aç/kapat"
+    "toggleNav": "Menüyü aç/kapat",
+    "language": "Dil"
   },
   "footer": {
     "tagline": "Güvenilir inşaat çözümleri ile hayallerinizi gerçeğe dönüştürüyoruz. Konut, ticari ve endüstriyel projelerde kalite ve güveni bir arada sunuyoruz.",
@@ -121,7 +122,7 @@
   },
   "contact": {
     "title": "İletişim",
-    "subtitle": "Bizimle iletişime geçin",
+    "subtitle": "Bizimle iletişime geçin. Biz sizi arayacağız.",
     "name": "Ad Soyad",
     "email": "E-posta",
     "phone": "Telefon",
@@ -137,7 +138,7 @@
     "success": "Mesajınız alındı. En kısa sürede size dönüş yapacağız.",
     "error": "Gönderilirken hata oluştu.",
     "invalidEmail": "Geçerli bir e-posta adresi girin.",
-    "invalidPhone": "Geçerli bir telefon numarası girin (örn: +90 530 924 20 75)."
+    "invalidPhone": "Geçerli bir telefon numarası girin (örn: 530 123 45 67)."
   },
   "about": {
     "title": "Hakkımızda",
@@ -326,7 +327,7 @@
     "settingsTitle": "Site Ayarları",
     "settingsSaving": "Kaydediliyor...",
     "settingsSaveFailed": "Kayıt başarısız oldu",
-    "invalidPhone": "Geçerli bir telefon numarası girin (örn: +90 530 924 20 75)",
+    "invalidPhone": "Geçerli bir telefon numarası girin (örn: 530 123 45 67)",
     "invalidEmail": "Geçerli bir e-posta adresi girin",
     "slugDescription": "URL'de görünecek kısa tanımlayıcı (örn: tadilat)",
     "newProjectForm": "Yeni Proje",

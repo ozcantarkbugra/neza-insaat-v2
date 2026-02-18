@@ -5,7 +5,7 @@ import { ensurePlaceholderImages } from '../scripts/create-placeholders'
 
 const prisma = new PrismaClient()
 
-const BASE_URL = process.env['BASE_URL'] || process.env['API_BASE_URL'] || process.env['FRONTEND_URL'] || 'http://localhost:5000'
+const BASE_URL = process.env['BASE_URL'] || process.env['API_BASE_URL'] || 'http://localhost:5002'
 const uploads = (p: string) => `${BASE_URL.replace(/\/$/, '')}/uploads/${p}`
 
 async function main() {

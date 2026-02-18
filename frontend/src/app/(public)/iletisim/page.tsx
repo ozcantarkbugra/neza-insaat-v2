@@ -4,17 +4,12 @@ import { useState } from 'react'
 import api from '@/lib/api'
 import { useTranslation } from '@/lib/i18n'
 import { Container, Title, Text, TextInput, Textarea, Button, Stack, Alert } from '@mantine/core'
+import PhoneInput, { isValidPhoneNumber } from '@/components/ui/PhoneInput'
 
 function isValidEmail(value: string): boolean {
   if (!value.trim()) return false
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return re.test(value.trim())
-}
-
-function isValidPhone(value: string): boolean {
-  if (!value.trim()) return true
-  const digits = value.replace(/\D/g, '')
-  return digits.length >= 10 && digits.length <= 15
 }
 
 export default function ContactPage() {
@@ -42,7 +37,7 @@ export default function ContactPage() {
       setEmailError(t('contact.invalidEmail'))
       return
     }
-    if (!isValidPhone(formData.phone)) {
+    if (formData.phone && !isValidPhoneNumber(formData.phone)) {
       setPhoneError(t('contact.invalidPhone'))
       return
     }
@@ -107,21 +102,20 @@ export default function ContactPage() {
                 if (emailError) setEmailError('')
               }}
             />
-            <TextInput
+            <PhoneInput
               label={t('contact.phone')}
-              type="tel"
               placeholder={t('contact.placeholderPhone')}
               value={formData.phone}
               error={phoneError}
               onBlur={() => {
-                if (formData.phone && !isValidPhone(formData.phone)) {
+                if (formData.phone && !isValidPhoneNumber(formData.phone)) {
                   setPhoneError(t('contact.invalidPhone'))
                 } else {
                   setPhoneError('')
                 }
               }}
-              onChange={(e) => {
-                setFormData({ ...formData, phone: e.target.value })
+              onChange={(value) => {
+                setFormData({ ...formData, phone: value || '' })
                 if (phoneError) setPhoneError('')
               }}
             />

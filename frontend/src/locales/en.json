@@ -31,7 +31,8 @@
     "contact": "Contact",
     "lightMode": "Light mode",
     "darkMode": "Dark mode",
-    "toggleNav": "Toggle navigation"
+    "toggleNav": "Toggle navigation",
+    "language": "Language"
   },
   "footer": {
     "tagline": "We turn your dreams into reality with reliable construction solutions. We offer quality and trust in residential, commercial and industrial projects.",
@@ -121,7 +122,7 @@
   },
   "contact": {
     "title": "Contact",
-    "subtitle": "Get in touch with us",
+    "subtitle": "Get in touch with us. We will call you back.",
     "name": "Full Name",
     "email": "Email",
     "phone": "Phone",
@@ -137,7 +138,7 @@
     "success": "Your message has been received. We will get back to you soon.",
     "error": "An error occurred while sending.",
     "invalidEmail": "Please enter a valid email address.",
-    "invalidPhone": "Please enter a valid phone number (e.g. +90 530 924 20 75)."
+    "invalidPhone": "Please enter a valid phone number (e.g. 530 123 45 67)."
   },
   "about": {
     "title": "About Us",
@@ -326,7 +327,7 @@
     "settingsTitle": "Site Settings",
     "settingsSaving": "Saving...",
     "settingsSaveFailed": "Save failed",
-    "invalidPhone": "Enter a valid phone number (e.g. +90 530 924 20 75)",
+    "invalidPhone": "Enter a valid phone number (e.g. 530 123 45 67)",
     "invalidEmail": "Enter a valid email address",
     "slugDescription": "Short URL identifier (e.g. renovation)",
     "newProjectForm": "New Project",

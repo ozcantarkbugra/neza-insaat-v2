@@ -15,7 +15,7 @@ import {
   Text,
   Box,
 } from '@mantine/core'
-import { IconSun, IconMoon, IconChevronDown } from '@tabler/icons-react'
+import { IconSun, IconMoon, IconChevronDown, IconLanguage } from '@tabler/icons-react'
 import { useDisclosure } from '@mantine/hooks'
 import { useState, useEffect } from 'react'
 import { useTranslation } from '@/lib/i18n'
@@ -65,13 +65,16 @@ export default function Header() {
   const effectiveScrolled = mounted && isScrolled
   const borderColor = effectiveDark ? theme.colors.blue[8] : theme.colors.gray[2]
   const solidBg = effectiveDark ? theme.colors.blue[9] : theme.white
+  const scrolledBg = effectiveDark ? 'rgba(18, 55, 105, 0.92)' : 'rgba(255, 255, 255, 0.92)'
   const headerStyle = {
     position: 'sticky' as const,
     top: 0,
     zIndex: 1000,
-    backgroundColor: effectiveScrolled ? 'transparent' : solidBg,
-    borderBottom: `1px solid ${effectiveScrolled ? 'transparent' : borderColor}`,
-    boxShadow: effectiveScrolled ? 'none' : theme.shadows.sm,
+    backgroundColor: effectiveScrolled ? scrolledBg : solidBg,
+    backdropFilter: effectiveScrolled ? 'saturate(180%) blur(12px)' : undefined,
+    WebkitBackdropFilter: effectiveScrolled ? 'saturate(180%) blur(12px)' : undefined,
+    borderBottom: `1px solid ${effectiveScrolled ? (effectiveDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)') : borderColor}`,
+    boxShadow: effectiveScrolled ? (effectiveDark ? '0 1px 3px rgba(0,0,0,0.2)' : '0 1px 3px rgba(0,0,0,0.06)') : theme.shadows.sm,
     transition: 'background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease',
   }
 
@@ -87,7 +90,7 @@ export default function Header() {
               display: 'flex',
               alignItems: 'center',
               lineHeight: 1,
-              minHeight: 76,
+              minHeight: 114,
             }}
             className="hover:opacity-90"
           >
@@ -95,15 +98,15 @@ export default function Header() {
               <Image
                 src={logoUrl}
                 alt={t('common.companyName')}
-                width={340}
-                height={80}
+                width={510}
+                height={120}
                 priority
                 style={{
                   objectFit: 'contain',
                   height: 'auto',
-                  maxHeight: 76,
+                  maxHeight: 114,
                   width: 'auto',
-                  maxWidth: 340,
+                  maxWidth: 510,
                   filter: isDark ? 'brightness(0) invert(1)' : undefined,
                   transition: 'filter 200ms ease',
                 }}
@@ -285,22 +288,26 @@ export default function Header() {
               {t('nav.contact')}
             </Button>
 
-            <Group gap={4}>
-              <Button
-                variant={locale === 'tr' ? 'filled' : 'default'}
-                size="compact-xs"
-                onClick={() => setLocale('tr')}
-              >
-                TR
-              </Button>
-              <Button
-                variant={locale === 'en' ? 'filled' : 'default'}
-                size="compact-xs"
-                onClick={() => setLocale('en')}
-              >
-                EN
-              </Button>
-            </Group>
+            <Menu position="bottom-end" withArrow shadow="md">
+              <Menu.Target>
+                <ActionIcon
+                  variant="default"
+                  size="lg"
+                  aria-label={t('nav.language')}
+                  title={locale === 'tr' ? 'Türkçe' : 'English'}
+                >
+                  <IconLanguage size={20} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item onClick={() => setLocale('tr')} leftSection={locale === 'tr' ? '✓' : undefined}>
+                  TR – Türkçe
+                </Menu.Item>
+                <Menu.Item onClick={() => setLocale('en')} leftSection={locale === 'en' ? '✓' : undefined}>
+                  EN – English
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
 
             <ActionIcon
               onClick={handleColorSchemeToggle}
@@ -314,14 +321,21 @@ export default function Header() {
           </Group>
 
           <Group gap="xs" hiddenFrom="lg">
-            <Group gap={4}>
-              <Button variant={locale === 'tr' ? 'filled' : 'default'} size="compact-xs" onClick={() => setLocale('tr')}>
-                TR
-              </Button>
-              <Button variant={locale === 'en' ? 'filled' : 'default'} size="compact-xs" onClick={() => setLocale('en')}>
-                EN
-              </Button>
-            </Group>
+            <Menu position="bottom-end" withArrow shadow="md">
+              <Menu.Target>
+                <ActionIcon variant="default" size="lg" aria-label={t('nav.language')}>
+                  <IconLanguage size={20} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item onClick={() => setLocale('tr')} leftSection={locale === 'tr' ? '✓' : undefined}>
+                  TR – Türkçe
+                </Menu.Item>
+                <Menu.Item onClick={() => setLocale('en')} leftSection={locale === 'en' ? '✓' : undefined}>
+                  EN – English
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
             <ActionIcon
               onClick={handleColorSchemeToggle}
               variant="default"

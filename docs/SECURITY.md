@@ -41,3 +41,4 @@ npx prisma generate
 
 Mevcut migration'lar:
 - `20260218130000_add_blog_en_and_user_role_soft_delete`: Blog EN alanları, User/Role soft delete alanları
+- `20260218140000_use_only_is_active`: isDeleted kaldırıldı; sadece isActive kullanılıyor

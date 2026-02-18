@@ -5,6 +5,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { env } from './config/env'
+import prisma from './config/database'
 import { errorHandler } from './middleware/errorHandler'
 import authRoutes from './routes/auth'
 import projectRoutes from './routes/projects'
@@ -47,8 +48,14 @@ const limiter = rateLimit({
 })
 app.use('/api/', limiter)
 
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+app.get('/health', async (_req, res) => {
+  const timestamp = new Date().toISOString()
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    res.json({ status: 'ok', db: 'connected', timestamp })
+  } catch (err) {
+    res.status(503).json({ status: 'degraded', db: 'disconnected', timestamp })
+  }
 })
 
 app.use('/api/auth', authRoutes)

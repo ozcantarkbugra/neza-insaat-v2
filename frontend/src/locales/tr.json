@@ -8,7 +8,10 @@
     "allRightsReserved": "Tüm hakları saklıdır.",
     "notFoundTitle": "Sayfa Bulunamadı",
     "notFoundMessage": "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
-    "backToHome": "Ana Sayfaya Dön"
+    "backToHome": "Ana Sayfaya Dön",
+    "errorTitle": "Bir hata oluştu",
+    "errorMessage": "Beklenmeyen bir hata meydana geldi. Lütfen tekrar deneyin.",
+    "tryAgain": "Tekrar dene"
   },
   "nav": {
     "about": "Hakkımızda",

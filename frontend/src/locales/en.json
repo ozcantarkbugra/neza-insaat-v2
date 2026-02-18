@@ -8,7 +8,10 @@
     "allRightsReserved": "All rights reserved.",
     "notFoundTitle": "Page Not Found",
     "notFoundMessage": "The page you are looking for does not exist or may have been moved.",
-    "backToHome": "Back to Home"
+    "backToHome": "Back to Home",
+    "errorTitle": "Something went wrong",
+    "errorMessage": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try again"
   },
   "nav": {
     "about": "About Us",

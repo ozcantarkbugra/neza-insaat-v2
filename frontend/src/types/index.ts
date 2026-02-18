@@ -53,9 +53,12 @@ export interface Service {
 export interface Blog {
   id: string
   title: string
+  titleEn?: string | null
   slug: string
   content: string
+  contentEn?: string | null
   excerpt?: string
+  excerptEn?: string | null
   featuredImage?: string
   status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'
   featured: boolean

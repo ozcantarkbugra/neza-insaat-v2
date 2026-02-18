@@ -62,6 +62,10 @@ export default function BlogDetailPage(props: {
   const textPrimary = colorScheme === 'dark' ? theme.white : theme.colors.gray[9]
   const textSecondary = colorScheme === 'dark' ? theme.colors.gray[4] : theme.colors.gray[7]
 
+  const isEn = locale === 'en'
+  const displayTitle = isEn && blog.titleEn ? blog.titleEn : blog.title
+  const displayContent = isEn && blog.contentEn ? blog.contentEn : blog.content
+
   return (
     <Container size="md" py="xl">
       <Stack gap="lg">
@@ -69,7 +73,7 @@ export default function BlogDetailPage(props: {
           <Box pos="relative" h={384} style={{ borderRadius: theme.radius.md, overflow: 'hidden' }}>
             <Image
               src={normalizeImageUrl(blog.featuredImage)}
-              alt={blog.title}
+              alt={displayTitle}
               fill
               style={{ objectFit: 'cover' }}
               priority
@@ -84,7 +88,7 @@ export default function BlogDetailPage(props: {
           </Badge>
         )}
 
-        <Title order={1} c={textPrimary}>{blog.title}</Title>
+        <Title order={1} c={textPrimary}>{displayTitle}</Title>
 
         <Group gap="md" c={textSecondary}>
           {blog.createdBy && (
@@ -99,7 +103,7 @@ export default function BlogDetailPage(props: {
         </Group>
 
         <Text size="lg" c={textSecondary} style={{ whiteSpace: 'pre-line' }}>
-          {blog.content}
+          {displayContent}
         </Text>
       </Stack>
     </Container>

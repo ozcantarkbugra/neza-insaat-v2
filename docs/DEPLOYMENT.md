@@ -69,11 +69,15 @@ docker compose -f docker-compose.prod.yml up -d --build
 docker compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
 ```
 
-İsteğe bağlı seed verisi:
+**Seed (veritabanı + placeholder görseller):**
 
 ```bash
-docker compose -f docker-compose.prod.yml exec backend npm run prisma:seed
+docker compose -f docker-compose.prod.yml run --rm backend npx prisma db seed
 ```
+
+Bu komut:
+- Eksik placeholder görselleri `uploads/` klasörüne oluşturur
+- Admin, servisler, projeler, bloglar ve ayarları veritabanına ekler
 
 ---
 
@@ -129,6 +133,35 @@ cd /var/www/neza-insaat-v2
 git pull origin main
 docker compose -f docker-compose.prod.yml up -d --build
 docker compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
+```
+
+Seed'i yeniden çalıştırmak isterseniz (görseller + veri):
+
+```bash
+docker compose -f docker-compose.prod.yml run --rm backend npx prisma db seed
+```
+
+---
+
+## Sunucuda Sadece Seed Çalıştırma
+
+Kod zaten deploy edilmiş, sadece seed çalıştırmak istiyorsanız:
+
+```bash
+cd /var/www/neza-insaat-v2
+docker compose -f docker-compose.prod.yml run --rm backend npx prisma db seed
+```
+
+Başarılı çıktı örneği:
+```
+🌱 Seeding database...
+BASE_URL: https://nezainsaat.com
+DATABASE_URL: ✓ set
+📁 Created 20 placeholder images in uploads/
+✅ Admin user: admin@construction.com
+✅ Services: 5
+...
+🎉 Seeding completed!
 ```
 
 ---

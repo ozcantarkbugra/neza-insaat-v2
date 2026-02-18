@@ -1,16 +1,19 @@
 /// <reference types="node" />
 import { PrismaClient, UserRole, ProjectStatus, BlogStatus } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
+import { ensurePlaceholderImages } from '../scripts/create-placeholders'
 
 const prisma = new PrismaClient()
 
 const BASE_URL = process.env['BASE_URL'] || process.env['API_BASE_URL'] || process.env['FRONTEND_URL'] || 'http://localhost:5002'
-const uploads = (path: string) => `${BASE_URL.replace(/\/$/, '')}/uploads/${path}`
+const uploads = (p: string) => `${BASE_URL.replace(/\/$/, '')}/uploads/${p}`
 
 async function main() {
   console.log('🌱 Seeding database...')
   console.log('BASE_URL:', BASE_URL)
   console.log('DATABASE_URL:', process.env['DATABASE_URL'] ? '✓ set' : '✗ missing')
+
+  ensurePlaceholderImages()
 
   const hashedPassword = await bcrypt.hash('Admin123!', 10)
   

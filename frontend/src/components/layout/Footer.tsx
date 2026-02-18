@@ -185,7 +185,16 @@ export default function Footer() {
               </Group>
               <Group gap="xs" align="flex-start">
                 <IconMapPin size={18} color={theme.colors.gray[4]} style={{ marginTop: 2 }} />
-                <Text size="sm" c="gray.3">{address}</Text>
+                <Anchor
+                  href="https://maps.app.goo.gl/JCUW1z5ubwuJiqPf6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  c="gray.3"
+                  size="sm"
+                  style={{ textDecoration: 'none' }}
+                >
+                  {address}
+                </Anchor>
               </Group>
             </Stack>
           </Stack>

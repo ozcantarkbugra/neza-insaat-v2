@@ -248,33 +248,37 @@ export default function ProjectEditPage() {
               />
             </SimpleGrid>
 
-            <Textarea
-              label={t('admin.description')}
-              required
-              minRows={6}
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            />
-            <Textarea
-              label={t('admin.descriptionEn')}
-              minRows={6}
-              value={formData.descriptionEn}
-              onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
-              placeholder="Project description in English"
-            />
-            <Textarea
-              label={t('admin.shortDescription')}
-              minRows={3}
-              value={formData.shortDescription}
-              onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
-            />
-            <Textarea
-              label={t('admin.shortDescriptionEn')}
-              minRows={3}
-              value={formData.shortDescriptionEn}
-              onChange={(e) => setFormData({ ...formData, shortDescriptionEn: e.target.value })}
-              placeholder="Short description in English"
-            />
+            <SimpleGrid cols={{ base: 1, md: 2 }}>
+              <Textarea
+                label={`${t('admin.description')} (TR)`}
+                required
+                minRows={6}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              />
+              <Textarea
+                label={`${t('admin.description')} (EN)`}
+                minRows={6}
+                value={formData.descriptionEn}
+                onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
+                placeholder="Project description in English"
+              />
+            </SimpleGrid>
+            <SimpleGrid cols={{ base: 1, md: 2 }}>
+              <Textarea
+                label={`${t('admin.shortDescription')} (TR)`}
+                minRows={3}
+                value={formData.shortDescription}
+                onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
+              />
+              <Textarea
+                label={`${t('admin.shortDescription')} (EN)`}
+                minRows={3}
+                value={formData.shortDescriptionEn}
+                onChange={(e) => setFormData({ ...formData, shortDescriptionEn: e.target.value })}
+                placeholder="Short description in English"
+              />
+            </SimpleGrid>
 
             <SimpleGrid cols={{ base: 1, md: 2 }}>
               <Select

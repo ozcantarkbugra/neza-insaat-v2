@@ -162,33 +162,37 @@ export default function BlogEditPage() {
               onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
             />
 
-            <Textarea
-              label={`${t('admin.content')} (TR)`}
-              required
-              minRows={12}
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            />
-            <Textarea
-              label={`${t('admin.content')} (EN)`}
-              minRows={12}
-              value={formData.contentEn}
-              onChange={(e) => setFormData({ ...formData, contentEn: e.target.value })}
-              placeholder="Content (English)"
-            />
-            <Textarea
-              label={`${t('admin.excerpt')} (TR)`}
-              minRows={3}
-              value={formData.excerpt}
-              onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-            />
-            <Textarea
-              label={`${t('admin.excerpt')} (EN)`}
-              minRows={3}
-              value={formData.excerptEn}
-              onChange={(e) => setFormData({ ...formData, excerptEn: e.target.value })}
-              placeholder="Excerpt (English)"
-            />
+            <SimpleGrid cols={{ base: 1, md: 2 }}>
+              <Textarea
+                label={`${t('admin.content')} (TR)`}
+                required
+                minRows={12}
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              />
+              <Textarea
+                label={`${t('admin.content')} (EN)`}
+                minRows={12}
+                value={formData.contentEn}
+                onChange={(e) => setFormData({ ...formData, contentEn: e.target.value })}
+                placeholder="Content (English)"
+              />
+            </SimpleGrid>
+            <SimpleGrid cols={{ base: 1, md: 2 }}>
+              <Textarea
+                label={`${t('admin.excerpt')} (TR)`}
+                minRows={3}
+                value={formData.excerpt}
+                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+              />
+              <Textarea
+                label={`${t('admin.excerpt')} (EN)`}
+                minRows={3}
+                value={formData.excerptEn}
+                onChange={(e) => setFormData({ ...formData, excerptEn: e.target.value })}
+                placeholder="Excerpt (English)"
+              />
+            </SimpleGrid>
 
             <SimpleGrid cols={{ base: 1, md: 2 }}>
               <Select

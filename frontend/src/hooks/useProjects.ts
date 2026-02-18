@@ -17,7 +17,7 @@ export function useProjects(params?: { featured?: boolean; limit?: number }) {
   )
 
   return {
-    projects: data?.projects ?? [],
+    projects: Array.isArray(data) ? data : (data?.projects ?? []),
     pagination: data?.pagination,
     isLoading,
     isError: !!error,

@@ -11,7 +11,7 @@ export default function ProjectsPage() {
   const { t } = useTranslation()
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
-  const { projects, isLoading: loading, isError } = useProjects({ limit: 50 })
+  const { projects, isLoading: loading, isError } = useProjects({ limit: 100 })
 
   const apiError = isError
     ? 'Backend\'e bağlanılamadı. Backend\'in çalıştığından emin olun (örn. port 5002).'

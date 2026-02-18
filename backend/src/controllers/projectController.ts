@@ -63,7 +63,7 @@ export class ProjectController {
       const featured = req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined
       const serviceId = req.query.serviceId as string
       const page = parseInt(req.query.page as string) || 1
-      const limit = parseInt(req.query.limit as string) || 10
+      const limit = parseInt(req.query.limit as string) || 100
       const includeInactive = req.query.includeInactive === 'true' || req.query.includeInactive === '1'
 
       const result = await projectService.getAll({

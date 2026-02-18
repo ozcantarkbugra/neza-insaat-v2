@@ -361,6 +361,15 @@
     "passwordOptionalHint": "Mevcut şifre güvenlik nedeniyle gösterilmez. Yalnızca değiştirmek istiyorsanız yeni şifre yazın; boş bırakırsanız şifre aynı kalır.",
     "passwordEditPlaceholder": "Yeni şifre (opsiyonel)",
     "confirmPassword": "Şifre tekrarla",
-    "passwordsDoNotMatch": "Şifreler eşleşmiyor"
+    "passwordsDoNotMatch": "Şifreler eşleşmiyor",
+    "blogCategories": "Blog Kategorileri",
+    "blogCategoriesTitle": "Blog Kategorileri",
+    "newCategory": "Yeni Kategori",
+    "noCategories": "Henüz kategori eklenmemiş.",
+    "newCategoryForm": "Yeni Kategori",
+    "editCategoryForm": "Kategori Düzenle",
+    "invalidName": "Geçerli bir ad girin",
+    "slugRequired": "Slug zorunludur",
+    "descriptionOptional": "Açıklama (opsiyonel)"
   }
 }

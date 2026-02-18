@@ -132,9 +132,10 @@ export class AdminController {
     },
   ]
 
-  getBlogCategories = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getBlogCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const categories = await adminService.getBlogCategories()
+      const includeInactive = req.query.includeInactive === '1' || req.query.includeInactive === 'true'
+      const categories = await adminService.getBlogCategories(includeInactive)
       res.json(categories)
     } catch (error) {
       next(error)

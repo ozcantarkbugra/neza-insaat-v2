@@ -33,6 +33,7 @@ const NAV_ITEMS = [
   { href: '/admin/dashboard', key: 'dashboard' as const },
   { href: '/admin/projects', key: 'projects' as const },
   { href: '/admin/blogs', key: 'blog' as const },
+  { href: '/admin/blog-categories', key: 'blogCategories' as const },
   { href: '/admin/services', key: 'services' as const },
   { href: '/admin/users', key: 'users' as const },
   { href: '/admin/messages', key: 'messages' as const },

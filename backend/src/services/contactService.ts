@@ -1,5 +1,10 @@
 import prisma from '../config/database'
 import { AppError } from '../middleware/errorHandler'
+import {
+  isEmailConfigured,
+  sendContactNotification,
+  sendContactAutoReply,
+} from './emailService'
 
 export interface CreateContactMessageData {
   name: string
@@ -14,6 +19,13 @@ export class ContactService {
     const message = await prisma.contactMessage.create({
       data,
     })
+
+    if (isEmailConfigured()) {
+      Promise.all([
+        sendContactNotification(data).catch((err) => console.error('Admin notification email failed:', err)),
+        sendContactAutoReply(data).catch((err) => console.error('Auto-reply email failed:', err)),
+      ])
+    }
 
     return message
   }

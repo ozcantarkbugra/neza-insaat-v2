@@ -54,6 +54,11 @@ nano .env   # veya vim
 
 **Veritabanı:** `POSTGRES_PASSWORD=postgres` (dev ile aynı) – isterseniz güçlü bir şifreyle değiştirebilirsiniz.
 
+**SMTP (opsiyonel):** İletişim formu e-posta bildirimi için. Tanımlanırsa:
+- Yeni mesajda `contact_email` adresine admin bildirimi gider
+- Müşteriye otomatik "Mesajınız alındı" e-postası gider
+- `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` zorunlu; `SMTP_PORT` (varsayılan 587), `SMTP_FROM` opsiyonel
+
 ---
 
 ## 4. Docker Compose ile Uygulamayı Başlat

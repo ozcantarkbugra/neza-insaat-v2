@@ -361,6 +361,15 @@
     "passwordOptionalHint": "Current password is never displayed for security. Enter a new password only if you want to change it; leave blank to keep the current password.",
     "passwordEditPlaceholder": "New password (optional)",
     "confirmPassword": "Confirm password",
-    "passwordsDoNotMatch": "Passwords do not match"
+    "passwordsDoNotMatch": "Passwords do not match",
+    "blogCategories": "Blog Categories",
+    "blogCategoriesTitle": "Blog Categories",
+    "newCategory": "New Category",
+    "noCategories": "No categories yet.",
+    "newCategoryForm": "New Category",
+    "editCategoryForm": "Edit Category",
+    "invalidName": "Enter a valid name",
+    "slugRequired": "Slug is required",
+    "descriptionOptional": "Description (optional)"
   }
 }

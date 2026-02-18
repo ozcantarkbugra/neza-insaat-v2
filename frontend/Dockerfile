@@ -11,9 +11,11 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build-time API URL (production: https://nezainsaat.com/api)
+# Build-time env (production: https://nezainsaat.com)
 ARG NEXT_PUBLIC_API_URL=http://localhost:5002/api
+ARG NEXT_PUBLIC_SITE_URL=
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 
 # Build Next.js
 RUN npm run build

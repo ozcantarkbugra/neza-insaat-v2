@@ -204,9 +204,10 @@ export class AdminService {
     })
   }
 
-  async getBlogCategories() {
+  async getBlogCategories(includeInactive?: boolean) {
+    const where = includeInactive ? {} : { isActive: true }
     return prisma.blogCategory.findMany({
-      where: { isActive: true },
+      where,
       orderBy: { name: 'asc' },
     })
   }

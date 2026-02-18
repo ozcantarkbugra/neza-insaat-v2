@@ -30,8 +30,8 @@ export interface AuthResponse {
 
 export class AuthService {
   async register(data: RegisterData): Promise<AuthResponse> {
-    const existingUser = await prisma.user.findUnique({
-      where: { email: data.email },
+    const existingUser = await prisma.user.findFirst({
+      where: { email: data.email, isDeleted: false },
     })
 
     if (existingUser) {
@@ -79,8 +79,8 @@ export class AuthService {
   }
 
   async login(data: LoginData): Promise<AuthResponse> {
-    const user = await prisma.user.findUnique({
-      where: { email: data.email },
+    const user = await prisma.user.findFirst({
+      where: { email: data.email, isDeleted: false },
     })
 
     if (!user) {
@@ -127,8 +127,8 @@ export class AuthService {
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     const payload = verifyRefreshToken(refreshToken)
 
-    const user = await prisma.user.findUnique({
-      where: { id: payload.userId },
+    const user = await prisma.user.findFirst({
+      where: { id: payload.userId, isDeleted: false },
     })
 
     if (!user || !user.isActive) {
@@ -158,8 +158,8 @@ export class AuthService {
   }
 
   async getMe(userId: string) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
+    const user = await prisma.user.findFirst({
+      where: { id: userId, isDeleted: false },
       select: {
         id: true,
         email: true,

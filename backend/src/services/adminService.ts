@@ -52,6 +52,7 @@ export class AdminService {
 
     const [users, total] = await Promise.all([
       prisma.user.findMany({
+        where: { isDeleted: false },
         select: {
           id: true,
           email: true,
@@ -65,7 +66,7 @@ export class AdminService {
         skip,
         take: limit,
       }),
-      prisma.user.count(),
+      prisma.user.count({ where: { isDeleted: false } }),
     ])
 
     return {
@@ -80,8 +81,8 @@ export class AdminService {
   }
 
   async updateUserRole(userId: string, role: UserRole) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
+    const user = await prisma.user.findFirst({
+      where: { id: userId, isDeleted: false },
     })
 
     if (!user) {
@@ -103,8 +104,8 @@ export class AdminService {
   }
 
   async toggleUserActive(userId: string) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
+    const user = await prisma.user.findFirst({
+      where: { id: userId, isDeleted: false },
     })
 
     if (!user) {
@@ -132,8 +133,8 @@ export class AdminService {
     lastName?: string
     role: UserRole
   }) {
-    const existing = await prisma.user.findUnique({
-      where: { email: data.email },
+    const existing = await prisma.user.findFirst({
+      where: { email: data.email, isDeleted: false },
     })
     if (existing) {
       throw new AppError('Bu e-posta adresi zaten kayıtlı', 400)
@@ -170,8 +171,8 @@ export class AdminService {
       role?: UserRole
     }
   ) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
+    const user = await prisma.user.findFirst({
+      where: { id: userId, isDeleted: false },
     })
     if (!user) {
       throw new AppError('User not found', 404)
@@ -206,6 +207,7 @@ export class AdminService {
 
   async getBlogCategories() {
     return prisma.blogCategory.findMany({
+      where: { isDeleted: false },
       orderBy: { name: 'asc' },
     })
   }

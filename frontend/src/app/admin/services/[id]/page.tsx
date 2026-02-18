@@ -29,9 +29,12 @@ export default function ServiceEditPage() {
 
   const [formData, setFormData] = useState({
     title: '',
+    titleEn: '',
     slug: '',
     description: '',
+    descriptionEn: '',
     shortDescription: '',
+    shortDescriptionEn: '',
     icon: '',
     image: '',
     featured: false,
@@ -51,9 +54,12 @@ export default function ServiceEditPage() {
           const service = res.data
           setFormData({
             title: service.title || '',
+            titleEn: service.titleEn || '',
             slug: service.slug || '',
             description: service.description || '',
+            descriptionEn: service.descriptionEn || '',
             shortDescription: service.shortDescription || '',
+            shortDescriptionEn: service.shortDescriptionEn || '',
             icon: service.icon || '',
             image: service.image || '',
             featured: service.featured || false,
@@ -117,32 +123,52 @@ export default function ServiceEditPage() {
           <Stack gap="md">
             <SimpleGrid cols={{ base: 1, md: 2 }}>
               <TextInput
-                label={t('admin.title')}
+                label={`${t('admin.title')} (TR)`}
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
               <TextInput
-                label={t('admin.slug')}
-                required
-                description={t('admin.slugDescription')}
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                label={`${t('admin.title')} (EN)`}
+                value={formData.titleEn}
+                onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
+                placeholder="Title (English)"
               />
             </SimpleGrid>
+            <TextInput
+              label={t('admin.slug')}
+              required
+              description={t('admin.slugDescription')}
+              value={formData.slug}
+              onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+            />
 
             <Textarea
-              label={t('admin.description')}
+              label={`${t('admin.description')} (TR)`}
               required
               minRows={6}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
             <Textarea
-              label={t('admin.shortDescription')}
+              label={`${t('admin.description')} (EN)`}
+              minRows={6}
+              value={formData.descriptionEn}
+              onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
+              placeholder="Description (English)"
+            />
+            <Textarea
+              label={`${t('admin.shortDescription')} (TR)`}
               minRows={3}
               value={formData.shortDescription}
               onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
+            />
+            <Textarea
+              label={`${t('admin.shortDescription')} (EN)`}
+              minRows={3}
+              value={formData.shortDescriptionEn}
+              onChange={(e) => setFormData({ ...formData, shortDescriptionEn: e.target.value })}
+              placeholder="Short description (English)"
             />
 
             <SimpleGrid cols={{ base: 1, md: 2 }}>

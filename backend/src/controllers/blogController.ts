@@ -6,9 +6,12 @@ import { validate } from '../middleware/validator'
 const createBlogSchema = z.object({
   body: z.object({
     title: z.string().min(1),
+    titleEn: z.string().optional(),
     slug: z.string().min(1),
     content: z.string().min(1),
+    contentEn: z.string().optional(),
     excerpt: z.string().optional(),
+    excerptEn: z.string().optional(),
     featuredImage: z.string().url().optional(),
     status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
     featured: z.boolean().optional(),
@@ -24,9 +27,12 @@ const updateBlogSchema = z.object({
   }),
   body: z.object({
     title: z.string().min(1).optional(),
+    titleEn: z.string().optional(),
     slug: z.string().min(1).optional(),
     content: z.string().min(1).optional(),
+    contentEn: z.string().optional(),
     excerpt: z.string().optional(),
+    excerptEn: z.string().optional(),
     featuredImage: z.string().url().optional(),
     status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).optional(),
     featured: z.boolean().optional(),

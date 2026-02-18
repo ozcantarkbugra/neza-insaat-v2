@@ -35,9 +35,12 @@ export default function BlogEditPage() {
 
   const [formData, setFormData] = useState({
     title: '',
+    titleEn: '',
     slug: '',
     content: '',
+    contentEn: '',
     excerpt: '',
+    excerptEn: '',
     featuredImage: '',
     status: 'DRAFT' as Blog['status'],
     featured: false,
@@ -68,9 +71,12 @@ export default function BlogEditPage() {
           const blog = res.data
           setFormData({
             title: blog.title || '',
+            titleEn: blog.titleEn || '',
             slug: blog.slug || '',
             content: blog.content || '',
+            contentEn: blog.contentEn || '',
             excerpt: blog.excerpt || '',
+            excerptEn: blog.excerptEn || '',
             featuredImage: blog.featuredImage || '',
             status: blog.status || 'DRAFT',
             featured: blog.featured || false,
@@ -135,32 +141,52 @@ export default function BlogEditPage() {
           <Stack gap="md">
             <SimpleGrid cols={{ base: 1, md: 2 }}>
               <TextInput
-                label={t('admin.title')}
+                label={`${t('admin.title')} (TR)`}
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
               <TextInput
-                label={t('admin.slug')}
-                required
-                description={t('admin.slugDescription')}
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                label={`${t('admin.title')} (EN)`}
+                value={formData.titleEn}
+                onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
+                placeholder="Title (English)"
               />
             </SimpleGrid>
+            <TextInput
+              label={t('admin.slug')}
+              required
+              description={t('admin.slugDescription')}
+              value={formData.slug}
+              onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+            />
 
             <Textarea
-              label={t('admin.content')}
+              label={`${t('admin.content')} (TR)`}
               required
               minRows={12}
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
             />
             <Textarea
-              label={t('admin.excerpt')}
+              label={`${t('admin.content')} (EN)`}
+              minRows={12}
+              value={formData.contentEn}
+              onChange={(e) => setFormData({ ...formData, contentEn: e.target.value })}
+              placeholder="Content (English)"
+            />
+            <Textarea
+              label={`${t('admin.excerpt')} (TR)`}
               minRows={3}
               value={formData.excerpt}
               onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+            />
+            <Textarea
+              label={`${t('admin.excerpt')} (EN)`}
+              minRows={3}
+              value={formData.excerptEn}
+              onChange={(e) => setFormData({ ...formData, excerptEn: e.target.value })}
+              placeholder="Excerpt (English)"
             />
 
             <SimpleGrid cols={{ base: 1, md: 2 }}>

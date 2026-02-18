@@ -4,9 +4,12 @@ import { BlogStatus } from '@prisma/client'
 
 export interface CreateBlogData {
   title: string
+  titleEn?: string
   slug: string
   content: string
+  contentEn?: string
   excerpt?: string
+  excerptEn?: string
   featuredImage?: string
   status: BlogStatus
   featured?: boolean

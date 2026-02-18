@@ -10,12 +10,14 @@ import {
   Table,
   Badge,
   Group,
-  Anchor,
   Center,
   Loader,
   Text,
   Paper,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core'
+import { IconPencil, IconTrash, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 
 const STATUS_COLORS: Record<string, string> = {
@@ -40,7 +42,7 @@ export default function ProjectsPage() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const res = await api.get('/projects?limit=100')
+        const res = await api.get('/projects?limit=100&includeInactive=1')
         const list = Array.isArray(res.data) ? res.data : (res.data?.projects ?? [])
         setProjects(list)
       } catch (error) {
@@ -54,14 +56,21 @@ export default function ProjectsPage() {
   }, [])
 
   const handleDelete = async (id: string) => {
-    if (!confirm(t('admin.confirmDeleteProject'))) {
-      return
-    }
+    if (!confirm(t('admin.confirmDeleteProject'))) return
     try {
       await api.delete(`/projects/${id}`)
       setProjects(projects.filter((p) => p.id !== id))
     } catch (error) {
       alert(t('admin.deleteFailed'))
+    }
+  }
+
+  const handleToggleActive = async (id: string) => {
+    try {
+      const res = await api.patch(`/projects/${id}/toggle-active`)
+      setProjects(projects.map((p) => (p.id === id ? { ...p, isActive: res.data.isActive } : p)))
+    } catch (error) {
+      alert(t('admin.operationFailed'))
     }
   }
 
@@ -77,9 +86,11 @@ export default function ProjectsPage() {
     <>
       <Group justify="space-between" mb="xl">
         <Title order={2}>{t('admin.projectsTitle')}</Title>
-        <Button component={Link} href="/admin/projects/new" color="blue">
-          {t('admin.newProject')}
-        </Button>
+        <Tooltip label={t('admin.newProject')}>
+          <Button component={Link} href="/admin/projects/new" color="blue" leftSection={<IconPlus size={18} />}>
+            {t('admin.newProject')}
+          </Button>
+        </Tooltip>
       </Group>
 
       {projects.length === 0 ? (
@@ -93,6 +104,7 @@ export default function ProjectsPage() {
                 <Table.Th>{t('admin.status')}</Table.Th>
                 <Table.Th>{t('admin.location')}</Table.Th>
                 <Table.Th>{t('admin.date')}</Table.Th>
+                <Table.Th>{t('admin.active')}</Table.Th>
                 <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -122,13 +134,29 @@ export default function ProjectsPage() {
                     </Text>
                   </Table.Td>
                   <Table.Td>
+                    <Tooltip label={project.isActive !== false ? t('admin.active') : t('admin.inactive')}>
+                      <ActionIcon
+                        variant="subtle"
+                        color={project.isActive !== false ? 'green' : 'red'}
+                        size="sm"
+                        onClick={() => handleToggleActive(project.id)}
+                      >
+                        {project.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
+                      </ActionIcon>
+                    </Tooltip>
+                  </Table.Td>
+                  <Table.Td>
                     <Group justify="flex-end" gap="xs">
-                      <Anchor component={Link} href={`/admin/projects/${project.id}`} size="sm">
-                        {t('admin.edit')}
-                      </Anchor>
-                      <Button variant="subtle" color="red" size="compact-xs" onClick={() => handleDelete(project.id)}>
-                        {t('admin.delete')}
-                      </Button>
+                      <Tooltip label={t('admin.edit')}>
+                        <ActionIcon component={Link} href={`/admin/projects/${project.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
+                          <IconPencil size={18} />
+                        </ActionIcon>
+                      </Tooltip>
+                      <Tooltip label={t('admin.delete')}>
+                        <ActionIcon variant="subtle" color="red" size="sm" onClick={() => handleDelete(project.id)}>
+                          <IconTrash size={18} />
+                        </ActionIcon>
+                      </Tooltip>
                     </Group>
                   </Table.Td>
                 </Table.Tr>

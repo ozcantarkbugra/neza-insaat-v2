@@ -17,7 +17,7 @@ class ContactService {
         const page = filters.page || 1;
         const limit = filters.limit || 20;
         const skip = (page - 1) * limit;
-        const where = {};
+        const where = { isDeleted: false };
         if (filters.read !== undefined)
             where.read = filters.read;
         const [messages, total] = await Promise.all([
@@ -73,14 +73,15 @@ class ContactService {
         });
     }
     async delete(id) {
-        const message = await database_1.default.contactMessage.findUnique({
-            where: { id },
+        const message = await database_1.default.contactMessage.findFirst({
+            where: { id, isDeleted: false },
         });
         if (!message) {
             throw new errorHandler_1.AppError('Message not found', 404);
         }
-        await database_1.default.contactMessage.delete({
+        await database_1.default.contactMessage.update({
             where: { id },
+            data: { isDeleted: true },
         });
         return { message: 'Contact message deleted successfully' };
     }

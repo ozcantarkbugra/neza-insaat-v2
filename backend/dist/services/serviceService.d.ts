@@ -19,12 +19,14 @@ export interface UpdateServiceData extends Partial<CreateServiceData> {
 export declare class ServiceService {
     getAll(filters: {
         featured?: boolean;
+        includeInactive?: boolean;
     }): Promise<({
         _count: {
             projects: number;
         };
     } & {
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -37,6 +39,7 @@ export declare class ServiceService {
         featured: boolean;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         order: number;
         icon: string | null;
         image: string | null;
@@ -55,6 +58,7 @@ export declare class ServiceService {
         } & {
             status: import(".prisma/client").$Enums.ProjectStatus;
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -75,11 +79,13 @@ export declare class ServiceService {
             metaTitle: string | null;
             metaDescription: string | null;
             serviceId: string | null;
+            isDeleted: boolean;
             createdById: string | null;
             updatedById: string | null;
         })[];
     } & {
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -92,12 +98,14 @@ export declare class ServiceService {
         featured: boolean;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         order: number;
         icon: string | null;
         image: string | null;
     }>;
     getById(id: string): Promise<{
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -110,12 +118,14 @@ export declare class ServiceService {
         featured: boolean;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         order: number;
         icon: string | null;
         image: string | null;
     }>;
     create(data: CreateServiceData): Promise<{
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -128,12 +138,14 @@ export declare class ServiceService {
         featured: boolean;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         order: number;
         icon: string | null;
         image: string | null;
     }>;
     update(data: UpdateServiceData): Promise<{
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -146,12 +158,33 @@ export declare class ServiceService {
         featured: boolean;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         order: number;
         icon: string | null;
         image: string | null;
     }>;
     delete(id: string): Promise<{
         message: string;
+    }>;
+    toggleActive(id: string): Promise<{
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        titleEn: string | null;
+        slug: string;
+        description: string;
+        descriptionEn: string | null;
+        shortDescription: string | null;
+        shortDescriptionEn: string | null;
+        featured: boolean;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        isDeleted: boolean;
+        order: number;
+        icon: string | null;
+        image: string | null;
     }>;
 }
 declare const _default: ServiceService;

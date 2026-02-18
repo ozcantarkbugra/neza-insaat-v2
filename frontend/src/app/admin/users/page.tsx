@@ -5,7 +5,6 @@ import api from '@/lib/api'
 import {
   Title,
   Table,
-  Badge,
   Group,
   Button,
   Center,
@@ -17,7 +16,10 @@ import {
   TextInput,
   PasswordInput,
   Stack,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core'
+import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useDisclosure } from '@mantine/hooks'
 import { useTranslation } from '@/lib/i18n'
 
@@ -192,7 +194,11 @@ export default function UsersPage() {
     <>
       <Group justify="space-between" mb="xl">
         <Title order={2}>{t('admin.usersTitle')}</Title>
-        <Button onClick={handleOpenCreate}>{t('admin.addNewAdmin')}</Button>
+        <Tooltip label={t('admin.addNewAdmin')}>
+          <Button onClick={handleOpenCreate} leftSection={<IconPlus size={18} />}>
+            {t('admin.addNewAdmin')}
+          </Button>
+        </Tooltip>
       </Group>
 
       {users.length === 0 ? (
@@ -230,28 +236,24 @@ export default function UsersPage() {
                     />
                   </Table.Td>
                   <Table.Td>
-                    <Badge color={user.isActive ? 'green' : 'red'} variant="light">
-                      {user.isActive ? t('admin.active') : t('admin.inactive')}
-                    </Badge>
+                    <Tooltip label={user.isActive ? t('admin.active') : t('admin.inactive')}>
+                      <ActionIcon
+                        variant="subtle"
+                        color={user.isActive ? 'green' : 'red'}
+                        size="sm"
+                        onClick={() => handleToggleActive(user.id)}
+                      >
+                        {user.isActive ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
+                      </ActionIcon>
+                    </Tooltip>
                   </Table.Td>
                   <Table.Td>
                     <Group justify="flex-end" gap="xs">
-                      <Button
-                        variant="subtle"
-                        size="compact-sm"
-                        color="gray"
-                        onClick={() => handleOpenEdit(user)}
-                      >
-                        {t('admin.editUser')}
-                      </Button>
-                      <Button
-                        variant="subtle"
-                        size="compact-sm"
-                        color="blue"
-                        onClick={() => handleToggleActive(user.id)}
-                      >
-                        {user.isActive ? t('admin.makeInactive') : t('admin.makeActive')}
-                      </Button>
+                      <Tooltip label={t('admin.editUser')}>
+                        <ActionIcon variant="subtle" color="blue" size="sm" onClick={() => handleOpenEdit(user)}>
+                          <IconPencil size={18} />
+                        </ActionIcon>
+                      </Tooltip>
                     </Group>
                   </Table.Td>
                 </Table.Tr>

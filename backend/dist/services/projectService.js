@@ -11,13 +11,15 @@ class ProjectService {
         const page = filters.page || 1;
         const limit = filters.limit || 10;
         const skip = (page - 1) * limit;
-        const where = {};
+        const where = { isDeleted: false };
         if (filters.status)
             where.status = filters.status;
         if (filters.featured !== undefined)
             where.featured = filters.featured;
         if (filters.serviceId)
             where.serviceId = filters.serviceId;
+        if (!filters.includeInactive)
+            where.isActive = true;
         const [projects, total] = await Promise.all([
             database_1.default.project.findMany({
                 where,
@@ -44,8 +46,8 @@ class ProjectService {
         };
     }
     async getBySlug(slug) {
-        const project = await database_1.default.project.findUnique({
-            where: { slug },
+        const project = await database_1.default.project.findFirst({
+            where: { slug, isDeleted: false, isActive: true },
             include: {
                 images: {
                     orderBy: { order: 'asc' },
@@ -67,8 +69,8 @@ class ProjectService {
         return project;
     }
     async getById(id) {
-        const project = await database_1.default.project.findUnique({
-            where: { id },
+        const project = await database_1.default.project.findFirst({
+            where: { id, isDeleted: false },
             include: {
                 images: {
                     orderBy: { order: 'asc' },
@@ -156,16 +158,34 @@ class ProjectService {
         return project;
     }
     async delete(id) {
-        const project = await database_1.default.project.findUnique({
-            where: { id },
+        const project = await database_1.default.project.findFirst({
+            where: { id, isDeleted: false },
         });
         if (!project) {
             throw new errorHandler_1.AppError('Project not found', 404);
         }
-        await database_1.default.project.delete({
+        await database_1.default.project.update({
             where: { id },
+            data: { isDeleted: true },
         });
         return { message: 'Project deleted successfully' };
+    }
+    async toggleActive(id) {
+        const project = await database_1.default.project.findFirst({
+            where: { id, isDeleted: false },
+        });
+        if (!project) {
+            throw new errorHandler_1.AppError('Project not found', 404);
+        }
+        const updated = await database_1.default.project.update({
+            where: { id },
+            data: { isActive: !project.isActive },
+            include: {
+                images: { orderBy: { order: 'asc' } },
+                service: true,
+            },
+        });
+        return updated;
     }
 }
 exports.ProjectService = ProjectService;

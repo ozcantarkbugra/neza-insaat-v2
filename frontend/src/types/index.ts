@@ -18,6 +18,7 @@ export interface Project {
   featuredImage?: string
   metaTitle?: string
   metaDescription?: string
+  isActive?: boolean
   createdAt: string
   updatedAt: string
   images?: ProjectImage[]
@@ -46,6 +47,7 @@ export interface Service {
   order: number
   metaTitle?: string
   metaDescription?: string
+  isActive?: boolean
 }
 
 export interface Blog {
@@ -60,6 +62,7 @@ export interface Blog {
   views: number
   metaTitle?: string
   metaDescription?: string
+  isActive?: boolean
   createdAt: string
   updatedAt: string
   publishedAt?: string

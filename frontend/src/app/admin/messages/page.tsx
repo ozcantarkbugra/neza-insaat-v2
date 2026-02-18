@@ -13,7 +13,10 @@ import {
   Center,
   Loader,
   Box,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core'
+import { IconTrash } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 
 export default function MessagesPage() {
@@ -115,9 +118,11 @@ export default function MessagesPage() {
                     {t('admin.markAsRead')}
                   </Button>
                 )}
-                <Button size="sm" color="red" variant="light" onClick={() => handleDelete(message.id)}>
-                  {t('admin.delete')}
-                </Button>
+                <Tooltip label={t('admin.delete')}>
+                  <ActionIcon color="red" variant="light" size="lg" onClick={() => handleDelete(message.id)}>
+                    <IconTrash size={18} />
+                  </ActionIcon>
+                </Tooltip>
               </Group>
             </Paper>
           ))}

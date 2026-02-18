@@ -85,11 +85,13 @@ export declare class AdminService {
     }>;
     getBlogCategories(): Promise<{
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         name: string;
         slug: string;
         description: string | null;
+        isDeleted: boolean;
     }[]>;
     createBlogCategory(data: {
         name: string;
@@ -97,11 +99,13 @@ export declare class AdminService {
         description?: string;
     }): Promise<{
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         name: string;
         slug: string;
         description: string | null;
+        isDeleted: boolean;
     }>;
     updateBlogCategory(id: string, data: {
         name?: string;
@@ -109,11 +113,13 @@ export declare class AdminService {
         description?: string;
     }): Promise<{
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         name: string;
         slug: string;
         description: string | null;
+        isDeleted: boolean;
     }>;
     deleteBlogCategory(id: string): Promise<{
         message: string;
@@ -142,6 +148,7 @@ export declare class AdminService {
         createdAt: Date;
         updatedAt: Date;
         description: string | null;
+        isDeleted: boolean;
         url: string;
         alt: string | null;
         filename: string;
@@ -160,6 +167,7 @@ export declare class AdminService {
             createdAt: Date;
             updatedAt: Date;
             description: string | null;
+            isDeleted: boolean;
             url: string;
             alt: string | null;
             filename: string;

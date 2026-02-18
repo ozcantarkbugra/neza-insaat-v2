@@ -13,6 +13,7 @@ router.get('/slug/:slug', (0, cacheControl_1.cacheControl)(60), serviceControlle
 router.get('/:id', (0, cacheControl_1.cacheControl)(60), serviceController_1.default.getById);
 router.post('/', auth_1.authenticate, (0, auth_1.authorize)('SUPER_ADMIN', 'ADMIN'), ...serviceController_1.default.create);
 router.put('/:id', auth_1.authenticate, (0, auth_1.authorize)('SUPER_ADMIN', 'ADMIN'), ...serviceController_1.default.update);
+router.patch('/:id/toggle-active', auth_1.authenticate, (0, auth_1.authorize)('SUPER_ADMIN', 'ADMIN'), serviceController_1.default.toggleActive);
 router.delete('/:id', auth_1.authenticate, (0, auth_1.authorize)('SUPER_ADMIN', 'ADMIN'), serviceController_1.default.delete);
 exports.default = router;
 //# sourceMappingURL=services.js.map

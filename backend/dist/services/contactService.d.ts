@@ -13,6 +13,7 @@ export declare class ContactService {
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        isDeleted: boolean;
         phone: string | null;
         subject: string | null;
         read: boolean;
@@ -30,6 +31,7 @@ export declare class ContactService {
             createdAt: Date;
             updatedAt: Date;
             name: string;
+            isDeleted: boolean;
             phone: string | null;
             subject: string | null;
             read: boolean;
@@ -49,6 +51,7 @@ export declare class ContactService {
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        isDeleted: boolean;
         phone: string | null;
         subject: string | null;
         read: boolean;
@@ -61,6 +64,7 @@ export declare class ContactService {
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        isDeleted: boolean;
         phone: string | null;
         subject: string | null;
         read: boolean;
@@ -73,6 +77,7 @@ export declare class ContactService {
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        isDeleted: boolean;
         phone: string | null;
         subject: string | null;
         read: boolean;

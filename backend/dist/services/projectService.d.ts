@@ -31,6 +31,7 @@ export declare class ProjectService {
         serviceId?: string;
         page?: number;
         limit?: number;
+        includeInactive?: boolean;
     }): Promise<{
         projects: ({
             images: {
@@ -44,6 +45,7 @@ export declare class ProjectService {
             }[];
             service: {
                 id: string;
+                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
                 title: string;
@@ -56,6 +58,7 @@ export declare class ProjectService {
                 featured: boolean;
                 metaTitle: string | null;
                 metaDescription: string | null;
+                isDeleted: boolean;
                 order: number;
                 icon: string | null;
                 image: string | null;
@@ -63,6 +66,7 @@ export declare class ProjectService {
         } & {
             status: import(".prisma/client").$Enums.ProjectStatus;
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -83,6 +87,7 @@ export declare class ProjectService {
             metaTitle: string | null;
             metaDescription: string | null;
             serviceId: string | null;
+            isDeleted: boolean;
             createdById: string | null;
             updatedById: string | null;
         })[];
@@ -111,6 +116,7 @@ export declare class ProjectService {
         }[];
         service: {
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -123,6 +129,7 @@ export declare class ProjectService {
             featured: boolean;
             metaTitle: string | null;
             metaDescription: string | null;
+            isDeleted: boolean;
             order: number;
             icon: string | null;
             image: string | null;
@@ -130,6 +137,7 @@ export declare class ProjectService {
     } & {
         status: import(".prisma/client").$Enums.ProjectStatus;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -150,6 +158,7 @@ export declare class ProjectService {
         metaTitle: string | null;
         metaDescription: string | null;
         serviceId: string | null;
+        isDeleted: boolean;
         createdById: string | null;
         updatedById: string | null;
     }>;
@@ -165,6 +174,7 @@ export declare class ProjectService {
         }[];
         service: {
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -177,6 +187,7 @@ export declare class ProjectService {
             featured: boolean;
             metaTitle: string | null;
             metaDescription: string | null;
+            isDeleted: boolean;
             order: number;
             icon: string | null;
             image: string | null;
@@ -184,6 +195,7 @@ export declare class ProjectService {
     } & {
         status: import(".prisma/client").$Enums.ProjectStatus;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -204,6 +216,7 @@ export declare class ProjectService {
         metaTitle: string | null;
         metaDescription: string | null;
         serviceId: string | null;
+        isDeleted: boolean;
         createdById: string | null;
         updatedById: string | null;
     }>;
@@ -219,6 +232,7 @@ export declare class ProjectService {
         }[];
         service: {
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -231,6 +245,7 @@ export declare class ProjectService {
             featured: boolean;
             metaTitle: string | null;
             metaDescription: string | null;
+            isDeleted: boolean;
             order: number;
             icon: string | null;
             image: string | null;
@@ -238,6 +253,7 @@ export declare class ProjectService {
     } & {
         status: import(".prisma/client").$Enums.ProjectStatus;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -258,6 +274,7 @@ export declare class ProjectService {
         metaTitle: string | null;
         metaDescription: string | null;
         serviceId: string | null;
+        isDeleted: boolean;
         createdById: string | null;
         updatedById: string | null;
     }>;
@@ -273,6 +290,7 @@ export declare class ProjectService {
         }[];
         service: {
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -285,6 +303,7 @@ export declare class ProjectService {
             featured: boolean;
             metaTitle: string | null;
             metaDescription: string | null;
+            isDeleted: boolean;
             order: number;
             icon: string | null;
             image: string | null;
@@ -292,6 +311,7 @@ export declare class ProjectService {
     } & {
         status: import(".prisma/client").$Enums.ProjectStatus;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -312,11 +332,70 @@ export declare class ProjectService {
         metaTitle: string | null;
         metaDescription: string | null;
         serviceId: string | null;
+        isDeleted: boolean;
         createdById: string | null;
         updatedById: string | null;
     }>;
     delete(id: string): Promise<{
         message: string;
+    }>;
+    toggleActive(id: string): Promise<{
+        images: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            order: number;
+            url: string;
+            alt: string | null;
+            projectId: string;
+        }[];
+        service: {
+            id: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            title: string;
+            titleEn: string | null;
+            slug: string;
+            description: string;
+            descriptionEn: string | null;
+            shortDescription: string | null;
+            shortDescriptionEn: string | null;
+            featured: boolean;
+            metaTitle: string | null;
+            metaDescription: string | null;
+            isDeleted: boolean;
+            order: number;
+            icon: string | null;
+            image: string | null;
+        } | null;
+    } & {
+        status: import(".prisma/client").$Enums.ProjectStatus;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        titleEn: string | null;
+        slug: string;
+        description: string;
+        descriptionEn: string | null;
+        shortDescription: string | null;
+        shortDescriptionEn: string | null;
+        area: number | null;
+        location: string | null;
+        latitude: number | null;
+        longitude: number | null;
+        deliveryDate: Date | null;
+        startDate: Date | null;
+        featured: boolean;
+        featuredImage: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        serviceId: string | null;
+        isDeleted: boolean;
+        createdById: string | null;
+        updatedById: string | null;
     }>;
 }
 declare const _default: ProjectService;

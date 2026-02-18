@@ -64,6 +64,7 @@ export class ProjectController {
       const serviceId = req.query.serviceId as string
       const page = parseInt(req.query.page as string) || 1
       const limit = parseInt(req.query.limit as string) || 10
+      const includeInactive = req.query.includeInactive === 'true' || req.query.includeInactive === '1'
 
       const result = await projectService.getAll({
         status,
@@ -71,6 +72,7 @@ export class ProjectController {
         serviceId,
         page,
         limit,
+        includeInactive,
       })
 
       res.json(result)
@@ -151,6 +153,16 @@ export class ProjectController {
       const { id } = req.params
       const result = await projectService.delete(id)
       res.json(result)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  toggleActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params
+      const project = await projectService.toggleActive(id)
+      res.json(project)
     } catch (error) {
       next(error)
     }

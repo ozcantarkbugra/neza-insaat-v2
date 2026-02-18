@@ -10,12 +10,14 @@ import {
   Table,
   Badge,
   Group,
-  Anchor,
   Center,
   Loader,
   Text,
   Paper,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core'
+import { IconPencil, IconTrash, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 
 const STATUS_COLORS: Record<string, string> = {
@@ -38,7 +40,7 @@ export default function BlogsPage() {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const res = await api.get('/blogs')
+        const res = await api.get('/blogs?includeInactive=1')
         setBlogs(res.data.blogs || [])
       } catch (error) {
         console.error('Failed to fetch blogs:', error)
@@ -59,6 +61,15 @@ export default function BlogsPage() {
     }
   }
 
+  const handleToggleActive = async (id: string) => {
+    try {
+      const res = await api.patch(`/blogs/${id}/toggle-active`)
+      setBlogs(blogs.map((b) => (b.id === id ? { ...b, isActive: res.data.isActive } : b)))
+    } catch (error) {
+      alert(t('admin.operationFailed'))
+    }
+  }
+
   if (loading) {
     return (
       <Center py="xl">
@@ -71,9 +82,11 @@ export default function BlogsPage() {
     <>
       <Group justify="space-between" mb="xl">
         <Title order={2}>{t('admin.blogTitle')}</Title>
-        <Button component={Link} href="/admin/blogs/new" color="blue">
-          {t('admin.newBlog')}
-        </Button>
+        <Tooltip label={t('admin.newBlog')}>
+          <Button component={Link} href="/admin/blogs/new" color="blue" leftSection={<IconPlus size={18} />}>
+            {t('admin.newBlog')}
+          </Button>
+        </Tooltip>
       </Group>
 
       {blogs.length === 0 ? (
@@ -88,6 +101,7 @@ export default function BlogsPage() {
                 <Table.Th>{t('admin.category')}</Table.Th>
                 <Table.Th>{t('admin.views')}</Table.Th>
                 <Table.Th>{t('admin.date')}</Table.Th>
+                <Table.Th>{t('admin.active')}</Table.Th>
                 <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -118,13 +132,29 @@ export default function BlogsPage() {
                     </Text>
                   </Table.Td>
                   <Table.Td>
+                    <Tooltip label={blog.isActive !== false ? t('admin.active') : t('admin.inactive')}>
+                      <ActionIcon
+                        variant="subtle"
+                        color={blog.isActive !== false ? 'green' : 'red'}
+                        size="sm"
+                        onClick={() => handleToggleActive(blog.id)}
+                      >
+                        {blog.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
+                      </ActionIcon>
+                    </Tooltip>
+                  </Table.Td>
+                  <Table.Td>
                     <Group justify="flex-end" gap="xs">
-                      <Anchor component={Link} href={`/admin/blogs/${blog.id}`} size="sm">
-                        {t('admin.edit')}
-                      </Anchor>
-                      <Button variant="subtle" color="red" size="compact-xs" onClick={() => handleDelete(blog.id)}>
-                        {t('admin.delete')}
-                      </Button>
+                      <Tooltip label={t('admin.edit')}>
+                        <ActionIcon component={Link} href={`/admin/blogs/${blog.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
+                          <IconPencil size={18} />
+                        </ActionIcon>
+                      </Tooltip>
+                      <Tooltip label={t('admin.delete')}>
+                        <ActionIcon variant="subtle" color="red" size="sm" onClick={() => handleDelete(blog.id)}>
+                          <IconTrash size={18} />
+                        </ActionIcon>
+                      </Tooltip>
                     </Group>
                   </Table.Td>
                 </Table.Tr>

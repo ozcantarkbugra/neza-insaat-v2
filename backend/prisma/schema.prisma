@@ -80,6 +80,8 @@ model Project {
   featuredImage   String?
   metaTitle       String?
   metaDescription String?       @db.Text
+  isDeleted       Boolean       @default(false)
+  isActive        Boolean       @default(true)
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -128,6 +130,8 @@ model Service {
   order            Int      @default(0)
   metaTitle        String?
   metaDescription  String?  @db.Text
+  isDeleted        Boolean  @default(false)
+  isActive         Boolean  @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -150,6 +154,8 @@ model Blog {
   views           Int         @default(0)
   metaTitle       String?
   metaDescription String?     @db.Text
+  isDeleted       Boolean     @default(false)
+  isActive        Boolean     @default(true)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
   publishedAt     DateTime?
@@ -174,6 +180,8 @@ model BlogCategory {
   name        String   @unique
   slug        String   @unique
   description String?  @db.Text
+  isDeleted   Boolean  @default(false)
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -192,6 +200,7 @@ model ContactMessage {
   message   String   @db.Text
   read      Boolean  @default(false)
   replied   Boolean  @default(false)
+  isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -224,6 +233,7 @@ model MediaFile {
   url         String
   alt         String?
   description String?  @db.Text
+  isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

@@ -8,9 +8,11 @@ const database_1 = __importDefault(require("../config/database"));
 const errorHandler_1 = require("../middleware/errorHandler");
 class ServiceService {
     async getAll(filters) {
-        const where = {};
+        const where = { isDeleted: false };
         if (filters.featured !== undefined)
             where.featured = filters.featured;
+        if (!filters.includeInactive)
+            where.isActive = true;
         const services = await database_1.default.service.findMany({
             where,
             include: {
@@ -23,8 +25,8 @@ class ServiceService {
         return services;
     }
     async getBySlug(slug) {
-        const service = await database_1.default.service.findUnique({
-            where: { slug },
+        const service = await database_1.default.service.findFirst({
+            where: { slug, isDeleted: false, isActive: true },
             include: {
                 projects: {
                     take: 6,
@@ -44,8 +46,8 @@ class ServiceService {
         return service;
     }
     async getById(id) {
-        const service = await database_1.default.service.findUnique({
-            where: { id },
+        const service = await database_1.default.service.findFirst({
+            where: { id, isDeleted: false },
         });
         if (!service) {
             throw new errorHandler_1.AppError('Service not found', 404);
@@ -87,16 +89,29 @@ class ServiceService {
         return service;
     }
     async delete(id) {
-        const service = await database_1.default.service.findUnique({
-            where: { id },
+        const service = await database_1.default.service.findFirst({
+            where: { id, isDeleted: false },
         });
         if (!service) {
             throw new errorHandler_1.AppError('Service not found', 404);
         }
-        await database_1.default.service.delete({
+        await database_1.default.service.update({
             where: { id },
+            data: { isDeleted: true },
         });
         return { message: 'Service deleted successfully' };
+    }
+    async toggleActive(id) {
+        const service = await database_1.default.service.findFirst({
+            where: { id, isDeleted: false },
+        });
+        if (!service) {
+            throw new errorHandler_1.AppError('Service not found', 404);
+        }
+        return database_1.default.service.update({
+            where: { id },
+            data: { isActive: !service.isActive },
+        });
     }
 }
 exports.ServiceService = ServiceService;

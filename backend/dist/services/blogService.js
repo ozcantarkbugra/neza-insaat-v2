@@ -11,13 +11,15 @@ class BlogService {
         const page = filters.page || 1;
         const limit = filters.limit || 10;
         const skip = (page - 1) * limit;
-        const where = {};
+        const where = { isDeleted: false };
         if (filters.status)
             where.status = filters.status;
         if (filters.featured !== undefined)
             where.featured = filters.featured;
         if (filters.categoryId)
             where.categoryId = filters.categoryId;
+        if (!filters.includeInactive)
+            where.isActive = true;
         const [blogs, total] = await Promise.all([
             database_1.default.blog.findMany({
                 where,
@@ -48,8 +50,8 @@ class BlogService {
         };
     }
     async getBySlug(slug) {
-        const blog = await database_1.default.blog.findUnique({
-            where: { slug },
+        const blog = await database_1.default.blog.findFirst({
+            where: { slug, isDeleted: false, isActive: true },
             include: {
                 category: true,
                 createdBy: {
@@ -72,8 +74,8 @@ class BlogService {
         return blog;
     }
     async getById(id) {
-        const blog = await database_1.default.blog.findUnique({
-            where: { id },
+        const blog = await database_1.default.blog.findFirst({
+            where: { id, isDeleted: false },
             include: {
                 category: true,
                 createdBy: {
@@ -147,16 +149,30 @@ class BlogService {
         return blog;
     }
     async delete(id) {
-        const blog = await database_1.default.blog.findUnique({
-            where: { id },
+        const blog = await database_1.default.blog.findFirst({
+            where: { id, isDeleted: false },
         });
         if (!blog) {
             throw new errorHandler_1.AppError('Blog not found', 404);
         }
-        await database_1.default.blog.delete({
+        await database_1.default.blog.update({
             where: { id },
+            data: { isDeleted: true },
         });
         return { message: 'Blog deleted successfully' };
+    }
+    async toggleActive(id) {
+        const blog = await database_1.default.blog.findFirst({
+            where: { id, isDeleted: false },
+        });
+        if (!blog) {
+            throw new errorHandler_1.AppError('Blog not found', 404);
+        }
+        return database_1.default.blog.update({
+            where: { id },
+            data: { isActive: !blog.isActive },
+            include: { category: true },
+        });
     }
 }
 exports.BlogService = BlogService;

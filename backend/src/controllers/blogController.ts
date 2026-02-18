@@ -44,6 +44,7 @@ export class BlogController {
       const categoryId = req.query.categoryId as string
       const page = parseInt(req.query.page as string) || 1
       const limit = parseInt(req.query.limit as string) || 10
+      const includeInactive = req.query.includeInactive === 'true' || req.query.includeInactive === '1'
 
       const result = await blogService.getAll({
         status,
@@ -51,6 +52,7 @@ export class BlogController {
         categoryId,
         page,
         limit,
+        includeInactive,
       })
 
       res.json(result)
@@ -124,6 +126,16 @@ export class BlogController {
       const { id } = req.params
       const result = await blogService.delete(id)
       res.json(result)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  toggleActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params
+      const blog = await blogService.toggleActive(id)
+      res.json(blog)
     } catch (error) {
       next(error)
     }

@@ -27,7 +27,7 @@ export class ContactService {
     const limit = filters.limit || 20
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    const where: any = { isDeleted: false }
     if (filters.read !== undefined) where.read = filters.read
 
     const [messages, total] = await Promise.all([
@@ -94,16 +94,17 @@ export class ContactService {
   }
 
   async delete(id: string) {
-    const message = await prisma.contactMessage.findUnique({
-      where: { id },
+    const message = await prisma.contactMessage.findFirst({
+      where: { id, isDeleted: false },
     })
 
     if (!message) {
       throw new AppError('Message not found', 404)
     }
 
-    await prisma.contactMessage.delete({
+    await prisma.contactMessage.update({
       where: { id },
+      data: { isDeleted: true },
     })
 
     return { message: 'Contact message deleted successfully' }

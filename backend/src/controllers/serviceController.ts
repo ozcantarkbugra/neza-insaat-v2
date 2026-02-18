@@ -46,7 +46,8 @@ export class ServiceController {
   getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const featured = req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined
-      const services = await serviceService.getAll({ featured })
+      const includeInactive = req.query.includeInactive === 'true' || req.query.includeInactive === '1'
+      const services = await serviceService.getAll({ featured, includeInactive })
       res.json(services)
     } catch (error) {
       next(error)
@@ -105,6 +106,16 @@ export class ServiceController {
       const { id } = req.params
       const result = await serviceService.delete(id)
       res.json(result)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  toggleActive = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params
+      const service = await serviceService.toggleActive(id)
+      res.json(service)
     } catch (error) {
       next(error)
     }

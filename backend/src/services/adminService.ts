@@ -249,16 +249,17 @@ export class AdminService {
   }
 
   async deleteBlogCategory(id: string) {
-    const category = await prisma.blogCategory.findUnique({
-      where: { id },
+    const category = await prisma.blogCategory.findFirst({
+      where: { id, isDeleted: false },
     })
 
     if (!category) {
       throw new AppError('Category not found', 404)
     }
 
-    await prisma.blogCategory.delete({
+    await prisma.blogCategory.update({
       where: { id },
+      data: { isDeleted: true },
     })
 
     return { message: 'Category deleted successfully' }
@@ -311,7 +312,7 @@ export class AdminService {
     const limit = filters.limit || 20
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    const where: any = { isDeleted: false }
     if (filters.mimeType) where.mimeType = { startsWith: filters.mimeType }
 
     const [files, total] = await Promise.all([
@@ -336,25 +337,17 @@ export class AdminService {
   }
 
   async deleteMedia(id: string) {
-    const file = await prisma.mediaFile.findUnique({
-      where: { id },
+    const file = await prisma.mediaFile.findFirst({
+      where: { id, isDeleted: false },
     })
 
     if (!file) {
       throw new AppError('Media file not found', 404)
     }
 
-    const fs = require('fs')
-    try {
-      if (fs.existsSync(file.path)) {
-        fs.unlinkSync(file.path)
-      }
-    } catch (error) {
-      console.error('Error deleting file:', error)
-    }
-
-    await prisma.mediaFile.delete({
+    await prisma.mediaFile.update({
       where: { id },
+      data: { isDeleted: true },
     })
 
     return { message: 'Media file deleted successfully' }

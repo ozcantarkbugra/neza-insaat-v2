@@ -22,9 +22,10 @@ export interface UpdateServiceData extends Partial<CreateServiceData> {
 }
 
 export class ServiceService {
-  async getAll(filters: { featured?: boolean }) {
-    const where: any = {}
+  async getAll(filters: { featured?: boolean; includeInactive?: boolean }) {
+    const where: any = { isDeleted: false }
     if (filters.featured !== undefined) where.featured = filters.featured
+    if (!filters.includeInactive) where.isActive = true
 
     const services = await prisma.service.findMany({
       where,
@@ -40,8 +41,8 @@ export class ServiceService {
   }
 
   async getBySlug(slug: string) {
-    const service = await prisma.service.findUnique({
-      where: { slug },
+    const service = await prisma.service.findFirst({
+      where: { slug, isDeleted: false, isActive: true },
       include: {
         projects: {
           take: 6,
@@ -64,8 +65,8 @@ export class ServiceService {
   }
 
   async getById(id: string) {
-    const service = await prisma.service.findUnique({
-      where: { id },
+    const service = await prisma.service.findFirst({
+      where: { id, isDeleted: false },
     })
 
     if (!service) {
@@ -120,19 +121,35 @@ export class ServiceService {
   }
 
   async delete(id: string) {
-    const service = await prisma.service.findUnique({
-      where: { id },
+    const service = await prisma.service.findFirst({
+      where: { id, isDeleted: false },
     })
 
     if (!service) {
       throw new AppError('Service not found', 404)
     }
 
-    await prisma.service.delete({
+    await prisma.service.update({
       where: { id },
+      data: { isDeleted: true },
     })
 
     return { message: 'Service deleted successfully' }
+  }
+
+  async toggleActive(id: string) {
+    const service = await prisma.service.findFirst({
+      where: { id, isDeleted: false },
+    })
+
+    if (!service) {
+      throw new AppError('Service not found', 404)
+    }
+
+    return prisma.service.update({
+      where: { id },
+      data: { isActive: !service.isActive },
+    })
   }
 }
 

@@ -21,6 +21,7 @@ export declare class BlogService {
         categoryId?: string;
         page?: number;
         limit?: number;
+        includeInactive?: boolean;
     }): Promise<{
         blogs: ({
             createdBy: {
@@ -30,15 +31,18 @@ export declare class BlogService {
             } | null;
             category: {
                 id: string;
+                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
                 name: string;
                 slug: string;
                 description: string | null;
+                isDeleted: boolean;
             } | null;
         } & {
             status: import(".prisma/client").$Enums.BlogStatus;
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -47,6 +51,7 @@ export declare class BlogService {
             featuredImage: string | null;
             metaTitle: string | null;
             metaDescription: string | null;
+            isDeleted: boolean;
             createdById: string | null;
             updatedById: string | null;
             content: string;
@@ -71,15 +76,18 @@ export declare class BlogService {
         } | null;
         category: {
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             name: string;
             slug: string;
             description: string | null;
+            isDeleted: boolean;
         } | null;
     } & {
         status: import(".prisma/client").$Enums.BlogStatus;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -88,6 +96,7 @@ export declare class BlogService {
         featuredImage: string | null;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         createdById: string | null;
         updatedById: string | null;
         content: string;
@@ -104,15 +113,18 @@ export declare class BlogService {
         } | null;
         category: {
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             name: string;
             slug: string;
             description: string | null;
+            isDeleted: boolean;
         } | null;
     } & {
         status: import(".prisma/client").$Enums.BlogStatus;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -121,6 +133,7 @@ export declare class BlogService {
         featuredImage: string | null;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         createdById: string | null;
         updatedById: string | null;
         content: string;
@@ -132,15 +145,18 @@ export declare class BlogService {
     create(data: CreateBlogData, userId: string): Promise<{
         category: {
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             name: string;
             slug: string;
             description: string | null;
+            isDeleted: boolean;
         } | null;
     } & {
         status: import(".prisma/client").$Enums.BlogStatus;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -149,6 +165,7 @@ export declare class BlogService {
         featuredImage: string | null;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         createdById: string | null;
         updatedById: string | null;
         content: string;
@@ -160,15 +177,18 @@ export declare class BlogService {
     update(data: UpdateBlogData, userId: string): Promise<{
         category: {
             id: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             name: string;
             slug: string;
             description: string | null;
+            isDeleted: boolean;
         } | null;
     } & {
         status: import(".prisma/client").$Enums.BlogStatus;
         id: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -177,6 +197,7 @@ export declare class BlogService {
         featuredImage: string | null;
         metaTitle: string | null;
         metaDescription: string | null;
+        isDeleted: boolean;
         createdById: string | null;
         updatedById: string | null;
         content: string;
@@ -187,6 +208,38 @@ export declare class BlogService {
     }>;
     delete(id: string): Promise<{
         message: string;
+    }>;
+    toggleActive(id: string): Promise<{
+        category: {
+            id: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            slug: string;
+            description: string | null;
+            isDeleted: boolean;
+        } | null;
+    } & {
+        status: import(".prisma/client").$Enums.BlogStatus;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        slug: string;
+        featured: boolean;
+        featuredImage: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        isDeleted: boolean;
+        createdById: string | null;
+        updatedById: string | null;
+        content: string;
+        excerpt: string | null;
+        categoryId: string | null;
+        views: number;
+        publishedAt: Date | null;
     }>;
 }
 declare const _default: BlogService;

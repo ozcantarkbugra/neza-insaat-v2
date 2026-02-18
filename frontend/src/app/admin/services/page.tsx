@@ -10,12 +10,14 @@ import {
   Table,
   Badge,
   Group,
-  Anchor,
   Center,
   Loader,
   Text,
   Paper,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core'
+import { IconPencil, IconTrash, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 
 export default function ServicesPage() {
@@ -26,7 +28,7 @@ export default function ServicesPage() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        const res = await api.get('/services')
+        const res = await api.get('/services?includeInactive=1')
         setServices(res.data || [])
       } catch (error) {
         console.error('Failed to fetch services:', error)
@@ -47,6 +49,15 @@ export default function ServicesPage() {
     }
   }
 
+  const handleToggleActive = async (id: string) => {
+    try {
+      const res = await api.patch(`/services/${id}/toggle-active`)
+      setServices(services.map((s) => (s.id === id ? { ...s, isActive: res.data.isActive } : s)))
+    } catch (error) {
+      alert(t('admin.operationFailed'))
+    }
+  }
+
   if (loading) {
     return (
       <Center py="xl">
@@ -59,9 +70,11 @@ export default function ServicesPage() {
     <>
       <Group justify="space-between" mb="xl">
         <Title order={2}>{t('admin.servicesTitle')}</Title>
-        <Button component={Link} href="/admin/services/new" color="blue">
-          {t('admin.newService')}
-        </Button>
+        <Tooltip label={t('admin.newService')}>
+          <Button component={Link} href="/admin/services/new" color="blue" leftSection={<IconPlus size={18} />}>
+            {t('admin.newService')}
+          </Button>
+        </Tooltip>
       </Group>
 
       {services.length === 0 ? (
@@ -74,6 +87,7 @@ export default function ServicesPage() {
                 <Table.Th>{t('admin.title')}</Table.Th>
                 <Table.Th>{t('admin.order')}</Table.Th>
                 <Table.Th>{t('admin.featured')}</Table.Th>
+                <Table.Th>{t('admin.active')}</Table.Th>
                 <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -94,18 +108,29 @@ export default function ServicesPage() {
                     </Badge>
                   </Table.Td>
                   <Table.Td>
-                    <Group justify="flex-end" gap="xs">
-                      <Anchor component={Link} href={`/admin/services/${service.id}`} size="sm">
-                        {t('admin.edit')}
-                      </Anchor>
-                      <Button
+                    <Tooltip label={service.isActive !== false ? t('admin.active') : t('admin.inactive')}>
+                      <ActionIcon
                         variant="subtle"
-                        color="red"
-                        size="compact-xs"
-                        onClick={() => handleDelete(service.id)}
+                        color={service.isActive !== false ? 'green' : 'red'}
+                        size="sm"
+                        onClick={() => handleToggleActive(service.id)}
                       >
-                        {t('admin.delete')}
-                      </Button>
+                        {service.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
+                      </ActionIcon>
+                    </Tooltip>
+                  </Table.Td>
+                  <Table.Td>
+                    <Group justify="flex-end" gap="xs">
+                      <Tooltip label={t('admin.edit')}>
+                        <ActionIcon component={Link} href={`/admin/services/${service.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
+                          <IconPencil size={18} />
+                        </ActionIcon>
+                      </Tooltip>
+                      <Tooltip label={t('admin.delete')}>
+                        <ActionIcon variant="subtle" color="red" size="sm" onClick={() => handleDelete(service.id)}>
+                          <IconTrash size={18} />
+                        </ActionIcon>
+                      </Tooltip>
                     </Group>
                   </Table.Td>
                 </Table.Tr>

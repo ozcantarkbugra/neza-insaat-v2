@@ -6,6 +6,7 @@ export declare class ProjectController {
     create: ((req: Request, _res: Response, next: NextFunction) => void)[];
     update: ((req: Request, _res: Response, next: NextFunction) => void)[];
     delete: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    toggleActive: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 }
 declare const _default: ProjectController;
 export default _default;

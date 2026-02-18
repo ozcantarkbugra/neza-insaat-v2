@@ -49,7 +49,8 @@ class ServiceController {
         this.getAll = async (req, res, next) => {
             try {
                 const featured = req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined;
-                const services = await serviceService_1.default.getAll({ featured });
+                const includeInactive = req.query.includeInactive === 'true' || req.query.includeInactive === '1';
+                const services = await serviceService_1.default.getAll({ featured, includeInactive });
                 res.json(services);
             }
             catch (error) {
@@ -108,6 +109,16 @@ class ServiceController {
                 const { id } = req.params;
                 const result = await serviceService_1.default.delete(id);
                 res.json(result);
+            }
+            catch (error) {
+                next(error);
+            }
+        };
+        this.toggleActive = async (req, res, next) => {
+            try {
+                const { id } = req.params;
+                const service = await serviceService_1.default.toggleActive(id);
+                res.json(service);
             }
             catch (error) {
                 next(error);

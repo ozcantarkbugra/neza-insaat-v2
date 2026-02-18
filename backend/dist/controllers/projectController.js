@@ -67,12 +67,14 @@ class ProjectController {
                 const serviceId = req.query.serviceId;
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 10;
+                const includeInactive = req.query.includeInactive === 'true' || req.query.includeInactive === '1';
                 const result = await projectService_1.default.getAll({
                     status,
                     featured,
                     serviceId,
                     page,
                     limit,
+                    includeInactive,
                 });
                 res.json(result);
             }
@@ -148,6 +150,16 @@ class ProjectController {
                 const { id } = req.params;
                 const result = await projectService_1.default.delete(id);
                 res.json(result);
+            }
+            catch (error) {
+                next(error);
+            }
+        };
+        this.toggleActive = async (req, res, next) => {
+            try {
+                const { id } = req.params;
+                const project = await projectService_1.default.toggleActive(id);
+                res.json(project);
             }
             catch (error) {
                 next(error);

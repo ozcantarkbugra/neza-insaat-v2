@@ -47,12 +47,14 @@ class BlogController {
                 const categoryId = req.query.categoryId;
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 10;
+                const includeInactive = req.query.includeInactive === 'true' || req.query.includeInactive === '1';
                 const result = await blogService_1.default.getAll({
                     status,
                     featured,
                     categoryId,
                     page,
                     limit,
+                    includeInactive,
                 });
                 res.json(result);
             }
@@ -120,6 +122,16 @@ class BlogController {
                 const { id } = req.params;
                 const result = await blogService_1.default.delete(id);
                 res.json(result);
+            }
+            catch (error) {
+                next(error);
+            }
+        };
+        this.toggleActive = async (req, res, next) => {
+            try {
+                const { id } = req.params;
+                const blog = await blogService_1.default.toggleActive(id);
+                res.json(blog);
             }
             catch (error) {
                 next(error);

@@ -206,14 +206,15 @@ class AdminService {
         });
     }
     async deleteBlogCategory(id) {
-        const category = await database_1.default.blogCategory.findUnique({
-            where: { id },
+        const category = await database_1.default.blogCategory.findFirst({
+            where: { id, isDeleted: false },
         });
         if (!category) {
             throw new errorHandler_1.AppError('Category not found', 404);
         }
-        await database_1.default.blogCategory.delete({
+        await database_1.default.blogCategory.update({
             where: { id },
+            data: { isDeleted: true },
         });
         return { message: 'Category deleted successfully' };
     }
@@ -256,7 +257,7 @@ class AdminService {
         const page = filters.page || 1;
         const limit = filters.limit || 20;
         const skip = (page - 1) * limit;
-        const where = {};
+        const where = { isDeleted: false };
         if (filters.mimeType)
             where.mimeType = { startsWith: filters.mimeType };
         const [files, total] = await Promise.all([
@@ -279,23 +280,15 @@ class AdminService {
         };
     }
     async deleteMedia(id) {
-        const file = await database_1.default.mediaFile.findUnique({
-            where: { id },
+        const file = await database_1.default.mediaFile.findFirst({
+            where: { id, isDeleted: false },
         });
         if (!file) {
             throw new errorHandler_1.AppError('Media file not found', 404);
         }
-        const fs = require('fs');
-        try {
-            if (fs.existsSync(file.path)) {
-                fs.unlinkSync(file.path);
-            }
-        }
-        catch (error) {
-            console.error('Error deleting file:', error);
-        }
-        await database_1.default.mediaFile.delete({
+        await database_1.default.mediaFile.update({
             where: { id },
+            data: { isDeleted: true },
         });
         return { message: 'Media file deleted successfully' };
     }

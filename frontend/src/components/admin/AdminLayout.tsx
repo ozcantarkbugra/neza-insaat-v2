@@ -29,15 +29,15 @@ import AdminFooter from './AdminFooter'
 
 const LOGO_PATHS = ['/images/logo.svg', '/images/logo.png']
 
-const NAV_ITEMS = [
-  { href: '/admin/dashboard', key: 'dashboard' as const },
-  { href: '/admin/projects', key: 'projects' as const },
-  { href: '/admin/blogs', key: 'blog' as const },
-  { href: '/admin/blog-categories', key: 'blogCategories' as const },
-  { href: '/admin/services', key: 'services' as const },
-  { href: '/admin/users', key: 'users' as const },
-  { href: '/admin/messages', key: 'messages' as const },
-  { href: '/admin/settings', key: 'settings' as const },
+const ALL_NAV_ITEMS = [
+  { href: '/admin/dashboard', key: 'dashboard' as const, roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { href: '/admin/projects', key: 'projects' as const, roles: ['SUPER_ADMIN', 'ADMIN', 'EDITOR'] },
+  { href: '/admin/blogs', key: 'blog' as const, roles: ['SUPER_ADMIN', 'ADMIN', 'EDITOR'] },
+  { href: '/admin/blog-categories', key: 'blogCategories' as const, roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { href: '/admin/services', key: 'services' as const, roles: ['SUPER_ADMIN', 'ADMIN', 'EDITOR'] },
+  { href: '/admin/users', key: 'users' as const, roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { href: '/admin/messages', key: 'messages' as const, roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { href: '/admin/settings', key: 'settings' as const, roles: ['SUPER_ADMIN', 'ADMIN'] },
 ] as const
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -69,6 +69,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     if (!user && pathname !== '/admin/login') {
       router.push('/admin/login')
+      return
+    }
+    if (user?.role === 'EDITOR') {
+      const isEditorAllowed =
+        pathname === '/admin/login' ||
+        pathname?.startsWith('/admin/blogs') ||
+        pathname === '/admin/projects' ||
+        pathname === '/admin/services'
+      if (!isEditorAllowed && pathname?.startsWith('/admin')) {
+        router.replace('/admin/blogs')
+      }
     }
   }, [user, pathname, router])
 
@@ -280,7 +291,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <AppShell.Navbar p="md" style={{ backgroundColor: navbarBg }}>
         <AppShell.Section grow>
-          {NAV_ITEMS.map((item) => (
+          {ALL_NAV_ITEMS.filter((item) => user?.role && item.roles.includes(user.role)).map((item) => (
             <NavLink
               key={item.href}
               component={Link}

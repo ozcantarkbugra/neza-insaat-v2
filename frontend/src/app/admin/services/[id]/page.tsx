@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import { useAppSelector } from '@/hooks/useAppSelector'
+import { canManageServices } from '@/lib/roles'
 import api from '@/lib/api'
 import { Service } from '@/types'
 import {
@@ -25,8 +27,15 @@ export default function ServiceEditPage() {
   const router = useRouter()
   const params = useParams()
   const { t } = useTranslation()
+  const { user } = useAppSelector((state) => state.auth)
   const serviceId = params.id as string
   const isNew = serviceId === 'new'
+
+  useEffect(() => {
+    if (user && !canManageServices(user.role)) {
+      router.replace('/admin/services')
+    }
+  }, [user, router])
 
   const [formData, setFormData] = useState({
     title: '',

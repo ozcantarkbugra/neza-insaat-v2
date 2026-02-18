@@ -20,6 +20,8 @@ import {
 import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 import { toast } from '@/lib/toast'
+import { useAppSelector } from '@/hooks/useAppSelector'
+import { canManageProjects } from '@/lib/roles'
 
 const STATUS_COLORS: Record<string, string> = {
   COMPLETED: 'green',
@@ -30,6 +32,8 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function ProjectsPage() {
   const { t } = useTranslation()
+  const { user } = useAppSelector((state) => state.auth)
+  const canEdit = canManageProjects(user?.role)
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -77,11 +81,13 @@ export default function ProjectsPage() {
     <>
       <Group justify="space-between" mb="xl">
         <Title order={2}>{t('admin.projectsTitle')}</Title>
-        <Tooltip label={t('admin.newProject')}>
-          <Button component={Link} href="/admin/projects/new" color="blue" leftSection={<IconPlus size={18} />}>
-            {t('admin.newProject')}
-          </Button>
-        </Tooltip>
+        {canEdit && (
+          <Tooltip label={t('admin.newProject')}>
+            <Button component={Link} href="/admin/projects/new" color="blue" leftSection={<IconPlus size={18} />}>
+              {t('admin.newProject')}
+            </Button>
+          </Tooltip>
+        )}
       </Group>
 
       {projects.length === 0 ? (
@@ -91,12 +97,12 @@ export default function ProjectsPage() {
           <Table striped highlightOnHover>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>{t('admin.title')}</Table.Th>
+                  <Table.Th>{t('admin.title')}</Table.Th>
                 <Table.Th>{t('admin.status')}</Table.Th>
                 <Table.Th>{t('admin.location')}</Table.Th>
                 <Table.Th>{t('admin.date')}</Table.Th>
-                <Table.Th>{t('admin.active')}</Table.Th>
-                <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>
+                {canEdit && <Table.Th>{t('admin.active')}</Table.Th>}
+                {canEdit && <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>}
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -124,27 +130,31 @@ export default function ProjectsPage() {
                           : new Date(project.createdAt).toLocaleDateString('tr-TR')}
                     </Text>
                   </Table.Td>
-                  <Table.Td>
-                    <Tooltip label={project.isActive !== false ? t('admin.active') : t('admin.inactive')}>
-                      <ActionIcon
-                        variant="subtle"
-                        color={project.isActive !== false ? 'green' : 'red'}
-                        size="sm"
-                        onClick={() => handleToggleActive(project.id)}
-                      >
-                        {project.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
-                      </ActionIcon>
-                    </Tooltip>
-                  </Table.Td>
-                  <Table.Td>
-                    <Group justify="flex-end" gap="xs">
-                      <Tooltip label={t('admin.edit')}>
-                        <ActionIcon component={Link} href={`/admin/projects/${project.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
-                          <IconPencil size={18} />
+                  {canEdit && (
+                    <Table.Td>
+                      <Tooltip label={project.isActive !== false ? t('admin.active') : t('admin.inactive')}>
+                        <ActionIcon
+                          variant="subtle"
+                          color={project.isActive !== false ? 'green' : 'red'}
+                          size="sm"
+                          onClick={() => handleToggleActive(project.id)}
+                        >
+                          {project.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
                         </ActionIcon>
                       </Tooltip>
-                    </Group>
-                  </Table.Td>
+                    </Table.Td>
+                  )}
+                  {canEdit && (
+                    <Table.Td>
+                      <Group justify="flex-end" gap="xs">
+                        <Tooltip label={t('admin.edit')}>
+                          <ActionIcon component={Link} href={`/admin/projects/${project.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
+                            <IconPencil size={18} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    </Table.Td>
+                  )}
                 </Table.Tr>
               ))}
             </Table.Tbody>

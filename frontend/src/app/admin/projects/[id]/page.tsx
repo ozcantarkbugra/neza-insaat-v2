@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import { useAppSelector } from '@/hooks/useAppSelector'
+import { canManageProjects } from '@/lib/roles'
 import api from '@/lib/api'
 import { Project } from '@/types'
 import {
@@ -49,9 +51,16 @@ export default function ProjectEditPage() {
   const router = useRouter()
   const params = useParams()
   const { t } = useTranslation()
+  const { user } = useAppSelector((state) => state.auth)
   const projectId = params.id as string
   const isNew = projectId === 'new'
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (user && !canManageProjects(user.role)) {
+      router.replace('/admin/projects')
+    }
+  }, [user, router])
 
   const statusOptions = [
     { value: 'PLANNING', label: t('admin.statusPlanning') },

@@ -20,6 +20,8 @@ import {
 import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 import { toast } from '@/lib/toast'
+import { useAppSelector } from '@/hooks/useAppSelector'
+import { canManageBlogs, canPublishBlogs } from '@/lib/roles'
 
 const STATUS_COLORS: Record<string, string> = {
   PUBLISHED: 'green',
@@ -29,6 +31,9 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function BlogsPage() {
   const { t } = useTranslation()
+  const { user } = useAppSelector((state) => state.auth)
+  const canEdit = canManageBlogs(user?.role)
+  const canPublish = canPublishBlogs(user?.role)
   const [blogs, setBlogs] = useState<Blog[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -73,11 +78,13 @@ export default function BlogsPage() {
     <>
       <Group justify="space-between" mb="xl">
         <Title order={2}>{t('admin.blogTitle')}</Title>
-        <Tooltip label={t('admin.newBlog')}>
-          <Button component={Link} href="/admin/blogs/new" color="blue" leftSection={<IconPlus size={18} />}>
-            {t('admin.newBlog')}
-          </Button>
-        </Tooltip>
+        {canEdit && (
+          <Tooltip label={t('admin.newBlog')}>
+            <Button component={Link} href="/admin/blogs/new" color="blue" leftSection={<IconPlus size={18} />}>
+              {t('admin.newBlog')}
+            </Button>
+          </Tooltip>
+        )}
       </Group>
 
       {blogs.length === 0 ? (
@@ -92,8 +99,8 @@ export default function BlogsPage() {
                 <Table.Th>{t('admin.category')}</Table.Th>
                 <Table.Th>{t('admin.views')}</Table.Th>
                 <Table.Th>{t('admin.date')}</Table.Th>
-                <Table.Th>{t('admin.active')}</Table.Th>
-                <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>
+                {canPublish && <Table.Th>{t('admin.active')}</Table.Th>}
+                {canEdit && <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>}
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -122,27 +129,31 @@ export default function BlogsPage() {
                       {new Date(blog.createdAt).toLocaleDateString('tr-TR')}
                     </Text>
                   </Table.Td>
-                  <Table.Td>
-                    <Tooltip label={blog.isActive !== false ? t('admin.active') : t('admin.inactive')}>
-                      <ActionIcon
-                        variant="subtle"
-                        color={blog.isActive !== false ? 'green' : 'red'}
-                        size="sm"
-                        onClick={() => handleToggleActive(blog.id)}
-                      >
-                        {blog.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
-                      </ActionIcon>
-                    </Tooltip>
-                  </Table.Td>
-                  <Table.Td>
-                    <Group justify="flex-end" gap="xs">
-                      <Tooltip label={t('admin.edit')}>
-                        <ActionIcon component={Link} href={`/admin/blogs/${blog.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
-                          <IconPencil size={18} />
+                  {canPublish && (
+                    <Table.Td>
+                      <Tooltip label={blog.isActive !== false ? t('admin.active') : t('admin.inactive')}>
+                        <ActionIcon
+                          variant="subtle"
+                          color={blog.isActive !== false ? 'green' : 'red'}
+                          size="sm"
+                          onClick={() => handleToggleActive(blog.id)}
+                        >
+                          {blog.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
                         </ActionIcon>
                       </Tooltip>
-                    </Group>
-                  </Table.Td>
+                    </Table.Td>
+                  )}
+                  {canEdit && (
+                    <Table.Td>
+                      <Group justify="flex-end" gap="xs">
+                        <Tooltip label={t('admin.edit')}>
+                          <ActionIcon component={Link} href={`/admin/blogs/${blog.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
+                            <IconPencil size={18} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    </Table.Td>
+                  )}
                 </Table.Tr>
               ))}
             </Table.Tbody>

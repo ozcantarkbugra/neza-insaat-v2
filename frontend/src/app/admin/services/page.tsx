@@ -20,9 +20,13 @@ import {
 import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
 import { toast } from '@/lib/toast'
+import { useAppSelector } from '@/hooks/useAppSelector'
+import { canManageServices } from '@/lib/roles'
 
 export default function ServicesPage() {
   const { t } = useTranslation()
+  const { user } = useAppSelector((state) => state.auth)
+  const canEdit = canManageServices(user?.role)
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -61,11 +65,13 @@ export default function ServicesPage() {
     <>
       <Group justify="space-between" mb="xl">
         <Title order={2}>{t('admin.servicesTitle')}</Title>
-        <Tooltip label={t('admin.newService')}>
-          <Button component={Link} href="/admin/services/new" color="blue" leftSection={<IconPlus size={18} />}>
-            {t('admin.newService')}
-          </Button>
-        </Tooltip>
+        {canEdit && (
+          <Tooltip label={t('admin.newService')}>
+            <Button component={Link} href="/admin/services/new" color="blue" leftSection={<IconPlus size={18} />}>
+              {t('admin.newService')}
+            </Button>
+          </Tooltip>
+        )}
       </Group>
 
       {services.length === 0 ? (
@@ -78,8 +84,8 @@ export default function ServicesPage() {
                 <Table.Th>{t('admin.title')}</Table.Th>
                 <Table.Th>{t('admin.order')}</Table.Th>
                 <Table.Th>{t('admin.featured')}</Table.Th>
-                <Table.Th>{t('admin.active')}</Table.Th>
-                <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>
+                {canEdit && <Table.Th>{t('admin.active')}</Table.Th>}
+                {canEdit && <Table.Th style={{ textAlign: 'right' }}>{t('admin.actions')}</Table.Th>}
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -98,27 +104,31 @@ export default function ServicesPage() {
                       {service.featured ? t('admin.yes') : t('admin.no')}
                     </Badge>
                   </Table.Td>
-                  <Table.Td>
-                    <Tooltip label={service.isActive !== false ? t('admin.active') : t('admin.inactive')}>
-                      <ActionIcon
-                        variant="subtle"
-                        color={service.isActive !== false ? 'green' : 'red'}
-                        size="sm"
-                        onClick={() => handleToggleActive(service.id)}
-                      >
-                        {service.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
-                      </ActionIcon>
-                    </Tooltip>
-                  </Table.Td>
-                  <Table.Td>
-                    <Group justify="flex-end" gap="xs">
-                      <Tooltip label={t('admin.edit')}>
-                        <ActionIcon component={Link} href={`/admin/services/${service.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
-                          <IconPencil size={18} />
+                  {canEdit && (
+                    <Table.Td>
+                      <Tooltip label={service.isActive !== false ? t('admin.active') : t('admin.inactive')}>
+                        <ActionIcon
+                          variant="subtle"
+                          color={service.isActive !== false ? 'green' : 'red'}
+                          size="sm"
+                          onClick={() => handleToggleActive(service.id)}
+                        >
+                          {service.isActive !== false ? <IconCircleCheck size={18} /> : <IconCircleX size={18} />}
                         </ActionIcon>
                       </Tooltip>
-                    </Group>
-                  </Table.Td>
+                    </Table.Td>
+                  )}
+                  {canEdit && (
+                    <Table.Td>
+                      <Group justify="flex-end" gap="xs">
+                        <Tooltip label={t('admin.edit')}>
+                          <ActionIcon component={Link} href={`/admin/services/${service.id}`} variant="subtle" color="blue" size="sm" aria-label={t('admin.edit')}>
+                            <IconPencil size={18} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    </Table.Td>
+                  )}
                 </Table.Tr>
               ))}
             </Table.Tbody>

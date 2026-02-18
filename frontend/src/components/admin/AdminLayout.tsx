@@ -291,7 +291,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <AppShell.Navbar p="md" style={{ backgroundColor: navbarBg }}>
         <AppShell.Section grow>
-          {ALL_NAV_ITEMS.filter((item) => user?.role && item.roles.includes(user.role)).map((item) => (
+          {ALL_NAV_ITEMS.filter((item) => user?.role && (item.roles as readonly string[]).includes(user.role)).map((item) => (
             <NavLink
               key={item.href}
               component={Link}

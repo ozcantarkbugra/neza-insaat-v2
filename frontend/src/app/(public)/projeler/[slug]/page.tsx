@@ -8,7 +8,7 @@ import { useMantineTheme, useMantineColorScheme } from '@mantine/core'
 import Image from 'next/image'
 import api from '@/lib/api'
 import { Project } from '@/types'
-import { normalizeImageUrl } from '@/utils/imageUtils'
+import { normalizeImageUrl, shouldUnoptimizeImage } from '@/utils/imageUtils'
 import { useTranslation } from '@/lib/i18n'
 
 const STATUS_KEYS: Record<string, string> = {
@@ -87,6 +87,7 @@ export default function ProjectDetailPage(props: {
               fill
               style={{ objectFit: 'cover' }}
               priority
+              unoptimized={shouldUnoptimizeImage(project.featuredImage)}
             />
           </div>
         )}
@@ -257,6 +258,7 @@ export default function ProjectDetailPage(props: {
                     alt={image.alt || project.title}
                     fill
                     style={{ objectFit: 'cover' }}
+                    unoptimized={shouldUnoptimizeImage(image.url)}
                   />
                 </div>
               ))}

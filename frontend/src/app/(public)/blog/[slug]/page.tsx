@@ -17,7 +17,7 @@ import { useMantineTheme, useMantineColorScheme } from '@mantine/core'
 import Image from 'next/image'
 import api from '@/lib/api'
 import { Blog } from '@/types'
-import { normalizeImageUrl } from '@/utils/imageUtils'
+import { normalizeImageUrl, shouldUnoptimizeImage } from '@/utils/imageUtils'
 import { useTranslation } from '@/lib/i18n'
 
 export default function BlogDetailPage(props: {
@@ -73,6 +73,7 @@ export default function BlogDetailPage(props: {
               fill
               style={{ objectFit: 'cover' }}
               priority
+              unoptimized={shouldUnoptimizeImage(blog.featuredImage)}
             />
           </Box>
         )}

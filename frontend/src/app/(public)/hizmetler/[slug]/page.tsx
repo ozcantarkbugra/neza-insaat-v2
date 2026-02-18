@@ -18,7 +18,7 @@ import api from '@/lib/api'
 import { Service, Project } from '@/types'
 import Link from 'next/link'
 import Image from 'next/image'
-import { normalizeImageUrl } from '@/utils/imageUtils'
+import { normalizeImageUrl, shouldUnoptimizeImage } from '@/utils/imageUtils'
 import { useTranslation } from '@/lib/i18n'
 
 type ServiceWithProjects = Service & { projects?: Project[] }
@@ -112,6 +112,7 @@ export default function ServiceDetailPage(props: {
                           alt={projectTitle(project)}
                           fill
                           style={{ objectFit: 'cover' }}
+                          unoptimized={shouldUnoptimizeImage(project.images[0].url)}
                         />
                       </Box>
                     </Card.Section>

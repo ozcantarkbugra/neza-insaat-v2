@@ -5,7 +5,7 @@ import { Card, Text, Title, Stack, Group, Badge } from '@mantine/core'
 import { useMantineTheme, useMantineColorScheme } from '@mantine/core'
 import Link from 'next/link'
 import NextImage from 'next/image'
-import { normalizeImageUrl } from '@/utils/imageUtils'
+import { normalizeImageUrl, shouldUnoptimizeImage } from '@/utils/imageUtils'
 import { useTranslation } from '@/lib/i18n'
 
 interface BlogCardProps {
@@ -80,6 +80,7 @@ export default function BlogCard({
                   fill
                   style={{ objectFit: 'cover' }}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  unoptimized={shouldUnoptimizeImage(featuredImage)}
                 />
               </div>
             </div>

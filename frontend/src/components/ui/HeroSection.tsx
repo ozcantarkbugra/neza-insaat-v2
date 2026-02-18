@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { IconArrowDown } from '@tabler/icons-react'
 import { Project } from '@/types'
 import { extractHeroImagesFromProjects, FALLBACK_IMAGES } from '@/utils/heroImages'
+import { shouldUnoptimizeImage } from '@/utils/imageUtils'
 import { useTranslation } from '@/lib/i18n'
 
 const HERO_KEYS = [
@@ -101,7 +102,7 @@ export default function HeroSection({ projects = [] }: HeroSectionProps) {
                 priority={index === 0}
                 quality={90}
                 style={{ objectFit: 'cover' }}
-                unoptimized={image.startsWith('http://localhost')}
+                unoptimized={shouldUnoptimizeImage(image)}
               />
             </div>
           )

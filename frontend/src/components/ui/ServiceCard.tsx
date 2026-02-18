@@ -5,7 +5,7 @@ import { Card, Text, Title, Stack } from '@mantine/core'
 import { useMantineTheme, useMantineColorScheme } from '@mantine/core'
 import Link from 'next/link'
 import NextImage from 'next/image'
-import { normalizeImageUrl } from '@/utils/imageUtils'
+import { normalizeImageUrl, shouldUnoptimizeImage } from '@/utils/imageUtils'
 import { useTranslation } from '@/lib/i18n'
 
 interface ServiceCardProps {
@@ -72,6 +72,7 @@ export default function ServiceCard({ title, titleEn, shortDescription, shortDes
                     objectFit: 'cover',
                   }}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  unoptimized={shouldUnoptimizeImage(image)}
                 />
               </div>
             </div>

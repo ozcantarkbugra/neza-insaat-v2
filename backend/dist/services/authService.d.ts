@@ -29,15 +29,12 @@ export declare class AuthService {
     logout(userId: string): Promise<void>;
     getMe(userId: string): Promise<{
         email: string;
-        password: string;
-        refreshToken: string | null;
         id: string;
         firstName: string | null;
         lastName: string | null;
         role: import(".prisma/client").$Enums.UserRole;
         isActive: boolean;
         createdAt: Date;
-        updatedAt: Date;
     }>;
 }
 declare const _default: AuthService;

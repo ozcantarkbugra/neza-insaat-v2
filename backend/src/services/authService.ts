@@ -159,7 +159,7 @@ export class AuthService {
 
   async getMe(userId: string) {
     const user = await prisma.user.findFirst({
-      where: { id: userId, isDeleted: false },
+      where: { id: userId, isActive: true },
       select: {
         id: true,
         email: true,

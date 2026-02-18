@@ -115,7 +115,7 @@ class AuthService {
     }
     async getMe(userId) {
         const user = await database_1.default.user.findFirst({
-            where: { id: userId, isDeleted: false },
+            where: { id: userId, isActive: true },
             select: {
                 id: true,
                 email: true,

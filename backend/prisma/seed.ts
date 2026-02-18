@@ -5,7 +5,7 @@ import { ensurePlaceholderImages } from '../scripts/create-placeholders'
 
 const prisma = new PrismaClient()
 
-const BASE_URL = process.env['BASE_URL'] || process.env['API_BASE_URL'] || 'http://localhost:5000'
+const BASE_URL = process.env['BASE_URL'] || process.env['API_BASE_URL'] || process.env['FRONTEND_URL'] || 'http://localhost:5000'
 const uploads = (p: string) => `${BASE_URL.replace(/\/$/, '')}/uploads/${p}`
 
 async function main() {
@@ -30,6 +30,20 @@ async function main() {
     },
   })
   console.log('✅ Admin user:', adminUser.email)
+
+  const roles = [
+    { name: 'SUPER_ADMIN', description: 'Tam yetkili yönetici' },
+    { name: 'ADMIN', description: 'Yönetici' },
+    { name: 'EDITOR', description: 'İçerik editörü' },
+  ]
+  for (const role of roles) {
+    await prisma.role.upsert({
+      where: { name: role.name },
+      update: { isActive: true },
+      create: { ...role, isActive: true },
+    })
+  }
+  console.log('✅ Roles:', roles.length)
 
   const services = [
     {

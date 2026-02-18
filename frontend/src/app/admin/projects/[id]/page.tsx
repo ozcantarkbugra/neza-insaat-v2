@@ -26,6 +26,7 @@ import {
 } from '@mantine/core'
 import { DateInput } from '@mantine/dates'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, '') || 'http://localhost:5002'
 
@@ -163,7 +164,7 @@ export default function ProjectEditPage() {
       router.push('/admin/projects')
     } catch (error: any) {
       const msg = error.response?.data?.error || error.response?.data?.message || (Array.isArray(error.response?.data?.errors) ? error.response.data.errors.join(', ') : t('admin.saveFailed'))
-      alert(msg)
+      toast.error(msg)
     } finally {
       setSaving(false)
     }
@@ -172,7 +173,7 @@ export default function ProjectEditPage() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !file.type.startsWith('image/')) {
-      alert(t('admin.selectImageFile'))
+      toast.warning(t('admin.selectImageFile'))
       return
     }
     setUploading(true)
@@ -189,7 +190,7 @@ export default function ProjectEditPage() {
         }))
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || t('admin.uploadFailed'))
+      toast.error(err.response?.data?.error || t('admin.uploadFailed'))
     } finally {
       setUploading(false)
       e.target.value = ''

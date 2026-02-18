@@ -370,6 +370,8 @@
     "editCategoryForm": "Edit Category",
     "invalidName": "Enter a valid name",
     "slugRequired": "Slug is required",
-    "descriptionOptional": "Description (optional)"
+    "descriptionOptional": "Description (optional)",
+    "saved": "Saved",
+    "categoryCreated": "Category created"
   }
 }

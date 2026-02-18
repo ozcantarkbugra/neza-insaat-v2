@@ -18,6 +18,7 @@ import {
 } from '@mantine/core'
 import { IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 export default function MessagesPage() {
   const { t } = useTranslation()
@@ -43,7 +44,7 @@ export default function MessagesPage() {
       await api.patch(`/contact/${id}/read`)
       setMessages(messages.map((m) => (m.id === id ? { ...m, read: true } : m)))
     } catch (error) {
-      alert(t('admin.operationFailed'))
+      toast.error(t('admin.operationFailed'))
     }
   }
 
@@ -52,7 +53,7 @@ export default function MessagesPage() {
       const res = await api.patch(`/contact/${id}/toggle-active`)
       setMessages(messages.map((m) => (m.id === id ? { ...m, isActive: res.data.isActive } : m)))
     } catch (error) {
-      alert(t('admin.operationFailed'))
+      toast.error(t('admin.operationFailed'))
     }
   }
 

@@ -19,6 +19,7 @@ import {
   Loader,
 } from '@mantine/core'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 export default function BlogEditPage() {
   const router = useRouter()
@@ -116,7 +117,7 @@ export default function BlogEditPage() {
         error.response?.data?.error ||
         error.response?.data?.message ||
         (Array.isArray(error.response?.data?.errors) ? error.response.data.errors.join(', ') : t('admin.saveFailed'))
-      alert(msg)
+      toast.error(msg)
     } finally {
       setSaving(false)
     }

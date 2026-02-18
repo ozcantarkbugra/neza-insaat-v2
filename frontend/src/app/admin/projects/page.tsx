@@ -19,6 +19,7 @@ import {
 } from '@mantine/core'
 import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 const STATUS_COLORS: Record<string, string> = {
   COMPLETED: 'green',
@@ -60,7 +61,7 @@ export default function ProjectsPage() {
       const res = await api.patch(`/projects/${id}/toggle-active`)
       setProjects(projects.map((p) => (p.id === id ? { ...p, isActive: res.data.isActive } : p)))
     } catch (error) {
-      alert(t('admin.operationFailed'))
+      toast.error(t('admin.operationFailed'))
     }
   }
 

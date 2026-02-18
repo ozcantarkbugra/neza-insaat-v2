@@ -19,6 +19,7 @@ import {
 } from '@mantine/core'
 import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 const STATUS_COLORS: Record<string, string> = {
   PUBLISHED: 'green',
@@ -56,7 +57,7 @@ export default function BlogsPage() {
       const res = await api.patch(`/blogs/${id}/toggle-active`)
       setBlogs(blogs.map((b) => (b.id === id ? { ...b, isActive: res.data.isActive } : b)))
     } catch (error) {
-      alert(t('admin.operationFailed'))
+      toast.error(t('admin.operationFailed'))
     }
   }
 

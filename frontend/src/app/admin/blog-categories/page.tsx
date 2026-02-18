@@ -20,6 +20,7 @@ import {
 } from '@mantine/core'
 import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 interface BlogCategory {
   id: string
@@ -120,6 +121,7 @@ export default function BlogCategoriesPage() {
         })
       }
       setModalOpened(false)
+      toast.success(editingId ? t('admin.saved') : t('admin.categoryCreated'))
       fetchCategories()
     } catch (err: any) {
       setFormError(err.response?.data?.error || t('admin.operationFailed'))
@@ -133,7 +135,7 @@ export default function BlogCategoriesPage() {
       const res = await api.patch(`/admin/blog-categories/${id}/toggle-active`)
       setCategories(categories.map((c) => (c.id === id ? { ...c, isActive: res.data.isActive } : c)))
     } catch (error) {
-      alert(t('admin.operationFailed'))
+      toast.error(t('admin.operationFailed'))
     }
   }
 

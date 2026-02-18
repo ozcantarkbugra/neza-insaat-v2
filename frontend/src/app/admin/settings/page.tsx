@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { Title, TextInput, Paper, Stack, Group, Text, Center, Loader } from '@mantine/core'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 interface Setting {
   id: string
@@ -71,7 +72,7 @@ export default function SettingsPage() {
       await api.put(`/admin/settings/${key}`, { value })
       setSettings(settings.map((s) => (s.key === key ? { ...s, value } : s)))
     } catch (error) {
-      alert(t('admin.settingsSaveFailed'))
+      toast.error(t('admin.settingsSaveFailed'))
     } finally {
       setSaving(null)
     }

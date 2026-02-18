@@ -370,6 +370,8 @@
     "editCategoryForm": "Kategori Düzenle",
     "invalidName": "Geçerli bir ad girin",
     "slugRequired": "Slug zorunludur",
-    "descriptionOptional": "Açıklama (opsiyonel)"
+    "descriptionOptional": "Açıklama (opsiyonel)",
+    "saved": "Kaydedildi",
+    "categoryCreated": "Kategori oluşturuldu"
   }
 }

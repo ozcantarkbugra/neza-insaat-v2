@@ -22,6 +22,7 @@ import {
 import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useDisclosure } from '@mantine/hooks'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 interface User {
   id: string
@@ -84,7 +85,7 @@ export default function UsersPage() {
       await api.patch(`/admin/users/${id}/toggle-active`)
       setUsers(users.map((u) => (u.id === id ? { ...u, isActive: !u.isActive } : u)))
     } catch (error) {
-      alert(t('admin.operationFailed'))
+      toast.error(t('admin.operationFailed'))
     }
   }
 
@@ -94,7 +95,7 @@ export default function UsersPage() {
       await api.patch(`/admin/users/${id}/role`, { role })
       setUsers(users.map((u) => (u.id === id ? { ...u, role } : u)))
     } catch (error) {
-      alert(t('admin.operationFailed'))
+      toast.error(t('admin.operationFailed'))
     }
   }
 

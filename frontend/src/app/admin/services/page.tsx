@@ -19,6 +19,7 @@ import {
 } from '@mantine/core'
 import { IconPencil, IconPlus, IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import { useTranslation } from '@/lib/i18n'
+import { toast } from '@/lib/toast'
 
 export default function ServicesPage() {
   const { t } = useTranslation()
@@ -44,7 +45,7 @@ export default function ServicesPage() {
       const res = await api.patch(`/services/${id}/toggle-active`)
       setServices(services.map((s) => (s.id === id ? { ...s, isActive: res.data.isActive } : s)))
     } catch (error) {
-      alert(t('admin.operationFailed'))
+      toast.error(t('admin.operationFailed'))
     }
   }
 

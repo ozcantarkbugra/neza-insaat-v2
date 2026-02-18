@@ -3,9 +3,11 @@
 import { Provider } from 'react-redux'
 import { store } from '@/store'
 import { MantineProvider, createTheme, useMantineColorScheme } from '@mantine/core'
+import { Notifications } from '@mantine/notifications'
 import { I18nProvider } from '@/lib/i18n'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
+import '@mantine/notifications/styles.css'
 import 'dayjs/locale/tr'
 import { DatesProvider } from '@mantine/dates'
 import { useEffect } from 'react'
@@ -144,6 +146,7 @@ function ColorSchemeSync({ children }: { children: React.ReactNode }) {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <MantineProvider theme={theme} defaultColorScheme="light">
+      <Notifications position="top-right" autoClose={4000} />
       <DatesProvider settings={{ locale: 'tr', firstDayOfWeek: 1 }}>
         <ColorSchemeSync>
           <Provider store={store}>

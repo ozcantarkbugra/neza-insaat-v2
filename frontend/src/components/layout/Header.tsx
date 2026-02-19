@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import {
   Container,
   Group,
@@ -13,24 +12,19 @@ import {
   useMantineColorScheme,
   useMantineTheme,
   Text,
-  Box,
 } from '@mantine/core'
 import { IconSun, IconMoon, IconChevronDown, IconLanguage } from '@tabler/icons-react'
 import { useDisclosure } from '@mantine/hooks'
 import { useState, useEffect } from 'react'
 import { useTranslation } from '@/lib/i18n'
+import Logo from './Logo'
 
 const SCROLL_THRESHOLD = 24
-
-const LOGO_PATHS = ['/images/logo.svg', '/images/logo.png']
 
 export default function Header() {
   const [opened, { toggle }] = useDisclosure(false)
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const theme = useMantineTheme()
-  const [logoIndex, setLogoIndex] = useState(0)
-  const logoUrl = LOGO_PATHS[logoIndex]
-  const logoError = logoIndex >= LOGO_PATHS.length
   const [isScrolled, setIsScrolled] = useState(false)
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
@@ -45,10 +39,6 @@ export default function Header() {
   }, [mounted])
   const isDark = mounted ? colorScheme === 'dark' : false
   const { t, locale, setLocale } = useTranslation()
-
-  const handleLogoError = () => {
-    if (logoIndex + 1 < LOGO_PATHS.length) setLogoIndex((i) => i + 1)
-  }
 
   const handleColorSchemeToggle = () => {
     toggleColorScheme()
@@ -81,50 +71,12 @@ export default function Header() {
   const NAVBAR_HEIGHT = 144
 
   return (
-    <header style={{ ...headerStyle, overflow: 'visible' }}>
+    <header style={{ ...headerStyle, overflow: 'visible' }} suppressHydrationWarning>
       <Container size="lg" py="sm" px="xl" style={{ overflow: 'visible', maxWidth: '100%' }}>
-        <Group justify="space-between" align="center" style={{ minHeight: NAVBAR_HEIGHT }} wrap="nowrap" gap="xl">
-          <Box
-            component={Link}
-            href="/"
-            style={{
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              lineHeight: 1,
-              height: NAVBAR_HEIGHT,
-              flexShrink: 0,
-              marginLeft: 80,
-            }}
-            className="hover:opacity-90"
-          >
-            {!logoError ? (
-              <Image
-                src={logoUrl}
-                alt={t('common.companyName')}
-                width={640}
-                height={96}
-                priority
-                style={{
-                  objectFit: 'contain',
-                  height: 'auto',
-                  maxHeight: NAVBAR_HEIGHT,
-                  width: 'auto',
-                  maxWidth: 640,
-                  filter: isDark ? 'brightness(0) invert(1)' : undefined,
-                  transition: 'filter 200ms ease',
-                }}
-                onError={handleLogoError}
-                unoptimized
-              />
-            ) : (
-              <Text size="xl" fw={700} c={isDark ? theme.white : theme.colors.blue[8]}>
-                {t('common.companyName')}
-              </Text>
-            )}
-          </Box>
+        <Group justify="space-between" align="center" style={{ minHeight: NAVBAR_HEIGHT }} wrap="nowrap" gap="xl" suppressHydrationWarning>
+          <Logo isDark={isDark} />
 
-          <Group gap="lg" visibleFrom="lg" style={{ overflow: 'visible' }}>
+          <Group gap="lg" visibleFrom="lg" style={{ overflow: 'visible' }} suppressHydrationWarning>
             <Menu
               trigger="hover"
               openDelay={100}
@@ -315,18 +267,20 @@ export default function Header() {
               </Menu.Dropdown>
             </Menu>
 
-            <ActionIcon
-              onClick={handleColorSchemeToggle}
-              variant="default"
-              size="lg"
-              aria-label="Toggle color scheme"
-              title={colorScheme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
-            >
-              {isDark ? <IconMoon size={20} /> : <IconSun size={20} />}
-            </ActionIcon>
+            {mounted && (
+              <ActionIcon
+                onClick={handleColorSchemeToggle}
+                variant="default"
+                size="lg"
+                aria-label="Toggle color scheme"
+                title={colorScheme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
+              >
+                {isDark ? <IconMoon size={20} /> : <IconSun size={20} />}
+              </ActionIcon>
+            )}
           </Group>
 
-          <Group gap="xs" hiddenFrom="lg" wrap="nowrap">
+          <Group gap="xs" hiddenFrom="lg" wrap="nowrap" suppressHydrationWarning>
             <Menu position="bottom-end" withArrow shadow="md" zIndex={9999}>
               <Menu.Target>
                 <ActionIcon variant="default" size="lg" aria-label={t('nav.language')}>
@@ -342,14 +296,16 @@ export default function Header() {
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <ActionIcon
-              onClick={handleColorSchemeToggle}
-              variant="default"
-              size="lg"
-              aria-label="Toggle color scheme"
-            >
-              {isDark ? <IconMoon size={20} /> : <IconSun size={20} />}
-            </ActionIcon>
+            {mounted && (
+              <ActionIcon
+                onClick={handleColorSchemeToggle}
+                variant="default"
+                size="lg"
+                aria-label="Toggle color scheme"
+              >
+                {isDark ? <IconMoon size={20} /> : <IconSun size={20} />}
+              </ActionIcon>
+            )}
             <Burger opened={opened} onClick={toggle} aria-label={t('nav.toggleNav')} />
           </Group>
         </Group>

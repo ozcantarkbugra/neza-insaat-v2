@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n'
 
-const NAVBAR_HEIGHT = 144
-
 interface LogoProps {
   isDark: boolean
 }
@@ -21,11 +19,9 @@ export default function Logo({ isDark }: LogoProps) {
         display: 'flex',
         alignItems: 'center',
         lineHeight: 1,
-        height: NAVBAR_HEIGHT,
         flexShrink: 0,
-        marginLeft: 80,
       }}
-      className="hover:opacity-90"
+      className="hover:opacity-90 ml-4 lg:ml-20"
       aria-label={t('common.companyName')}
     >
       <img
@@ -36,9 +32,8 @@ export default function Logo({ isDark }: LogoProps) {
         height={144}
         style={{
           objectFit: 'contain',
-          maxHeight: NAVBAR_HEIGHT,
-          maxWidth: 640,
-          transition: 'opacity 200ms ease',
+          maxHeight: 144,
+          maxWidth: 240,
         }}
       />
     </Link>

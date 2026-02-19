@@ -68,12 +68,10 @@ export default function Header() {
     transition: 'background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease',
   }
 
-  const NAVBAR_HEIGHT = 144
-
   return (
-    <header style={{ ...headerStyle, overflow: 'visible' }} suppressHydrationWarning>
-      <Container size="lg" py="sm" px="xl" style={{ overflow: 'visible', maxWidth: '100%' }}>
-        <Group justify="space-between" align="center" style={{ minHeight: NAVBAR_HEIGHT }} wrap="nowrap" gap="xl" suppressHydrationWarning>
+    <header style={headerStyle} suppressHydrationWarning>
+      <Container size="lg" py="sm" px={{ base: 'xs', sm: 'md', lg: 'xl' }} style={{ maxWidth: '100%' }}>
+        <Group justify="space-between" align="center" className="min-h-16 sm:min-h-20 lg:min-h-36" wrap="nowrap" gap="md" suppressHydrationWarning>
           <Logo isDark={isDark} />
 
           <Group gap="lg" visibleFrom="lg" style={{ overflow: 'visible' }} suppressHydrationWarning>
@@ -280,11 +278,11 @@ export default function Header() {
             )}
           </Group>
 
-          <Group gap="xs" hiddenFrom="lg" wrap="nowrap" suppressHydrationWarning>
+          <Group gap="xs" hiddenFrom="lg" wrap="nowrap" style={{ flexShrink: 0 }} suppressHydrationWarning>
             <Menu position="bottom-end" withArrow shadow="md" zIndex={9999}>
               <Menu.Target>
-                <ActionIcon variant="default" size="lg" aria-label={t('nav.language')}>
-                  <IconLanguage size={20} />
+                <ActionIcon variant="default" size="md" aria-label={t('nav.language')}>
+                  <IconLanguage size={18} />
                 </ActionIcon>
               </Menu.Target>
               <Menu.Dropdown>
@@ -300,13 +298,13 @@ export default function Header() {
               <ActionIcon
                 onClick={handleColorSchemeToggle}
                 variant="default"
-                size="lg"
+                size="md"
                 aria-label="Toggle color scheme"
               >
-                {isDark ? <IconMoon size={20} /> : <IconSun size={20} />}
+                {isDark ? <IconMoon size={18} /> : <IconSun size={18} />}
               </ActionIcon>
             )}
-            <Burger opened={opened} onClick={toggle} aria-label={t('nav.toggleNav')} />
+            <Burger opened={opened} onClick={toggle} aria-label={t('nav.toggleNav')} size="sm" />
           </Group>
         </Group>
 

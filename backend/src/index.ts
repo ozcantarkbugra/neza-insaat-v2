@@ -20,6 +20,9 @@ import path from 'path'
 
 const app = express()
 
+// Proxy (nginx/Docker) arkasında X-Forwarded-For kullanılabilmesi için gerekli
+app.set('trust proxy', 1)
+
 app.use(compression())
 
 app.use(

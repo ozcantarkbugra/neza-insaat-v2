@@ -279,6 +279,19 @@ npx prisma studio        # Veritabanı GUI
 npm run prisma:seed      # Seed çalıştır
 ```
 
+### CORS ve "Backend'e bağlanılamadı" / CORS hatası
+
+- **Backend kapalıyken neden CORS hatası görünür?**  
+  Tarayıcı `https://www.nezainsaat.com` üzerinden `https://nezainsaat.com/api` adresine istek atıyor (farklı origin). CORS kurallarına göre sunucu yanıtta `Access-Control-Allow-Origin` göndermeli. Backend **hiç yanıt vermiyorsa** (kapalı, timeout, 502) yanıt gelmediği için bu header da gelmez; tarayıcı yanıtı "CORS hatası" gibi gösterebilir. Yani asıl sorun çoğu zaman **backend’in erişilebilir olmamasıdır**; CORS mesajı bunun sonucudur.
+
+- **Production CORS:** Backend’te `FRONTEND_URL` tam olarak frontend origin’i olmalı. Canlı sitede frontend `https://www.nezainsaat.com` ise:
+  ```env
+  FRONTEND_URL=https://www.nezainsaat.com
+  ```
+  (`http://` vs `https://`, `www` vs non-www farklı sayılır; yanlışsa CORS hatası alırsınız.)
+
+- **Kontrol:** Backend ayaktayken tarayıcıda veya `curl` ile `GET https://nezainsaat.com/api/settings` (veya `/health`) deneyin. Yanıt geliyorsa backend açıktır; CORS hâlâ varsa `FRONTEND_URL` değerini kontrol edin.
+
 ---
 
 ## 📡 API Dokümantasyonu
